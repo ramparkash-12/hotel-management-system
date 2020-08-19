@@ -1,6 +1,6 @@
-using EventBus.Events;
+using Foundation.EventBus.Events;
 
-namespace EventBus.Abstractions
+namespace Foundation.EventBus.Abstractions
 {
     public interface IEventBus
     {

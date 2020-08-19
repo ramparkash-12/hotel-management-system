@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using EventBus.Events;
+using Foundation.EventBus.Events;
 
-namespace EventBus.Abstractions
+namespace Foundation.EventBus.Abstractions
 {
   public interface IIntegrationEventHandler<in TIntegrationEvent> : IIntegrationEventHandler
       where TIntegrationEvent : IntegrationEvent
