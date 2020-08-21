@@ -1,5 +1,7 @@
+using System;
 using Foundation.EventBus.Abstractions;
 using Foundation.EventBus.Events;
+using RabbitMQ.Client;
 
 namespace Foundation.EventBusRabbitMQ
 {

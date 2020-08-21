@@ -16,8 +16,8 @@ namespace Foundation.EventBusRabbitMQ
 
     public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, DefaultRabbitMQPersistentConnection logger, int retryCount)
     {
-        _connectionFactory = connectionFactory;
-        _logger = logger;
+        _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _retryCount = retryCount;
     }
 
