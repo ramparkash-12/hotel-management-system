@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Foundation.EventBus</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="../EventBus/EventBus.csproj" />
+    <ProjectReference Include="../EventBus/EventBus.csproj"/>
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.1"/>
+  </ItemGroup>
 </Project>
