@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -8,13 +9,13 @@ namespace Foundation.EventBusRabbitMQ
   public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
   {
     private readonly IConnectionFactory _connectionFactory;
-    private readonly DefaultRabbitMQPersistentConnection _logger;
+    private readonly ILogger<DefaultRabbitMQPersistentConnection> _logger;
     private readonly int _retryCount;
     IConnection _connection;
     bool _disposed;
     object sync_root = new object();
 
-    public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, DefaultRabbitMQPersistentConnection logger, int retryCount)
+    public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMQPersistentConnection> logger, int retryCount)
     {
         _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -56,6 +57,8 @@ namespace Foundation.EventBusRabbitMQ
 
     public bool TryConnect()
     {
+            _logger.LogInformation("RabbitMQ is trying to connect....");
+            
             lock (sync_root)
             {
                _connection = _connectionFactory
@@ -67,10 +70,13 @@ namespace Foundation.EventBusRabbitMQ
                     _connection.CallbackException += OnCallbackException;
                     _connection.ConnectionBlocked += OnConnectionBlocked;
 
+                    _logger.LogInformation("RabbitMQ acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
+
                     return true;
                 }
                 else
                 {
+                     _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
                     return false;
                 }
             }
@@ -80,7 +86,7 @@ namespace Foundation.EventBusRabbitMQ
         {
             if (_disposed) return;
 
-            //_logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
+            _logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
 
             TryConnect();
         }
@@ -89,7 +95,7 @@ namespace Foundation.EventBusRabbitMQ
         {
             if (_disposed) return;
 
-            //_logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
+            _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
 
             TryConnect();
         }
@@ -98,7 +104,7 @@ namespace Foundation.EventBusRabbitMQ
         {
             if (_disposed) return;
 
-            //_logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+            _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
 
             TryConnect();
         }
