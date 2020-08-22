@@ -1,0 +1,30 @@
+version: "3.6"
+services:
+  userapi:
+    container_name: userapi-container
+    image: user.api  
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=UserDB;User Id=sa;Password=iamback.786A@
+    ports:
+        - 6000:80
+        - 6001:443    
+   
+    restart: on-failure        
+    depends_on:
+        - sqldata
+  
+  sqldata:
+    container_name: sqldata-container
+    image:
+      "mcr.microsoft.com/mssql/server"
+    environment:
+      - SA_PASSWORD=iamback.786A@
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
+    volumes:
+      - sqlvolumetaskdemo:/var/opt/mssql
+    restart: on-failure     
+
+volumes:
+  sqlvolumetaskdemo:
