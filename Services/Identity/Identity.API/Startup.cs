@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Identity.API.Data;
+
 
 namespace Identity.API
 {
@@ -25,7 +29,10 @@ namespace Identity.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+            .Services
+            .AddCustomMVC(Configuration)
+            .AddCustomDbContext(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,4 +55,60 @@ namespace Identity.API
             });
         }
     }
+
+     public static class CustomExtensionMethods
+  {
+
+     public static IServiceCollection AddCustomMVC(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
+            return services;
+        }
+
+    public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
+    {
+      services.AddDbContext<ApplicationDbContext>(options =>
+      {
+        options.UseSqlServer(configuration["ConnectionString"],
+            sqlServerOptionsAction: sqlOptions =>
+            {
+            sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+        });
+      });
+
+      return services;
+    }
+    /*
+    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "MicroserviceDemo - User HTTP API",
+                    Version = "v1",
+                    Description = "The User Microservice HTTP API. This is a Data-Driven/CRUD microservice sample",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "M Haris",
+                        Email = string.Empty,
+                        Url = new Uri("https://github.com/haristauqir"),
+                    }
+                });
+            });
+
+            return services;
+
+        } */
+  }
 }
