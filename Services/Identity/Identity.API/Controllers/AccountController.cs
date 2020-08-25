@@ -14,10 +14,5 @@ namespace Identity.API.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Register()
-        {
-            return RedirectToAction("index", "home");
-        }
-
     }
 }
