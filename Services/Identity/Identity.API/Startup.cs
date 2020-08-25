@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using Microsoft.OpenApi.Models;
-
+using Microsoft.AspNetCore.Authentication;
 using Identity.API.Data;
 using Identity.API.Models;
 
@@ -39,6 +39,8 @@ namespace Identity.API
             .AddCustomDbContext(Configuration)
             .AddAutoMapperMethod(Configuration)
             .AddSwagger(Configuration);
+
+            services.AddSingleton<ISystemClock, SystemClock>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,12 +55,15 @@ namespace Identity.API
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
-            /*app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });*/
+            //app.UseAuthorization();
+            
+            app.UseAuthentication();
+            
+            app.UseSwagger()
+             .UseSwaggerUI(c =>
+             {
+                 c.SwaggerEndpoint("v1/swagger.json", "Identity.API V1");
+             });
 
             app.UseEndpoints(endpoints =>
             {

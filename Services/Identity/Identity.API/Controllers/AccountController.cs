@@ -75,7 +75,8 @@ namespace Identity.API.Controllers
             return Ok("You have successfully Registered....");
         }
 
-        public string AddModelErrors(IdentityResult result)
+        
+        private string AddModelErrors(IdentityResult result)
         {
             var modelErrors = new List<string>();
             foreach (var error in result.Errors)
