@@ -12,9 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Identity.API.Data;
+using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 
+using Identity.API.Data;
+using Identity.API.Models;
 
 namespace Identity.API
 {
@@ -51,8 +53,14 @@ namespace Identity.API
 
             app.UseAuthorization();
 
+            /*app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });*/
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
             });
         }
@@ -87,6 +95,22 @@ namespace Identity.API
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
         });
       });
+
+      IdentityBuilder builder = services.AddIdentityCore<AppUser>(options =>
+            {
+              // Password settings.
+              options.Password.RequiredLength = 6;
+              // Default Lockout settings.
+              options.Lockout.AllowedForNewUsers = false;
+
+              options.User.RequireUniqueEmail = true;
+            });
+
+        builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
+            builder.AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.AddRoleValidator<RoleValidator<Role>>();    
+            builder.AddRoleManager<RoleManager<Role>>();
+            builder.AddSignInManager<SignInManager<AppUser>>();
 
       return services;
     }
