@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Identity.API.Data;
+using AutoMapper;
 
 
 namespace Identity.API
@@ -32,7 +33,8 @@ namespace Identity.API
             services.AddControllers()
             .Services
             .AddCustomMVC(Configuration)
-            .AddCustomDbContext(Configuration);
+            .AddCustomDbContext(Configuration)
+            .AddAutoMapperMethod(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +90,14 @@ namespace Identity.API
 
       return services;
     }
+
+    public static IServiceCollection AddAutoMapperMethod(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAutoMapper(typeof(Models.AppUser).Assembly);
+            
+            return services;
+        }
+
     /*
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
         {
