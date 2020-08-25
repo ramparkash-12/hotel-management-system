@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
+using Microsoft.OpenApi.Models;
 
 using Identity.API.Data;
 using Identity.API.Models;
@@ -36,7 +37,8 @@ namespace Identity.API
             .Services
             .AddCustomMVC(Configuration)
             .AddCustomDbContext(Configuration)
-            .AddAutoMapperMethod(Configuration);
+            .AddAutoMapperMethod(Configuration)
+            .AddSwagger(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,16 +124,16 @@ namespace Identity.API
             return services;
         }
 
-    /*
+    
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "MicroserviceDemo - User HTTP API",
+                    Title = "Hotel Management System - User HTTP API",
                     Version = "v1",
-                    Description = "The User Microservice HTTP API. This is a Data-Driven/CRUD microservice sample",
+                    Description = "The Identity Microservice",
                     Contact = new OpenApiContact
                     {
                         Name = "M Haris",
@@ -143,6 +145,6 @@ namespace Identity.API
 
             return services;
 
-        } */
+        }
   }
 }

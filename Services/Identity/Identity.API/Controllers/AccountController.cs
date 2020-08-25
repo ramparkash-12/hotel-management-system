@@ -26,10 +26,15 @@ namespace Identity.API.Controllers
             _mapper = mapper;
         }
 
-        
+
 
         //
         // POST: /Account/Register
+        /// <summary>
+        /// Action to register customer with credentials in the database.
+        /// </summary>
+        /// <param name="RegisterDto">Model to create a new customer</param>
+        /// <returns>Returns Succcess message</returns>
         [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]RegisterDto registerDto)
