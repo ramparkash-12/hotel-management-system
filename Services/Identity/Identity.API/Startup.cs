@@ -16,8 +16,11 @@ using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Identity.API.Data;
 using Identity.API.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Identity.API
 {
@@ -38,7 +41,8 @@ namespace Identity.API
             .AddCustomMVC(Configuration)
             .AddCustomDbContext(Configuration)
             .AddAutoMapperMethod(Configuration)
-            .AddSwagger(Configuration);
+            .AddSwagger(Configuration)
+            .AddJwtBearerSettings(Configuration);
 
             services.AddSingleton<ISystemClock, SystemClock>();
         }
@@ -114,20 +118,37 @@ namespace Identity.API
             });
 
         builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
-            builder.AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.AddRoleValidator<RoleValidator<Role>>();    
-            builder.AddRoleManager<RoleManager<Role>>();
-            builder.AddSignInManager<SignInManager<AppUser>>();
-
+        builder.AddEntityFrameworkStores<ApplicationDbContext>();
+        builder.AddRoleValidator<RoleValidator<Role>>();    
+        builder.AddRoleManager<RoleManager<Role>>();
+        builder.AddSignInManager<SignInManager<AppUser>>();
+    
       return services;
     }
 
+    public static IServiceCollection AddJwtBearerSettings(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(x =>
+            {
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Token").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+        
+        return services;
+    }
+
     public static IServiceCollection AddAutoMapperMethod(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddAutoMapper(typeof(Models.AppUser).Assembly);
-            
-            return services;
-        }
+    {
+        services.AddAutoMapper(typeof(Models.AppUser).Assembly);
+        
+        return services;
+    }
 
     
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
