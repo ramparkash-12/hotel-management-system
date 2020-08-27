@@ -21,6 +21,7 @@ using Identity.API.Data;
 using Identity.API.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity.API
 {
@@ -57,12 +58,10 @@ namespace Identity.API
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            //app.UseAuthorization();
-            
+            app.UseRouting(); 
             app.UseAuthentication();
-            
+            app.UseAuthorization();
+           
             app.UseSwagger()
              .UseSwaggerUI(c =>
              {
@@ -106,6 +105,12 @@ namespace Identity.API
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
         });
       });
+      services.AddMvc(opt => 
+        {
+            var policy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+        });
 
       IdentityBuilder builder = services.AddIdentityCore<AppUser>(options =>
             {
@@ -122,6 +127,11 @@ namespace Identity.API
         builder.AddRoleValidator<RoleValidator<Role>>();    
         builder.AddRoleManager<RoleManager<Role>>();
         builder.AddSignInManager<SignInManager<AppUser>>();
+
+        services.AddAuthorization(options =>{
+            options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("RequireAdminManagerRole", policy => policy.RequireRole("Admin", "Manager"));
+        });
     
       return services;
     }
