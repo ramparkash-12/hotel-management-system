@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Hotel.API.Model;
+using Microsoft.AspNetCore.Mvc;
 namespace Hotel.API.Data
 {
     public class HotelContext: DbContext

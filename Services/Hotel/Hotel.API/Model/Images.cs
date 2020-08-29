@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Hotel.API.Model
 {
     public class Images
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Size { get; set; }
         public string Extension { get; set; }
         public string URI { get; set; }

@@ -58,7 +58,7 @@ namespace hotel.api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
+                //endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
             });
         }
