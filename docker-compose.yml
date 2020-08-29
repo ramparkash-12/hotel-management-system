@@ -12,6 +12,19 @@ services:
     restart: on-failure        
     depends_on:
         - sqldata
+
+  hotelapi:
+    container_name: hotelapi-container
+    image: hotel.api  
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=HotelAPI;User Id=sa;Password=iamback.786A@
+    ports:
+        - 7000:80
+        - 7001:443    
+    
+    restart: on-failure        
+    depends_on:
+        - sqldata
   
   sqldata:
     container_name: sqldata-container
