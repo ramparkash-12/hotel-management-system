@@ -4,6 +4,8 @@ using Hotel.API.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Hotel.API.Services;
+using Hotel.API.Helpers;
 
 namespace Hotel.API.Controllers
 {
@@ -11,18 +13,19 @@ namespace Hotel.API.Controllers
     [Route("api/[controller]")]
     public class HotelController: ControllerBase
     {
-        private readonly HotelContext _context;
+        private readonly IHotelRepository _repo;
 
-        public HotelController(HotelContext context)
+        public HotelController(IHotelRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
+   
         // Get All: api/Hotel/HotelsList
         [HttpGet("HotelsList")]
-        public IActionResult HotelsList()
+        public async Task<IActionResult> HotelsList()
         {
-            var hotels = _context.Hotels;
+            var hotels = await _repo.GetAll();
             return Ok(hotels);
         }
 
@@ -33,7 +36,7 @@ namespace Hotel.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var hotel = await _context.Hotels.FindAsync(id);
+            var hotel = await _repo.Get(id);
             
             if (hotel == null)
                 return NotFound();
@@ -48,8 +51,8 @@ namespace Hotel.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Hotels.Add(model);
-            await _context.SaveChangesAsync();
+            _repo.Insert(model);
+            await _repo.SaveAll();
 
             return Ok();
         }
@@ -61,15 +64,15 @@ namespace Hotel.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var hotel = _context.Hotels.SingleOrDefaultAsync(h => h.Id == model.Id);
+            var hotel = await _repo.Get(model.Id);
             if (hotel == null)
-                return NotFound($"Hotel with id {hotel.Id} not found.");
+                return NotFound($"Hotel with id {model.Id} not found.");
 
-            _context.Hotels.Update(model);
+            _repo.Update(model);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repo.SaveAll();
             }catch(Exception ex)
             {
                 throw ex;
@@ -80,21 +83,21 @@ namespace Hotel.API.Controllers
         }
         
         // Delete: api/Hotel/id
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var hotel = _context.Hotels.SingleOrDefault(h => h.Id == id);
+            var hotel = await _repo.Get(id); //GetById(id);
             if (hotel == null)
-                return NotFound($"Hotel with id {hotel.Id} not found.");
+                return NotFound($"Hotel with id {id} not found.");
 
-            _context.Hotels.Remove(hotel);
+            _repo.Delete(hotel);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repo.SaveAll();
             }catch(Exception ex)
             {
                 throw ex;
@@ -104,14 +107,14 @@ namespace Hotel.API.Controllers
         }
 
 
-        /*// Search: api/Hotel/
         [HttpGet]
-        public async Task<IActionResult> SearchHotel(string name, string city)
+        // Search: api/Hotel/name="s"&city="a"
+        public async Task<IActionResult> SearchHotel([FromQuery] HotelSearchParams hotelSearchParams)
         {
-            
-            return Ok();
+            var hotels = await _repo.Search(hotelSearchParams);
+            return Ok(hotels);
         }
-        */
+        
 
         
     }

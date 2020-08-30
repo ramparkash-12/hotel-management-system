@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Hotel.API.Data;
+using Hotel.API.Services;
 
 namespace hotel.api
 {
@@ -34,6 +35,9 @@ namespace hotel.api
             .AddCustomMVC(Configuration)
             .AddCustomDbContext(Configuration)
             .AddSwagger(Configuration);
+
+            services.AddScoped<IGenericRepository, GenericRepository>();
+            services.AddScoped<IHotelRepository, HotelRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +48,7 @@ namespace hotel.api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -56,11 +60,13 @@ namespace hotel.api
                  c.SwaggerEndpoint("v1/swagger.json", "Hotel.API V1");
              });
 
+            //app.UseMvc();
+
             app.UseEndpoints(endpoints =>
             {
                 //endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-            });
+            }); 
         }
     }
 
