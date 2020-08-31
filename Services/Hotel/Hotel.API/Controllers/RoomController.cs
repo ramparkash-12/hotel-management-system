@@ -41,7 +41,7 @@ namespace Hotel.API.Controllers
             return Ok(room);
         }
 
-        [HttpGet]
+         [HttpGet("SearchRoom")]
         // Search: api/room/RoomtypeId=1&HotelId=2"
         public async Task<IActionResult> SearchRoom([FromQuery] RoomSearchParams roomSearchParams)
         {

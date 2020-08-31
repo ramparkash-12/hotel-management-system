@@ -38,6 +38,7 @@ namespace hotel.api
 
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
+            services.AddScoped<IRoomRespository, RoomRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
