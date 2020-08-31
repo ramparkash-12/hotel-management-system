@@ -30,11 +30,14 @@ namespace hotel.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllers().AddNewtonsoftJson(opt => {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            })
             .Services
             .AddCustomMVC(Configuration)
             .AddCustomDbContext(Configuration)
             .AddSwagger(Configuration);
+
 
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();

@@ -18,12 +18,12 @@ namespace Hotel.API.Services
 
     public async Task<Room> Get(int id)
     {
-      return await _context.Rooms.AsNoTracking().FirstOrDefaultAsync(h => h.Id == id);
+      return await _context.Rooms.AsNoTracking().Include(f => f.RoomFacilities).Include(rt => rt.RoomType).FirstOrDefaultAsync(h => h.Id == id);
     }
 
     public async Task<IEnumerable<Room>> GetAll()
     {
-      return await _context.Rooms.AsNoTracking().ToListAsync();
+      return await _context.Rooms.AsNoTracking().Include(f => f.RoomFacilities).Include(rt => rt.RoomType).ToListAsync();
     }
 
     public async Task<IEnumerable<Room>> Search(RoomSearchParams roomSearchParams)
