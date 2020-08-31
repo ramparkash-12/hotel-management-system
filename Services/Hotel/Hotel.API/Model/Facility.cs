@@ -5,6 +5,6 @@ namespace Hotel.API.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Room> Rooms { get; set; }
+        public ICollection<RoomFacilities> RoomFacilities { get; set; }
     }
 }

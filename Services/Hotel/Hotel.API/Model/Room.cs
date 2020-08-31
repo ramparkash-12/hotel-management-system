@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hotel.API.Model
@@ -15,7 +16,6 @@ namespace Hotel.API.Model
         public Hotel Hotel { get; set; }
         public int RoomTypeId { get; set; }
         public RoomType RoomType { get; set; }
-        public int FacilitiesId { get; set; }
-        public Facility Facilities { get; set; }
+        public ICollection<RoomFacilities> RoomFacilities { get; set; }
     }
 }
