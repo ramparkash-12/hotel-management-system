@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Hotel.API.Data;
 using Hotel.API.Services;
+using AutoMapper;
 
 namespace hotel.api
 {
@@ -36,8 +37,8 @@ namespace hotel.api
             .Services
             .AddCustomMVC(Configuration)
             .AddCustomDbContext(Configuration)
-            .AddSwagger(Configuration);
-
+            .AddSwagger(Configuration)
+            .AddAutoMapperMethod(Configuration);
 
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
@@ -105,6 +106,13 @@ namespace hotel.api
       });
     
       return services;
+    }
+
+    public static IServiceCollection AddAutoMapperMethod(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAutoMapper(typeof(Startup).Assembly);
+        
+        return services;
     }
     
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)

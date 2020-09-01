@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Hotel.API.Helpers;
 using Hotel.API.Model;
+using Hotel.API.Model.Dtos;
 using Hotel.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +15,12 @@ namespace Hotel.API.Controllers
     public class RoomController : ControllerBase
     {
        private readonly IRoomRespository _repo;
+       private readonly IMapper _mapper;
 
-        public RoomController(IRoomRespository repo)
+        public RoomController(IRoomRespository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         } 
 
         // Get All: api/Room/RoomsList
@@ -23,7 +28,8 @@ namespace Hotel.API.Controllers
         public async Task<IActionResult> RoomsList()
         {
             var rooms = await _repo.GetAll();
-            return Ok(rooms);
+            var roomsToReturn = _mapper.Map<IEnumerable<RoomForListDto>>(rooms);
+            return Ok(roomsToReturn);
         }
 
         // Get: api/room/id
@@ -37,8 +43,10 @@ namespace Hotel.API.Controllers
             
             if (room == null)
                 return NotFound();
+            
+            var roomToReturn = _mapper.Map<RoomForDetailsDto>(room);
 
-            return Ok(room);
+            return Ok(roomToReturn);
         }
 
          [HttpGet("SearchRoom")]
@@ -46,7 +54,8 @@ namespace Hotel.API.Controllers
         public async Task<IActionResult> SearchRoom([FromQuery] RoomSearchParams roomSearchParams)
         {
             var rooms = await _repo.Search(roomSearchParams);
-            return Ok(rooms);
+            var roomsToReturn = _mapper.Map<IEnumerable<RoomForListDto>>(rooms);
+            return Ok(roomsToReturn);
         }
 
         // Save: api/Room/model
