@@ -17,7 +17,8 @@ using Identity.API.Data;
 namespace Identity.API.Controllers
 {
   [ApiController]
-  [Route("[controller]")]
+  
+  [Route("api/[controller]")]
   public class AccountController : Controller
   {
     private readonly SignInManager<AppUser> _signInManager;
