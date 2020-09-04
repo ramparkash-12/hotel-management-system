@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Hotel.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class RoomController : ControllerBase
     {
        private readonly IRoomRespository _repo;
@@ -59,7 +59,7 @@ namespace Hotel.API.Controllers
         }
 
         // Save: api/Room/model
-        [HttpPost]
+        [HttpPost("Save")]
         public async Task<IActionResult> PostRoom([FromBody]Room model)
         {
             if (!ModelState.IsValid)
@@ -68,11 +68,11 @@ namespace Hotel.API.Controllers
             _repo.Insert(model);
             await _repo.SaveAll();
 
-            return Ok();
+            return NoContent();
         }
 
         // Update: api/room/model
-        [HttpPut]
+        [HttpPut("Update")]
         public async Task<IActionResult> PutRoom([FromBody]Room model)
         {
             if (!ModelState.IsValid)

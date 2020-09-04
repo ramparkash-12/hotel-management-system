@@ -10,7 +10,7 @@ using Hotel.API.Helpers;
 namespace Hotel.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+      [Route("api/v1/[controller]")]
     public class HotelController: ControllerBase
     {
         private readonly IHotelRepository _repo;
@@ -45,7 +45,7 @@ namespace Hotel.API.Controllers
         }
 
         // Save: api/Hotel/model
-        [HttpPost]
+        [HttpPost("Save")]
         public async Task<IActionResult> PostHotel([FromBody]Model.Hotel model)
         {
             if (!ModelState.IsValid)
@@ -58,7 +58,7 @@ namespace Hotel.API.Controllers
         }
 
         // Update: api/Hotel/model
-        [HttpPut]
+        [HttpPut("Update")]
         public async Task<IActionResult> PutHotel([FromBody]Model.Hotel model)
         {
             if (!ModelState.IsValid)
@@ -107,7 +107,7 @@ namespace Hotel.API.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("SearchHotel")]
         // Search: api/Hotel/name="s"&city="a"
         public async Task<IActionResult> SearchHotel([FromQuery] HotelSearchParams hotelSearchParams)
         {

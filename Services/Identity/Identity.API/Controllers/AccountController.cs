@@ -18,7 +18,7 @@ namespace Identity.API.Controllers
 {
   [ApiController]
   
-  [Route("api/[controller]")]
+  [Route("api/v1/[controller]")]
   public class AccountController : Controller
   {
     private readonly SignInManager<AppUser> _signInManager;
