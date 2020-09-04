@@ -1,5 +1,13 @@
 version: "3.6"
 services:
+  apigateway:
+    container_name: apigateway-container
+    image: apigateway.api  
+    ports:
+        - 8000:80
+        - 8001:443    
+    restart: on-failure        
+
   identityapi:
     container_name: identityapi-container
     image: identity.api  
