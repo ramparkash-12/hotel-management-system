@@ -33,6 +33,19 @@ services:
     restart: on-failure        
     depends_on:
         - sqldata
+
+  bookingapi:
+    container_name: bookingapi-container
+    image: booking.api  
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=BookingAPI;User Id=sa;Password=iamback.786A@
+    ports:
+        - 9000:80
+        - 9001:443    
+    
+    restart: on-failure        
+    depends_on:
+        - sqldata
   
   sqldata:
     container_name: sqldata-container
