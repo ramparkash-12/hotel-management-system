@@ -10,7 +10,7 @@ namespace Booking.API.Model
         public decimal Amount { get; set; }
         public DateTime EnteredDateTime { get; set; }
         public string PaymentMode { get; set; }
-        public int? BookingId { get; set; }
+        public int BookingId { get; set; }
         public Booking Booking { get; set; }
     }
 }

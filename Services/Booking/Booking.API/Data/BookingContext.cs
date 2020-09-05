@@ -14,6 +14,11 @@ namespace Booking.API.Data
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<Model.Booking>()
+        .HasMany(b => b.BookingPayments)
+        .WithOne(bp => bp.Booking)
+        .IsRequired()
+        .OnDelete(DeleteBehavior.Cascade);
     }
   }
 }

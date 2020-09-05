@@ -18,6 +18,11 @@ namespace Booking.API.Model
         public int HotelId { get; set; }
         public ICollection<BookingPayment> BookingPayments { get; set; }
         public DateTime EnteredDateTime { get; set; }
+
+        public Booking()
+        {
+            EnteredDateTime = DateTime.Now;
+        }
         
     }
 }

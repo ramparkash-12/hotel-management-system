@@ -21,9 +21,9 @@ namespace Booking.API.Controllers
       _mapper = mapper;
     }
 
-    // Get All: api/Booking/BookingssList
-    [HttpGet("BookingssList")]
-    public async Task<IActionResult> BookingssList()
+    // Get All: api/Booking/BookingsList
+    [HttpGet("BookingsList")]
+    public async Task<IActionResult> BookingsList()
     {
       var bookings = await _repo.GetAll();
       return Ok(bookings);

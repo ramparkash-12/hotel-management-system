@@ -45,6 +45,26 @@
       }
     },
     {
+      "name": ".NET Core Launch Booking",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Services/Booking/Booking.API/bin/Debug/netcoreapp3.1/Booking.API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Services/Booking/Booking.API",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
       "name": ".NET Core Attach",
       "type": "coreclr",
       "request": "attach",

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using Booking.API.Data;
+using Booking.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,6 +40,9 @@ namespace Booking.API
       .AddCustomDbContext(Configuration)
       .AddSwagger(Configuration)
       .AddAutoMapperMethod(Configuration);
+
+        services.AddScoped<IGenericRepository, GenericRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
