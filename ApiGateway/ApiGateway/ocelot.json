@@ -45,6 +45,17 @@
             }
         ],
     "UpstreamPathTemplate": "/api/{version}/booking-api/{everything}"
+  },
+  {
+    "DownstreamPathTemplate": "/api/{version}/BookingPayment/{everything}",
+    "DownstreamScheme": "http",
+    "DownstreamHostAndPorts": [
+            {
+                "Host": "bookingapi",
+                "Port": 80
+            }
+        ],
+    "UpstreamPathTemplate": "/api/{version}/bookingpayment-api/{everything}"
   }
   ],
   "GlobalConfiguration": {
