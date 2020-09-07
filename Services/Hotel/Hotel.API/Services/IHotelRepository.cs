@@ -8,6 +8,6 @@ namespace Hotel.API.Services
     {
          Task<Model.Hotel> Get(int id);
          Task<IEnumerable<Model.Hotel>> GetAll();
-         Task<IEnumerable<Model.Hotel>> Search(HotelSearchParams hotelSearchParams);
+         Task<PagedList<Model.Hotel>> Search(HotelSearchParams hotelSearchParams);
     }
 }

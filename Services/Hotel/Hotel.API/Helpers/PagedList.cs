@@ -12,6 +12,7 @@ namespace Hotel.API.Helpers
     public int TotalPages { get; set; }
     public int PageSize { get; set; }
     public int TotalCount { get; set; }
+    public List<T> Data { get; private set; }
 
     public PagedList(List<T> items, int count, int pageNumber, int pageSize)
     {
@@ -19,6 +20,7 @@ namespace Hotel.API.Helpers
         PageSize = pageSize;
         CurrentPage = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+        Data = items;
         this.AddRange(items);
     }
     

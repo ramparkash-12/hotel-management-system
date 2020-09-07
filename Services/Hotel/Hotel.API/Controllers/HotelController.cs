@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Hotel.API.Services;
 using Hotel.API.Helpers;
+using System.Collections.Generic;
 
 namespace Hotel.API.Controllers
 {
@@ -23,10 +24,10 @@ namespace Hotel.API.Controllers
    
         // Get All: api/Hotel/HotelsList
         [HttpGet("HotelsList")]
-        public async Task<IActionResult> HotelsList()
+        public async Task<ActionResult<List<Model.Hotel>>> HotelsList()
         {
             var hotels = await _repo.GetAll();
-            return Ok(hotels);
+            return hotels.ToList();
         }
 
         // Get: api/Hotel/id
@@ -46,7 +47,7 @@ namespace Hotel.API.Controllers
 
         // Save: api/Hotel/model
         [HttpPost("Save")]
-        public async Task<IActionResult> PostHotel([FromBody]Model.Hotel model)
+        public async Task<ActionResult<Model.Hotel>> PostHotel([FromBody]Model.Hotel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -54,12 +55,12 @@ namespace Hotel.API.Controllers
             _repo.Insert(model);
             await _repo.SaveAll();
 
-            return Ok();
+            return model;
         }
 
         // Update: api/Hotel/model
         [HttpPut("Update")]
-        public async Task<IActionResult> PutHotel([FromBody]Model.Hotel model)
+        public async Task<ActionResult<Model.Hotel>> PutHotel([FromBody]Model.Hotel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -78,7 +79,7 @@ namespace Hotel.API.Controllers
                 throw ex;
             }
             
-            return Ok();
+            return model;
             //return CreatedAtAction(nameof(Hotel), new { id = hotel.Id }, null);
         }
         
@@ -109,10 +110,10 @@ namespace Hotel.API.Controllers
 
         [HttpGet("SearchHotel")]
         // Search: api/Hotel/name="s"&city="a"
-        public async Task<IActionResult> SearchHotel([FromQuery] HotelSearchParams hotelSearchParams)
+        public async Task<ActionResult<PagedList<Model.Hotel>>> SearchHotel([FromQuery] HotelSearchParams hotelSearchParams)
         {
             var hotels = await _repo.Search(hotelSearchParams);
-            return Ok(hotels);
+            return hotels;
         }
         
 

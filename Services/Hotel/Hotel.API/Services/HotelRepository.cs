@@ -25,7 +25,7 @@ namespace Hotel.API.Services
       return await _context.Hotels.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<Model.Hotel>> Search(HotelSearchParams hotelSearchParams)
+    public async Task<PagedList<Model.Hotel>> Search(HotelSearchParams hotelSearchParams)
     {
         var hotels = _context.Hotels.AsNoTracking().OrderByDescending(h => h.Id).AsQueryable();
 
