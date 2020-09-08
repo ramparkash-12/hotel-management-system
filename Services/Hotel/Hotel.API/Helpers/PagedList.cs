@@ -20,7 +20,6 @@ namespace Hotel.API.Helpers
         PageSize = pageSize;
         CurrentPage = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        Data = items;
         this.AddRange(items);
     }
     
