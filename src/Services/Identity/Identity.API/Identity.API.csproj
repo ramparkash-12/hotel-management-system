@@ -13,5 +13,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1"/>
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7"/>
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.1"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../Foundation/EventBus/EventBus/EventBus.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../Foundation/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj"/>
   </ItemGroup>
 </Project>

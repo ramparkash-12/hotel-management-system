@@ -16,9 +16,4 @@ LICENSE
 **/wwwroot/lib/
 global.json
 **/appsettings.localhost.json
-Web/WebSPA/wwwroot/
 packages/
-test-results/
-TestResults/
-Mobile/
-Services/Marketing/Infrastructure/

@@ -18,7 +18,9 @@ namespace Identity.API.Helpers
       .ForPath(dest => dest.Name, opt =>
       {
         opt.MapFrom(src => src.FirstName + ' ' + src.LastName); 
-      });;
+      });
+
+      CreateMap<ProfileDto, AppUser>();
     }
   }
 }

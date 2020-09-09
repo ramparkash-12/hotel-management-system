@@ -1,5 +1,15 @@
 version: "3.6"
 services:
+  rabbitmq:
+    container_name: rabbitmq
+    ports:
+        - 5660:5660
+        - 56332:56332
+    environment:
+        - RABBITMQ_DEFAULT_USER=user
+        - RABBITMQ_DEFAULT_PASS=password        
+    image: rabbitmq:3-management
+    
   apigateway:
     container_name: apigateway-container
     image: apigateway.api  
@@ -20,6 +30,7 @@ services:
     restart: on-failure        
     depends_on:
         - sqldata
+        - rabbitmq
 
   hotelapi:
     container_name: hotelapi-container

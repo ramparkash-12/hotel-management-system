@@ -13,6 +13,10 @@ using Identity.API.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Identity.API.Data;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Identity.API.IntegrationEvents.Event;
+using Identity.API.IntegrationEvents;
 
 namespace Identity.API.Controllers
 {
@@ -26,14 +30,16 @@ namespace Identity.API.Controllers
     private readonly ApplicationDbContext _context;
     private IMapper _mapper;
     private readonly IConfiguration _configuration;
+    private readonly IIdentityntegrationEventService _IIdentityntegrationEventService;
 
-    public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMapper mapper, ApplicationDbContext context, IConfiguration configuration)
+    public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMapper mapper, ApplicationDbContext context, IConfiguration configuration, IIdentityntegrationEventService IIdentityntegrationEventService)
     {
       _signInManager = signInManager;
       _userManager = userManager;
       _context = context;
       _mapper = mapper;
       _configuration = configuration;
+      _IIdentityntegrationEventService = IIdentityntegrationEventService;
     }
 
     //
@@ -157,6 +163,62 @@ namespace Identity.API.Controllers
 
       return Ok("You have successfully Registered....");
     }
+
+    //
+    // POST: /Account/Profile
+    /// <summary>
+    /// Action to update profile information
+    /// </summary>
+    /// <param name="profileDto">Model to update customer</param>
+    /// <returns>Returns Succcess message</returns>
+    [HttpPost("UpdateProfile")]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateProfile([FromBody] ProfileDto profileDto)
+    {
+      if (ModelState.IsValid)
+      {
+        //** Verify if email is registered
+        var user = await _userManager.FindByEmailAsync(profileDto.Email.ToLower());
+
+        if (user == null)
+          return BadRequest("No user found.");
+
+        //var user = _mapper.Map<userFound>();
+        _mapper.Map(profileDto, user);
+
+        //** Update User
+        await _userManager.UpdateAsync(user);
+        
+        //** Get customer id
+        var customerId = _context.Customers.AsNoTracking().Where(c => c.IdentityId == user.Id).FirstOrDefault().Id;
+        
+        //** Update Customer
+        var customer = new Customer 
+        { 
+          IdentityId = user.Id,
+          Gender = profileDto.Gender,
+          Id = customerId
+        };
+
+        _context.Customers.Update(customer);
+        await _context.SaveChangesAsync();
+
+        //Create Integration Event to be published through the Event Bus
+        var customerDetailsChangedEvent = new CustomerDetailsChangedIntegrationEvent(customer.Id, user.FirstName + ' ' + user.LastName, user.PhoneNumber);
+
+        // Publish through the Event Bus
+        _IIdentityntegrationEventService.PublishThroughEventBusAsync(customerDetailsChangedEvent);
+
+      }
+      else
+      {
+        return BadRequest(ModelState);
+      }
+
+      return Ok("You have successfully Updated profile....");
+    }
+
+    
 
 
     private string AddModelErrors(IdentityResult result)
