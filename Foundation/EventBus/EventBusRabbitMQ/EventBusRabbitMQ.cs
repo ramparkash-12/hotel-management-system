@@ -240,6 +240,7 @@ namespace Foundation.EventBusRabbitMQ
     {
       _logger.LogTrace("Processing RabbitMQ event: {EventName}", eventName);
 
+    
       if (_subsManager.HasSubscriptionsForEvent(eventName))
       {
         using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
@@ -273,7 +274,7 @@ namespace Foundation.EventBusRabbitMQ
       else
       {
         _logger.LogWarning("No subscription for RabbitMQ event: {EventName}", eventName);
-      }
+      } 
     }
 
   }

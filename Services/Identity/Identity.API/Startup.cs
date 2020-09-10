@@ -29,6 +29,7 @@ using RabbitMQ.Client;
 using Foundation.EventBus;
 using Foundation.EventBus.Abstractions;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 namespace Identity.API
 {
@@ -40,6 +41,7 @@ namespace Identity.API
         }
 
         public IConfiguration Configuration { get; }
+        public ILifetimeScope AutofacContainer { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -55,6 +57,17 @@ namespace Identity.API
             .AddEventBus(Configuration);
 
             services.AddSingleton<ISystemClock, SystemClock>();
+            
+            //var container = new ContainerBuilder();
+            //return new AutofacServiceProvider(container.Build());
+        }
+
+         public void ConfigureContainer(ContainerBuilder builder)
+        {
+            // Register your own things directly with Autofac here. Don't
+            // call builder.Populate(), that happens in AutofacServiceProviderFactory
+            // for you.
+            //builder.RegisterModule(ILifetimeScope);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -249,8 +262,6 @@ namespace Identity.API
             });
 
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
-            //services.AddTransient<OrderStatusChangedToAwaitingValidationIntegrationEventHandler>();
-            //services.AddTransient<OrderStatusChangedToPaidIntegrationEventHandler>();
 
             return services;
         }
