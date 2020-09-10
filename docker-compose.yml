@@ -20,13 +20,12 @@ services:
 
   identityapi:
     container_name: identityapi-container
-    image: identity.api  
+    image: identity.api
     environment:
       - ConnectionString=Server=sqldata;Initial Catalog=IdentityAPI;User Id=sa;Password=iamback.786A@
     ports:
         - 6000:80
         - 6001:443    
-   
     restart: on-failure        
     depends_on:
         - sqldata

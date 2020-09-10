@@ -5,6 +5,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
+
+COPY "/src/Foundation/EventBus/EventBus/EventBus.csproj" "./EventBus/EventBus/EventBus.csproj"
+
 COPY Hotel.API.csproj .
 RUN dotnet restore
 COPY . .
