@@ -13,7 +13,7 @@ namespace Identity.API.IntegrationEvents
     {
       _eventBus = eventBus;
     }
-    public void PublishThroughEventBusAsync(IntegrationEvent evt)
+    public void PublishThroughEventBus(IntegrationEvent evt)
     {
       try
       {
