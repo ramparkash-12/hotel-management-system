@@ -207,7 +207,7 @@ namespace Identity.API.Controllers
         var customerDetailsChangedEvent = new CustomerDetailsChangedIntegrationEvent(customer.Id, user.FirstName + ' ' + user.LastName, user.PhoneNumber);
 
         // Publish through the Event Bus
-        _IIdentityntegrationEventService.PublishThroughEventBusAsync(customerDetailsChangedEvent);
+        _IIdentityntegrationEventService.PublishThroughEventBus(customerDetailsChangedEvent);
 
       }
       else

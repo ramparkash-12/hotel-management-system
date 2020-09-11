@@ -12,7 +12,6 @@ COPY ["/Foundation/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj", "/Foundat
 COPY "/Services/Booking/Booking.API/Booking.API.csproj"  "/Services/Booking/Booking.API/Booking.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Booking/Booking.API"
-RUN dotnet restore
 RUN dotnet build "Booking.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -21,4 +20,8 @@ RUN dotnet publish "Booking.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# Add docker-compose-wait tool -------------------
+ENV WAIT_VERSION 2.7.2
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
+RUN chmod +x /wait
 ENTRYPOINT ["dotnet", "Booking.API.dll"]  
