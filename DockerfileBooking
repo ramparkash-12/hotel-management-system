@@ -5,9 +5,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
-COPY Booking.API.csproj .
-RUN dotnet restore
+
+COPY ["/Foundation/EventBus/EventBus/EventBus.csproj", "/Foundation/EventBus/EventBus/EventBus.csproj"]
+COPY ["/Foundation/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj", "/Foundation/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj"]
+
+COPY "/Services/Booking/Booking.API/Booking.API.csproj"  "/Services/Booking/Booking.API/Booking.API.csproj"
 COPY . .
+WORKDIR "/src/Services/Booking/Booking.API"
+RUN dotnet restore
 RUN dotnet build "Booking.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

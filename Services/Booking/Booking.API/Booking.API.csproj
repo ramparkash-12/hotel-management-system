@@ -12,5 +12,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1"/>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7"/>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1"/>
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.1"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../Foundation/EventBus/EventBus/EventBus.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../Foundation/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj"/>
   </ItemGroup>
 </Project>
