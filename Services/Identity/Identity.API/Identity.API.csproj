@@ -21,4 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../Foundation/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj"/>
   </ItemGroup>
+   <ItemGroup>
+    <ProjectReference Include="./../../../Foundation/EventBus/IntegrationEventLogEF/IntegrationEventLogEF.csproj"/>
+  </ItemGroup>
 </Project>

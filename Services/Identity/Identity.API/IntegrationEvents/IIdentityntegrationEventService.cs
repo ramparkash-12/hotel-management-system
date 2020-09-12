@@ -5,6 +5,7 @@ namespace Identity.API.IntegrationEvents
 {
     public interface IIdentityntegrationEventService
     {
-        void PublishThroughEventBus(IntegrationEvent evt);
+        Task SaveEventAndIdentityContextChangesAsync(IntegrationEvent evt);
+        Task PublishThroughEventBusAsync(IntegrationEvent evt);
     }
 }

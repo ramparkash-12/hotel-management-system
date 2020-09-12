@@ -17,6 +17,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Identity.API.IntegrationEvents.Event;
 using Identity.API.IntegrationEvents;
+using Foundation.EventBus.IntegrationEventLogEF.Services;
 
 namespace Identity.API.Controllers
 {
@@ -206,8 +207,11 @@ namespace Identity.API.Controllers
         //Create Integration Event to be published through the Event Bus
         var customerDetailsChangedEvent = new CustomerDetailsChangedIntegrationEvent(customer.Id, user.FirstName + ' ' + user.LastName, user.PhoneNumber);
 
-        // Publish through the Event Bus
-        _IIdentityntegrationEventService.PublishThroughEventBus(customerDetailsChangedEvent);
+        // Achieving atomicity between original Identity database operation and the IntegrationEventLog with a local transaction
+        await _IIdentityntegrationEventService.SaveEventAndIdentityContextChangesAsync(customerDetailsChangedEvent);
+
+        // Publish through the Event Bus and mark the saved event as published
+        await _IIdentityntegrationEventService.PublishThroughEventBusAsync(customerDetailsChangedEvent);
 
       }
       else

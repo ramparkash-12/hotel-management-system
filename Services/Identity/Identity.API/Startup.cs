@@ -30,6 +30,9 @@ using Foundation.EventBus;
 using Foundation.EventBus.Abstractions;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Foundation.EventBus.IntegrationEventLogEF;
+using System.Data.Common;
+using Foundation.EventBus.IntegrationEventLogEF.Services;
 
 namespace Identity.API
 {
@@ -123,9 +126,9 @@ namespace Identity.API
         options.UseSqlServer(configuration["ConnectionString"],
             sqlServerOptionsAction: sqlOptions =>
             {
-            sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-        });
+            });
       });
       services.AddMvc(opt => 
         {
@@ -154,6 +157,17 @@ namespace Identity.API
             options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
             options.AddPolicy("RequireAdminManagerRole", policy => policy.RequireRole("Admin", "Manager"));
         });
+
+        services.AddDbContext<IntegrationEventLogContext>(options =>
+            {
+                options.UseSqlServer(configuration["ConnectionString"],
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                    //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
+                    sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                });
+            });
     
       return services;
     }
@@ -207,6 +221,9 @@ namespace Identity.API
 
         public static IServiceCollection AddIntegrationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(
+            sp => (DbConnection c) => new IntegrationEventLogService(c));
+
             services.AddTransient<IIdentityntegrationEventService, IdentityntegrationEventService>();
 
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
