@@ -27,9 +27,9 @@ namespace Booking.API.IntegrationEvents.EventHandling
         {
             _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
             
-            var idempotent = await _requestManager.ExistAsync(@event.RequestId);
+            var alreadyExists = await _requestManager.ExistAsync(@event.RequestId);
 
-            if (!idempotent)
+            if (!alreadyExists)
             {
                 await _requestManager.SaveEventRequest<CustomerDetailsChangedIntegrationEventHandler>(@event.RequestId);
                 //** Get bookings 
