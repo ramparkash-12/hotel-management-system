@@ -7,6 +7,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Booking.API.Data;
+using Booking.API.Idempotency;
 using Booking.API.IntegrationEvents.EventHandling;
 using Booking.API.IntegrationEvents.Events;
 using Booking.API.Services;
@@ -52,6 +53,8 @@ namespace Booking.API
 
       services.AddScoped<IGenericRepository, GenericRepository>();
       services.AddScoped<IBookingRepository, BookingRepository>();
+      
+      services.AddScoped<IEventRequestManager, EventRequestManager>();
 
       services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
       {

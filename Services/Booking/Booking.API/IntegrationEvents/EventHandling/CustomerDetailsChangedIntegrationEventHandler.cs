@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Booking.API.Idempotency;
 using Booking.API.IntegrationEvents.Events;
 using Booking.API.Services;
 using Foundation.EventBus.Abstractions;
@@ -11,30 +12,38 @@ namespace Booking.API.IntegrationEvents.EventHandling
     {
         private readonly ILogger<CustomerDetailsChangedIntegrationEventHandler> _logger;
         private readonly IBookingRepository _repository;
+        private readonly IEventRequestManager _requestManager;
 
         public CustomerDetailsChangedIntegrationEventHandler(
             ILogger<CustomerDetailsChangedIntegrationEventHandler> logger,
-            IBookingRepository repository)
+            IBookingRepository repository, IEventRequestManager requestManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _requestManager = requestManager ?? throw new ArgumentNullException(nameof(requestManager)); 
         }
 
         public async Task Handle(CustomerDetailsChangedIntegrationEvent @event)
         {
             _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
-
-            //** Get bookings
-            var bookings = _repository.GetAll();
-
-            //** loop through and update matched customers information
-            foreach (var booking in bookings.Result)
-            {
-                if (booking.CustomerId == @event.CustomerId)
-                    UpdateCustomerDetails(@event.CustomerId, @event.CustomerName, @event.CustomerPhone, booking);
-            }
             
-            await _repository.SaveAll();
+            var idempotent = await _requestManager.ExistAsync(@event.RequestId);
+
+            if (!idempotent)
+            {
+                await _requestManager.SaveEventRequest<CustomerDetailsChangedIntegrationEventHandler>(@event.RequestId);
+                //** Get bookings 
+                var bookings = _repository.GetAll();
+
+                //** loop through and update matched customers information
+                foreach (var booking in bookings.Result)
+                {
+                    if (booking.CustomerId == @event.CustomerId)
+                        UpdateCustomerDetails(@event.CustomerId, @event.CustomerName, @event.CustomerPhone, booking);
+                }
+                
+                await _repository.SaveAll();
+            }
         }
 
         private void UpdateCustomerDetails(int customerId, string customerName, string customerPhone, Model.Booking booking)

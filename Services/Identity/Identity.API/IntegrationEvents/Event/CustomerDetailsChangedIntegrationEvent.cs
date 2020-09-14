@@ -1,3 +1,4 @@
+using System;
 using Foundation.EventBus.Events;
 
 namespace Identity.API.IntegrationEvents.Event
@@ -7,12 +8,14 @@ namespace Identity.API.IntegrationEvents.Event
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string CustomerPhone { get; set; }
+        public Guid RequestId { get; set; }
 
         public CustomerDetailsChangedIntegrationEvent(int customerId, string customerName, string customerPhone)
         {
             CustomerId = customerId;
             CustomerName = customerName;
             CustomerPhone = customerPhone;
+            RequestId = Id;
         }
     }
 }
