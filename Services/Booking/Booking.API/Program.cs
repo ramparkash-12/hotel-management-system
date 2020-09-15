@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Booking.API
 {
@@ -18,6 +19,11 @@ namespace Booking.API
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+            
+            Log.Logger = new LoggerConfiguration()
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console()
+                    .CreateLogger();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
