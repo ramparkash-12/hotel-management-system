@@ -5,6 +5,7 @@ using Booking.API.IntegrationEvents.Events;
 using Booking.API.Services;
 using Foundation.EventBus.Abstractions;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Serilog.Context;
 
 namespace Booking.API.IntegrationEvents.EventHandling
@@ -26,9 +27,8 @@ namespace Booking.API.IntegrationEvents.EventHandling
 
         public async Task Handle(CustomerDetailsChangedIntegrationEvent @event)
         {
-            using (LogContext.PushProperty("IntegrationEventHandlerContext", $"{@event.Id}-{Program.AppName}"))
+            using (LogContext.PushProperty("IntegrationEventHandlerContext", $"{@event.Id} - DemoProperty"))
             {
-
                 _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
             
                 var alreadyExists = await _requestManager.ExistAsync(@event.RequestId);
