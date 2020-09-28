@@ -163,6 +163,7 @@ namespace Identity.API
                 }
                 context.SaveChanges();
             }
+            
 
             if (!context.IdentityResources.Any())
             {
@@ -180,6 +181,7 @@ namespace Identity.API
                 }
                 context.SaveChanges();
             }
+            
 
             if (!context.ApiResources.Any())
             {

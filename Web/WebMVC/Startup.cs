@@ -45,7 +45,7 @@ namespace WebMVC
                     options.ClientSecret = "secret";
                     options.ResponseType = "code"; // useLoadTest ? "code id_token token" : ;
                     options.SaveTokens = true;
-                    //options.GetClaimsFromUserInfoEndpoint = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
                     options.RequireHttpsMetadata = false;
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");

@@ -48,7 +48,7 @@ namespace Identity.API.Configuration
 
                     // where to redirect to after logout
                     PostLogoutRedirectUris = { "https://localhost:1501/signout-callback-oidc" },
-
+                    AccessTokenLifetime = 7200,
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

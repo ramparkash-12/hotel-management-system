@@ -59,6 +59,9 @@ namespace Identity.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
+            if (HttpContext.User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context?.IdP != null)
             {
@@ -102,7 +105,7 @@ namespace Identity.API.Controllers
                         props.IsPersistent = true;
                     };
 
-                    await _loginService.SignIn(user);
+                    await _loginService.SignInAsync(user, props);
 
                     // make sure the returnUrl is still valid, and if yes - redirect back to authorize endpoint
                     if (_interaction.IsValidReturnUrl(model.ReturnUrl))
