@@ -16,6 +16,8 @@ using Microsoft.OpenApi.Models;
 using Hotel.API.Data;
 using Hotel.API.Services;
 using AutoMapper;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace hotel.api
 {
@@ -40,9 +42,31 @@ namespace hotel.api
             .AddSwagger(Configuration)
             .AddAutoMapperMethod(Configuration);
 
+            ConfigureAuthService(services);
+
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRespository, RoomRepository>();
+        }
+
+        private void ConfigureAuthService(IServiceCollection services)
+        {
+             // prevent from mapping "sub" claim to nameidentifier.
+             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
+
+             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+
+             services.AddAuthentication(options =>
+             {
+                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+             }).AddJwtBearer(options =>
+             {
+                 options.Authority = identityUrl;
+                 options.RequireHttpsMetadata = false;
+                 options.Audience = "hotel";
+             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +81,7 @@ namespace hotel.api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwagger()
@@ -76,7 +101,7 @@ namespace hotel.api
     }
 
      public static class CustomExtensionMethods
-  {
+    {
 
      public static IServiceCollection AddCustomMVC(this IServiceCollection services, IConfiguration configuration)
         {

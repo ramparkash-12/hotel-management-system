@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Hotel.API.Services;
 using Hotel.API.Helpers;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hotel.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace Hotel.API.Controllers
 
    
         // Get All: api/Hotel/HotelsList
+        [Authorize]
         [HttpGet("HotelsList")]
         public async Task<ActionResult<List<Model.Hotel>>> HotelsList()
         {

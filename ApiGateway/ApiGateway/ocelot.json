@@ -21,7 +21,11 @@
               }
           ],
       "UpstreamPathTemplate": "/api/{version}/hotel-api/{everything}",
-      "UpstreamHttpMethod": []
+      "UpstreamHttpMethod": [],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      }
   },
   {
     "DownstreamPathTemplate": "/api/{version}/Room/{everything}",

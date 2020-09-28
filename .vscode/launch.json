@@ -4,6 +4,26 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+  {
+    "name": "WEB MVC",
+    "type": "coreclr",
+    "request": "launch",
+    "preLaunchTask": "build",
+    "program": "${workspaceFolder}/Web/WebMVC/bin/Debug/netcoreapp3.1/WebMVC.dll",
+    "args": [],
+    "cwd": "${workspaceFolder}/Web/WebMVC/",
+    "stopAtEntry": false,
+    "serverReadyAction": {
+      "action": "openExternally",
+      "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+    },
+    "env": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    },
+    "sourceFileMap": {
+      "/Views": "${workspaceFolder}/Views"
+    }
+  },
     {
       "name": ".NET Core Launch Identity",
       "type": "coreclr",
