@@ -61,7 +61,14 @@ services:
     depends_on:
       - sqldata
       - rabbitmq
-        
+
+  webmvc:
+    container_name: webmvc-container
+    image: webmvc 
+    ports:
+        - 9500:80
+        - 9501:443    
+    restart: on-failure            
   
   sqldata:
     container_name: sqldata-container
