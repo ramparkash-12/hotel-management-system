@@ -28,8 +28,7 @@ namespace ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddOcelot(Configuration);
-
+            
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
             var authenticationProviderKey = "IdentityApiKey";
 
@@ -43,6 +42,8 @@ namespace ApiGateway
                         ValidAudiences = new[] { "hotel", "booking" }
                     };
                 });
+                
+            services.AddOcelot(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +58,7 @@ namespace ApiGateway
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

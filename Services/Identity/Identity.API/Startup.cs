@@ -136,7 +136,7 @@ namespace Identity.API
                 //.RequireAuthorization();
             });
             
-            InitializeDatabase(app);
+            //InitializeDatabase(app);
         }
 
         private void InitializeDatabase(IApplicationBuilder app)

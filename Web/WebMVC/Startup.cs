@@ -39,7 +39,7 @@ namespace WebMVC
                 .AddOpenIdConnect("oidc", options =>
                 {
                     //options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.Authority = "https://localhost:3001";
+                    options.Authority = "http://localhost:6000";
                     //options.SignedOutRedirectUri = callBackUrl.ToString();
                     options.ClientId = "hotelswaggerui";
                     options.ClientSecret = "secret";

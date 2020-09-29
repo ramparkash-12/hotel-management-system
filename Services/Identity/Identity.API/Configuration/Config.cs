@@ -72,7 +72,7 @@ namespace Identity.API.Configuration
                     //** scope client can access
                     AllowedScopes = 
                     { 
-                        "api1"
+                        "api1", "hotel"
                     }
                 },
                 new Client
