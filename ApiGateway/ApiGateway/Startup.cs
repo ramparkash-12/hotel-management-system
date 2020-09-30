@@ -36,6 +36,7 @@ namespace ApiGateway
                 .AddJwtBearer(authenticationProviderKey, x =>
                 {
                     x.Authority = identityUrl;
+                    x.MetadataAddress = "http://identityapi/.well-known/openid-configuration";
                     x.RequireHttpsMetadata = false;
                     x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Identity.API.Models;
@@ -34,7 +35,14 @@ namespace Identity.API.Services
 
     public Task SignInAsync(AppUser user, AuthenticationProperties properties, string authenticationMethod = null)
     {
-      return _signInManager.SignInAsync(user, properties, authenticationMethod);
+      try
+      {
+        return _signInManager.SignInAsync(user, properties, authenticationMethod);
+      }
+      catch(Exception ex)
+      {
+        throw ex;
+      }
     }
   }
 }

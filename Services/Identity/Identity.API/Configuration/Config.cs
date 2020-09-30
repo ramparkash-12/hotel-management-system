@@ -44,10 +44,10 @@ namespace Identity.API.Configuration
                     
                     
                     // where to redirect to after login
-                    RedirectUris = { "https://localhost:1501/signin-oidc" },
+                    RedirectUris = { "http://localhost:9500/signin-oidc" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://localhost:1501/signout-callback-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:9500/signout-callback-oidc" },
                     AccessTokenLifetime = 7200,
                     AllowedScopes =
                     {
@@ -90,10 +90,10 @@ namespace Identity.API.Configuration
                     AllowOfflineAccess = true,
                     
                     // where to redirect to after login
-                    RedirectUris = { "https://localhost:1501/signin-oidc" },
+                    RedirectUris = { "http://localhost:9500/signin-oidc" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://localhost:1501/signout-callback-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:9500/signout-callback-oidc" },
 
                     AllowedScopes =
                     {

@@ -39,17 +39,26 @@ namespace WebMVC
                 .AddOpenIdConnect("oidc", options =>
                 {
                     //options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.Authority = "https://localhost:3001";
+                    options.Authority = "http://localhost:2800";
+                     // This will allow the container to reach the discovery endpoint
+                    options.MetadataAddress = "http://identityapi/.well-known/openid-configuration";
+                    //options.Authority = "http://localhost:2800";
                     //options.SignedOutRedirectUri = callBackUrl.ToString();
                     options.ClientId = "hotelswaggerui";
                     options.ClientSecret = "secret";
                     options.ResponseType = "code"; // useLoadTest ? "code id_token token" : ;
                     options.SaveTokens = true;
-                    options.GetClaimsFromUserInfoEndpoint = true;
+                    //options.GetClaimsFromUserInfoEndpoint = true;
                     options.RequireHttpsMetadata = false;
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("hotel");
+                    options.Events.OnRedirectToIdentityProvider = context =>
+                    {
+                        // Intercept the redirection so the browser navigates to the right URL in your host
+                        context.ProtocolMessage.IssuerAddress = "http://localhost:2800/connect/authorize";
+                        return Task.CompletedTask;
+                    };
                 });
         }
 
@@ -66,7 +75,7 @@ namespace WebMVC
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

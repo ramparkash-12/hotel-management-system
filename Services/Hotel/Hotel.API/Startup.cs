@@ -64,6 +64,7 @@ namespace hotel.api
              }).AddJwtBearer(options =>
              {
                  options.Authority = identityUrl;
+                 options.MetadataAddress = "http://identityapi/.well-known/openid-configuration";
                  options.RequireHttpsMetadata = false;
                  options.Audience = "hotel";
              });

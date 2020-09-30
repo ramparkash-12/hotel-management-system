@@ -39,8 +39,8 @@ using Identity.API.Configuration;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using IdentityServer4;
+using Microsoft.AspNetCore.Http;
 
 namespace Identity.API
 {
@@ -115,7 +115,7 @@ namespace Identity.API
 
             //app.UseHttpsRedirection();
             app.UseForwardedHeaders();
-            //app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = AspNetCore.Http.SameSiteMode.Lax });
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax});
          
             
             //app.UseAuthorization();
@@ -136,7 +136,7 @@ namespace Identity.API
                 //.RequireAuthorization();
             });
             
-            InitializeDatabase(app);
+            //InitializeDatabase(app);
         }
 
         private void InitializeDatabase(IApplicationBuilder app)
