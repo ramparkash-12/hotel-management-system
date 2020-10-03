@@ -10,10 +10,10 @@ services:
         - RABBITMQ_DEFAULT_PASS=password        
     image: rabbitmq:3-management-alpine
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: "/opt/rabbitmq/sbin/rabbitmqctl status"
+      interval: 2s
+      timeout: 30s
+      retries: 15
     
   apigateway:
     container_name: apigateway-container
@@ -25,7 +25,10 @@ services:
 
   identityapi:
     container_name: identityapi-container
-    image: identity.api
+    #image: identity.api
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
     environment:
       - ConnectionString=Server=sqldata;Initial Catalog=IdentityAPI;User Id=sa;Password=iamback.786A@
       - ASPNETCORE_ENVIRONMENT=Development
@@ -36,6 +39,8 @@ services:
     depends_on:
         - sqldata
         - rabbitmq
+    links: 
+      - rabbitmq
 
   hotelapi:
     container_name: hotelapi-container
@@ -53,7 +58,9 @@ services:
 
   bookingapi:
     container_name: bookingapi-container
-    image: booking.api  
+    build:
+      context: .
+      dockerfile: Services/Booking/Booking.API/Dockerfile
     environment:
       - ConnectionString=Server=sqldata;Initial Catalog=BookingAPI;User Id=sa;Password=iamback.786A@
     ports:
@@ -63,7 +70,9 @@ services:
     depends_on:
       - sqldata
       - rabbitmq
-
+    links: 
+      - rabbitmq
+      
   webmvc:
     container_name: webmvc-container
     image: webmvc 

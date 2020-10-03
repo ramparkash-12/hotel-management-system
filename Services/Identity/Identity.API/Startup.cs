@@ -125,7 +125,7 @@ namespace Identity.API
             app.UseSwagger()
              .UseSwaggerUI(c =>
              {
-                 c.SwaggerEndpoint("v1/swagger.json", "Identity.API V1");
+                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.API V1");
              });
 
             

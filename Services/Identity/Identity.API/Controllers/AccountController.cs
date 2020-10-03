@@ -3,7 +3,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AutoMapper;
+using Identity.API.Data;
+using Identity.API.IntegrationEvents;
+using Identity.API.IntegrationEvents.Event;
 using Identity.API.Models;
+using Identity.API.Models.Dtos;
 using Identity.API.Services;
 using IdentityModel;
 using IdentityServer4;
@@ -14,6 +19,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -34,6 +40,10 @@ namespace Identity.API.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly ApplicationDbContext _context;
+        private IMapper _mapper;
+        private readonly IIdentityntegrationEventService _IIdentityntegrationEventService;
 
         public AccountController(
 
@@ -43,7 +53,10 @@ namespace Identity.API.Controllers
             IClientStore clientStore,
             ILogger<AccountController> logger,
             UserManager<AppUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration, 
+            SignInManager<AppUser> signInManager,
+            ApplicationDbContext context, IMapper mapper,
+            IIdentityntegrationEventService IIdentityntegrationEventService)
         {
             _loginService = loginService;
             _interaction = interaction;
@@ -51,6 +64,11 @@ namespace Identity.API.Controllers
             _logger = logger;
             _userManager = userManager;
             _configuration = configuration;
+            _signInManager = signInManager;
+            _context = context;
+            _mapper = mapper;
+            _IIdentityntegrationEventService = IIdentityntegrationEventService;
+
         }
 
         /// <summary>
@@ -307,6 +325,63 @@ namespace Identity.API.Controllers
         }
         */
 
+        //
+    // POST: /Account/Profile
+    /// <summary>
+    /// Action to update profile information
+    /// </summary>
+    /// <param name="profileDto">Model to update customer</param>
+    /// <returns>Returns Succcess message</returns>
+    [HttpPost("UpdateProfile")]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateProfile([FromBody] ProfileDto profileDto)
+    {
+        if (ModelState.IsValid)
+        {
+            //** Verify if email is registered
+            var user = await _userManager.FindByEmailAsync(profileDto.Email.ToLower());
+
+            if (user == null)
+                return BadRequest("No user found.");
+
+            //var user = _mapper.Map<userFound>();
+            _mapper.Map(profileDto, user);
+
+            //** Update User
+            await _userManager.UpdateAsync(user);
+            
+            //** Get customer id
+            var customerId = _context.Customers.AsNoTracking().Where(c => c.IdentityId == user.Id).FirstOrDefault().Id;
+            
+            //** Update Customer
+            var customer = new Customer 
+            { 
+                IdentityId = user.Id,
+                Gender = profileDto.Gender,
+                Id = customerId
+            };
+
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync();
+
+            //Create Integration Event to be published through the Event Bus
+            var customerDetailsChangedEvent = new CustomerDetailsChangedIntegrationEvent(customer.Id, user.FirstName + ' ' + user.LastName, user.PhoneNumber);
+
+            // Achieving atomicity between original Identity database operation and the IntegrationEventLog with a local transaction
+            await _IIdentityntegrationEventService.SaveEventAndIdentityContextChangesAsync(customerDetailsChangedEvent);
+
+            // Publish through the Event Bus and mark the saved event as published
+            await _IIdentityntegrationEventService.PublishThroughEventBusAsync(customerDetailsChangedEvent);
+
+        }
+        else
+        {
+            return BadRequest(ModelState);
+        }
+
+        return Ok("You have successfully Updated profile....");
+    }
+
         [HttpGet]
         public IActionResult Redirecting()
         {
@@ -320,5 +395,6 @@ namespace Identity.API.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
+
     }
 }

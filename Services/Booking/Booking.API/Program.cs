@@ -42,8 +42,8 @@ namespace Booking.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-             .UseSerilog()
-             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+             .UseServiceProviderFactory(new AutofacServiceProviderFactory())            
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -65,7 +65,7 @@ namespace Booking.API
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             return builder.Build();

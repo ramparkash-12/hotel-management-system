@@ -88,7 +88,9 @@ namespace hotel.api
             app.UseSwagger()
              .UseSwaggerUI(c =>
              {
-                 c.SwaggerEndpoint("v1/swagger.json", "Hotel.API V1");
+                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hotel.API V1");
+                 c.OAuthClientId("orderingswaggerui");
+                 c.OAuthAppName("Ordering Swagger UI");
              });
 
             //app.UseMvc();

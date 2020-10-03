@@ -25,6 +25,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using System.Threading;
 
 namespace Booking.API
 {
@@ -41,6 +42,7 @@ namespace Booking.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      Thread.Sleep(60000);
       services.AddControllers().AddNewtonsoftJson(opt =>
       {
         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
