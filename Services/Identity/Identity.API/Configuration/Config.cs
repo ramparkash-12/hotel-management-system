@@ -55,8 +55,7 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "hotel"
-                    },
-                    
+                    }                    
                 },
                 new Client
                 {
@@ -86,7 +85,7 @@ namespace Identity.API.Configuration
                         new Secret("secret".Sha256())
                     },
                     
-                    RequireConsent = false,
+                    //RequireConsent = false,
                     AllowOfflineAccess = true,
                     
                     // where to redirect to after login
@@ -101,9 +100,30 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "hotel"
-                    },
-                    
-                }
-        };
-  }
+                    }
+                },
+                // JavaScript Client
+                new Client
+                {
+                    ClientId = "js",
+                    ClientName = "SPA Client",
+                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    // where to redirect to after login
+                    RedirectUris = { "http://localhost:4200/signin-oidc" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "http://localhost:4200/signout-callback-oidc" },
+                    AllowedCorsOrigins =     { "http://localhost:4200" },
+                    //RequireConsent = false,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "hotel"
+                    }
+                 }
+            };
+    }
 }

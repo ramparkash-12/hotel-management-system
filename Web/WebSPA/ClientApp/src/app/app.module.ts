@@ -10,6 +10,11 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
+import { routing } from './app.routes';
+import { SecurityService } from './shared/services/security.service';
+import { ConfigurationService } from './shared/services/configuration.service';
+import { StorageService } from './shared/services/storage.service';
 
 @NgModule({
   declarations: [
@@ -17,20 +22,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-    FetchDataComponent
+    FetchDataComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-    ]),
+    routing,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    SecurityService,
+    ConfigurationService,
+    StorageService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
