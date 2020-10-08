@@ -10,7 +10,11 @@ export const routes: Routes = [
   { path: 'signin-oidc', component: HomeComponent, pathMatch: 'full' },
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
-  { path: '404', component: PageNotFoundComponent }
+  {
+    path: 'auth',
+    loadChildren: './auth/auth.module#AuthModule'
+  },
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 export const routing = RouterModule.forRoot(routes);

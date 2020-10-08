@@ -33,7 +33,7 @@ export class NavMenuComponent implements OnInit{
       if (this.service.UserData) {
         this.userName = this.service.UserData.first_name + ' ' + this.service.UserData.last_name;
       }
-  }
+    }
   }
 
   collapse() {
