@@ -1,18 +1,21 @@
 import { RouterModule, Routes } from '@angular/router';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'signin-oidc', component: HomeComponent, pathMatch: 'full' },
-  { path: 'counter', component: CounterComponent },
-  { path: 'fetch-data', component: FetchDataComponent },
+  //{ path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  {
+    path: '',
+    loadChildren: './customer/customer.module#CustomerModule'
+  },
   {
     path: 'auth',
     loadChildren: './auth/auth.module#AuthModule'
+  },
+  {
+    path: 'admin',
+    loadChildren: './admin/admin.module#AdminModule'
   },
   { path: '**', component: PageNotFoundComponent }
 ];

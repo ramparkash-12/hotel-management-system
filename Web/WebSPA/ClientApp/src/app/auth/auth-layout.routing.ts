@@ -8,7 +8,7 @@ import { RegisterComponent } from './register/register.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 
-const routes: Routes = [
+const authRoutes: Routes = [
   {
     path: '',
     component: AuthLayoutComponent,
@@ -34,7 +34,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(authRoutes)],
   exports: [RouterModule]
 })
 export class AuthLayoutRouting { }
