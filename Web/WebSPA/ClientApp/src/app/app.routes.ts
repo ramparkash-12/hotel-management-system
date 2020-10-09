@@ -3,7 +3,6 @@ import { PageNotFoundComponent } from './shared/components/page-not-found/page-n
 
 
 export const routes: Routes = [
-  //{ path: '', component: HomeComponent, pathMatch: 'full' },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
     path: '',
