@@ -1,5 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 
 export const routes: Routes = [

@@ -7,7 +7,7 @@ import { SecurityService } from '../shared/services/security.service';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent implements OnInit{
+export class NavMenuComponent implements OnInit {
   isExpanded = false;
   authenticated: boolean = false;
   private subscription: Subscription;

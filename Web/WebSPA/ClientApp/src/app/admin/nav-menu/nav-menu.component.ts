@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SecurityService } from 'src/app/shared/services/security.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavMenuComponent implements OnInit {
 
-  constructor() { }
+  constructor(private securityService: SecurityService) { }
 
   ngOnInit() {
   }
+
+  logout() {
+    this.securityService.Logoff();
+}
 
 }

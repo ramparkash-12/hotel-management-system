@@ -67,7 +67,14 @@ export class SecurityService {
               this.storage.store('userData', data);
               // emit observable
               this.authenticationSource.next(true);
+              /*if (this.UserData.preferred_username === 'demo1@email.com') {
+                window.location.href = location.origin + '/admin/dashboard';
+              }
               window.location.href = location.origin;
+              */
+             if (this.UserData.preferred_username === 'demo!@email.com') {
+                this._router.navigate(['/admin/dashboard']);
+            }
           },
           error => this.HandleError(error),
           () => {
@@ -81,7 +88,7 @@ export class SecurityService {
       let authorizationUrl = 'http://localhost:2800/connect/authorize';
       //this.authorityUrl + '/connect/authorize';
       let client_id = 'js';
-      let redirect_uri = location.origin + '/signin-oidc';
+      let redirect_uri = location.origin;
       let response_type = 'id_token token'; //'code';
       let scope = 'openid profile hotel';
       let nonce = 'N' + Math.random() + '' + Date.now();
@@ -149,7 +156,8 @@ export class SecurityService {
 }
 
 public Logoff() {
-    let authorizationUrl = this.authorityUrl + '/connect/endsession';
+    let authorizationUrl =  'http://localhost:2800/connect/endsession';
+    //this.authorityUrl + '/connect/endsession';
     let id_token_hint = this.storage.retrieve('authorizationDataIdToken');
     let post_logout_redirect_uri = location.origin + '/';
 
