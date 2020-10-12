@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { routing } from './app.routes';
@@ -17,7 +16,6 @@ import { AlertifyService } from './shared/services/alertify.service';
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
     PageNotFoundComponent
   ],
   imports: [

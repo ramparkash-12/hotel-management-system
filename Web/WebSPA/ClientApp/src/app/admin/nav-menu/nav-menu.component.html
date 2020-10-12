@@ -5,8 +5,11 @@
   </button>
 
   <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="javascript:void(0);" (click)="logout()">Sign out</a>
+    <li *ngIf="authenticated" class="nav-item text-nowrap">
+      <a class="nav-link" href="javascript:void(0);" (click)="logout()"> Hi, {{ userName | uppercase }} / Sign out</a>
+    </li>
+    <li *ngIf="!authenticated" class="nav-item text-nowrap">
+      <a class="nav-link" href="javascript:void(0);"> Sign In</a>
     </li>
   </ul>
 </nav>

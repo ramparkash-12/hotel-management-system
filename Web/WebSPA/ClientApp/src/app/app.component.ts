@@ -11,14 +11,12 @@ export class AppComponent implements OnInit {
   title = 'app';
   authenticated: boolean = false;
   private subscription: Subscription;
-  userName: string = '';
 
   constructor(private alertify: AlertifyService, private securityService: SecurityService) { }
 
   ngOnInit() {
     this.subscription = this.securityService.authenticationChallenge$.subscribe(res => {
       this.authenticated = res;
-      this.userName = this.securityService.UserData.first_name + ' ' + this.securityService.UserData.last_name;
   });
 
   if (window.location.hash) {
@@ -28,11 +26,6 @@ export class AppComponent implements OnInit {
   console.log('identity component, checking authorized: ' + this.securityService.IsAuthorized);
   this.authenticated = this.securityService.IsAuthorized;
 
-  if (this.authenticated) {
-      if (this.securityService.UserData) {
-        this.userName = this.securityService.UserData.first_name + ' ' + this.securityService.UserData.last_name;
-      }
-    }
   }
 
 }

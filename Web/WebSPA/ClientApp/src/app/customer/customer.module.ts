@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [ CustomerLayoutComponent, HomeComponent, NavMenuComponent, FooterComponent, SearchComponent],
   imports: [CustomerLayoutRouting, CommonModule],
-  providers:[
+  providers: [
     SecurityService
   ]
 })

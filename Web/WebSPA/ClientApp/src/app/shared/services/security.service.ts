@@ -36,6 +36,10 @@ export class SecurityService {
 
   public IsAuthorized: boolean;
 
+  public SampleCall(): any {
+    return this.authenticationSource.next(false);
+  }
+
   public GetToken(): any {
       return this.storage.retrieve('authorizationData');
   }

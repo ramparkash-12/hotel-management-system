@@ -27,4 +27,8 @@ export class NavMenuComponent implements OnInit {
     this.authenticated = true;
   }
  }
+
+ sampleCall() {
+   this.securityService.SampleCall();
+ }
 }

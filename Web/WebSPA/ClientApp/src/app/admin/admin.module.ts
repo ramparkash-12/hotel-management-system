@@ -10,6 +10,7 @@ import { HotelListComponent } from './hotel/hotel-list/hotel-list.component';
 import { HotelItemComponent } from './hotel/hotel-list/hotel-item/hotel-item.component';
 import { HotelAddComponent } from './hotel/hotel-add/hotel-add.component';
 import { HotelEditComponent } from './hotel/hotel-edit/hotel-edit.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { HotelEditComponent } from './hotel/hotel-edit/hotel-edit.component';
     SidebarMenuComponent, FooterComponent,
     HotelListComponent, HotelItemComponent, HotelAddComponent, HotelEditComponent
   ],
-  imports: [AdminLayoutRouting],
+  imports: [AdminLayoutRouting, CommonModule],
   providers: []
 })
 export class AdminModule { }
