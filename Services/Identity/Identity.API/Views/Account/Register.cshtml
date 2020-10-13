@@ -1,0 +1,96 @@
+﻿@model Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h2>Register</h2>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label asp-for="User.FirstName" class="control-label form-label"></label>
+                                <input asp-for="User.FirstName" class="form-control form-input form-input-center" />
+                                <span asp-validation-for="User.FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label asp-for="User.LastName" class="control-label form-label"></label>
+                                <input asp-for="User.LastName" class="form-control form-input form-input-center" />
+                                <span asp-validation-for="User.LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                             <div class="form-group">
+                                <label asp-for="Email" class="control-label form-label"></label>
+                                <input asp-for="Email" class="form-control form-input form-input-center" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label asp-for="Gender" class="control-label form-label"></label>
+                                <select class="form-control" name="Gender" id="Gender">
+                                    <option selected value="">--Please Select--</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label form-label"></label>
+                                <input asp-for="Password" class="form-control form-input form-input-center" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label asp-for="ConfirmPassword" class="control-label form-label"></label>
+                                <input asp-for="ConfirmPassword" class="form-control form-input" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label asp-for="AgreeToTerms">
+                                <input asp-for="AgreeToTerms" />
+                                @Html.DisplayNameFor(m => m.AgreeToTerms)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary" name="button" value="register">Register</button>
+                        <button type="reset" class="btn btn-secondary" value="Reset">Reset</button>
+                    </div>
+                </form>
+            </div>     
+        </div>
+        <div class="row">
+            <div class="col-md-12 mt-2 text-center">
+                <a href="javascript:void(0);">Contact Support</a> | <a style="margin-left: 8px;" href="/Account/Login">Already have an account?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
