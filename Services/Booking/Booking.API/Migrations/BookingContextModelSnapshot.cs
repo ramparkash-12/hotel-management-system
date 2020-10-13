@@ -19,6 +19,24 @@ namespace Booking.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Booking.API.Idempotency.EventRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventRequests");
+                });
+
             modelBuilder.Entity("Booking.API.Model.Booking", b =>
                 {
                     b.Property<int>("Id")
@@ -68,8 +86,7 @@ namespace Booking.API.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<int?>("BookingId")
-                        .IsRequired()
+                    b.Property<int>("BookingId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnteredDateTime")

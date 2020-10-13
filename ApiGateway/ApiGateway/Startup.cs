@@ -28,6 +28,22 @@ namespace ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+            var authenticationProviderKey = "IdentityApiKey";
+
+            services.AddAuthentication()
+                .AddJwtBearer(authenticationProviderKey, x =>
+                {
+                    x.Authority = identityUrl;
+                    x.MetadataAddress = "http://identityapi/.well-known/openid-configuration";
+                    x.RequireHttpsMetadata = false;
+                    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                    {
+                        ValidAudiences = new[] { "hotel", "booking" }
+                    };
+                });
+                
             services.AddOcelot(Configuration);
         }
 
@@ -43,6 +59,7 @@ namespace ApiGateway
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -1,8 +1,12 @@
 using System;
 using System.IO;
+using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Foundation.EventBusRabbitMQ
 {
@@ -19,7 +23,7 @@ namespace Foundation.EventBusRabbitMQ
     {
         _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _retryCount = retryCount;
+        _retryCount = 5;
     }
 
     public bool IsConnected
@@ -61,8 +65,19 @@ namespace Foundation.EventBusRabbitMQ
             
             lock (sync_root)
             {
-               _connection = _connectionFactory
+               var policy = RetryPolicy.Handle<SocketException>()
+                    .Or<BrokerUnreachableException>()
+                    .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
+                    {
+                        _logger.LogWarning(ex, "RabbitMQ Client could not connect after {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message);
+                    }
+                );
+
+                policy.Execute(() =>
+                {
+                    _connection = _connectionFactory
                           .CreateConnection();
+                });
 
                 if (IsConnected)
                 {

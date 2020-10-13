@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/{version}/Account/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
               {
@@ -9,10 +9,10 @@
                   "Port": 80
               }
           ],
-      "UpstreamPathTemplate": "/api/{version}/identity-api/{everything}"
+      "UpstreamPathTemplate": "/identity-api/{everything}"
     },
     {
-      "DownstreamPathTemplate": "/api/{version}/Hotel/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
               {
@@ -21,7 +21,11 @@
               }
           ],
       "UpstreamPathTemplate": "/api/{version}/hotel-api/{everything}",
-      "UpstreamHttpMethod": []
+      "UpstreamHttpMethod": [],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      }
   },
   {
     "DownstreamPathTemplate": "/api/{version}/Room/{everything}",

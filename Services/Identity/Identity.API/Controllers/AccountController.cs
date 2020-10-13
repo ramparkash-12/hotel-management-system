@@ -330,6 +330,167 @@ namespace Identity.API.Controllers
         }
         
 
+        private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginViewModel model)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var vm = await BuildLoginViewModelAsync(model.ReturnUrl, context);
+            vm.Email = model.Email;
+            vm.RememberMe = model.RememberMe;
+            return vm;
+        }
+
+        /// <summary>
+        /// Show logout page
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            if (User.Identity.IsAuthenticated == false)
+            {
+                // if the user is not authenticated, then just show logged out page
+                return await Logout(new LogoutViewModel { LogoutId = logoutId });
+            }
+
+            //Test for Xamarin. 
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            if (context?.ShowSignoutPrompt == false)
+            {
+                //it's safe to automatically sign-out
+                return await Logout(new LogoutViewModel { LogoutId = logoutId });
+            }
+
+            // show the logout prompt. this prevents attacks where the user
+            // is automatically signed out by another malicious web page.
+            var vm = new LogoutViewModel
+            {
+                LogoutId = logoutId
+            };
+            return View(vm);
+        }
+
+        /// <summary>
+        /// Handle logout page postback
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout(LogoutViewModel model)
+        {
+            var idp = User?.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+
+            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
+            {
+                if (model.LogoutId == null)
+                {
+                    // if there's no current logout context, we need to create one
+                    // this captures necessary info from the current logged in user
+                    // before we signout and redirect away to the external IdP for signout
+                    model.LogoutId = await _interaction.CreateLogoutContextAsync();
+                }
+
+                string url = "/Account/Logout?logoutId=" + model.LogoutId;
+
+                try
+                {
+
+                    // hack: try/catch to handle social providers that throw
+                    await HttpContext.SignOutAsync(idp, new AuthenticationProperties
+                    {
+                        RedirectUri = url
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "LOGOUT ERROR: {ExceptionMessage}", ex.Message);
+                }
+            }
+
+            // delete authentication cookie
+            await HttpContext.SignOutAsync();
+
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+            // set this so UI rendering sees an anonymous user
+            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
+            // get context information (client name, post logout redirect URI and iframe for federated signout)
+            var logout = await _interaction.GetLogoutContextAsync(model.LogoutId);
+
+            return Redirect(logout?.PostLogoutRedirectUri);
+        }
+
+        public async Task<IActionResult> DeviceLogOut(string redirectUrl)
+        {
+            // delete authentication cookie
+            await HttpContext.SignOutAsync();
+
+            // set this so UI rendering sees an anonymous user
+            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
+            return Redirect(redirectUrl);
+        }
+
+        // GET: /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        /*
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    CardHolderName = model.User.CardHolderName,
+                    CardNumber = model.User.CardNumber,
+                    CardType = model.User.CardType,
+                    City = model.User.City,
+                    Country = model.User.Country,
+                    Expiration = model.User.Expiration,
+                    LastName = model.User.LastName,
+                    Name = model.User.Name,
+                    Street = model.User.Street,
+                    State = model.User.State,
+                    ZipCode = model.User.ZipCode,
+                    PhoneNumber = model.User.PhoneNumber,
+                    SecurityNumber = model.User.SecurityNumber
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Errors.Count() > 0)
+                {
+                    AddErrors(result);
+                    // If we got this far, something failed, redisplay form
+                    return View(model);
+                }
+            }
+
+            if (returnUrl != null)
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                    return Redirect(returnUrl);
+                else
+                    if (ModelState.IsValid)
+                    return RedirectToAction("login", "account", new { returnUrl = returnUrl });
+                else
+                    return View(model);
+            }
+
+            return RedirectToAction("index", "home");
+        }
+        */
+
         //
     // POST: /Account/Profile
     /// <summary>
@@ -345,6 +506,63 @@ namespace Identity.API.Controllers
         {
             //** Verify if email is registered
             var user = await _userManager.FindByEmailAsync(profileDto.Email.ToLower());
+
+            if (user == null)
+                return BadRequest("No user found.");
+
+            //var user = _mapper.Map<userFound>();
+            _mapper.Map(profileDto, user);
+
+            //** Update User
+            await _userManager.UpdateAsync(user);
+            
+            //** Get customer id
+            var customerId = _context.Customers.AsNoTracking().Where(c => c.IdentityId == user.Id).FirstOrDefault().Id;
+            
+            //** Update Customer
+            var customer = new Customer 
+            { 
+                IdentityId = user.Id,
+                Gender = profileDto.Gender,
+                Id = customerId
+            };
+
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync();
+
+            //Create Integration Event to be published through the Event Bus
+            var customerDetailsChangedEvent = new CustomerDetailsChangedIntegrationEvent(customer.Id, user.FirstName + ' ' + user.LastName, user.PhoneNumber);
+
+            // Achieving atomicity between original Identity database operation and the IntegrationEventLog with a local transaction
+            await _IIdentityntegrationEventService.SaveEventAndIdentityContextChangesAsync(customerDetailsChangedEvent);
+
+            // Publish through the Event Bus and mark the saved event as published
+            await _IIdentityntegrationEventService.PublishThroughEventBusAsync(customerDetailsChangedEvent);
+
+        }
+        else
+        {
+            return BadRequest(ModelState);
+        }
+
+        return Ok("You have successfully Updated profile....");
+    }
+
+        [HttpGet]
+        public IActionResult Redirecting()
+        {
+            return View();
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+    }
 
             if (user == null)
                 return BadRequest("No user found.");

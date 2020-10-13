@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Identity.API.Data
 {
-  public class ApplicationDbContext : IdentityDbContext<AppUser, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+  public class ApplicationDbContext : IdentityDbContext<AppUser>
   {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -20,7 +20,7 @@ namespace Identity.API.Data
       base.OnModelCreating(builder);
 
       builder.ApplyConfiguration(new AppUserEntityTypeConfiguration());
-      builder.ApplyConfiguration(new RoleEntityTypeConfiguration()); 
+      //builder.ApplyConfiguration(new RoleEntityTypeConfiguration()); 
 
       //base.OnModelCreating(builder);
       // Customize the ASP.NET Identity model and override the defaults if needed.

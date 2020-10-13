@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Booking.API.Model;
+using Booking.API.Idempotency;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Booking.API.Data
 {
@@ -11,6 +13,7 @@ namespace Booking.API.Data
 
     public DbSet<Model.Booking> Bookings { get; set; }
     public DbSet<BookingPayment> BookingPayments { get; set; }
+    public DbSet<EventRequest> EventRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -19,6 +22,19 @@ namespace Booking.API.Data
         .WithOne(bp => bp.Booking)
         .IsRequired()
         .OnDelete(DeleteBehavior.Cascade);
+
+        builder.ApplyConfiguration(new EventRequestEntityTypeConfiguration());
+    }
+
+    public class EventRequestEntityTypeConfiguration : IEntityTypeConfiguration<EventRequest>
+    {
+      public void Configure(EntityTypeBuilder<EventRequest> requestConfiguration)
+      {
+        requestConfiguration.ToTable("EventRequests");
+        requestConfiguration.HasKey(cr => cr.Id);
+        requestConfiguration.Property(cr => cr.Name).IsRequired();
+        requestConfiguration.Property(cr => cr.Time).IsRequired();
+      }
     }
   }
 }

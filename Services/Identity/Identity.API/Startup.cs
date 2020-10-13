@@ -33,6 +33,14 @@ using Autofac.Extensions.DependencyInjection;
 using Foundation.EventBus.IntegrationEventLogEF;
 using System.Data.Common;
 using Foundation.EventBus.IntegrationEventLogEF.Services;
+using IdentityServer4.Services;
+using Identity.API.Services;
+using Identity.API.Configuration;
+using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.EntityFramework.DbContexts;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using IdentityServer4;
+using Microsoft.AspNetCore.Http;
 
 namespace Identity.API
 {
@@ -43,24 +51,31 @@ namespace Identity.API
             Configuration = configuration;
         }
 
+    public Startup(IConfiguration configuration, ILifetimeScope autofacContainer) 
+        {
+            this.Configuration = configuration;
+            this.AutofacContainer = autofacContainer;
+               
+        }
         public IConfiguration Configuration { get; }
         public ILifetimeScope AutofacContainer { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllers();
+            services.AddControllersWithViews();
+            services.AddRazorPages()
             .Services
             .AddCustomMVC(Configuration)
             .AddCustomDbContext(Configuration)
             .AddAutoMapperMethod(Configuration)
             .AddSwagger(Configuration)
-            .AddJwtBearerSettings(Configuration)
+            //.AddJwtBearerSettings(Configuration)
             .AddIntegrationServices(Configuration)
             .AddEventBus(Configuration);
 
             services.AddSingleton<ISystemClock, SystemClock>();
-            
             //var container = new ContainerBuilder();
             //return new AutofacServiceProvider(container.Build());
         }
@@ -74,31 +89,121 @@ namespace Identity.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            var pathBase = Configuration["PATH_BASE"];
+            if (!string.IsNullOrEmpty(pathBase))
+            {
+                loggerFactory.CreateLogger<Startup>().LogDebug("Using PATH BASE '{pathBase}'", pathBase);
+                app.UsePathBase(pathBase);
+            }
 
+            app.UseStaticFiles();
+
+            // Make work identity server redirections in Edge and lastest versions of browers. WARN: Not valid in a production environment.
+            /*app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("Content-Security-Policy", "script-src 'unsafe-inline'");
+                //context.Response.Headers.Add("Content-Security-Policy", "script-src-elem 'unsafe-inline'");
+                await next();
+            });
+            */
+            
+            //app.UseHttpsRedirection();
+            app.UseForwardedHeaders();
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax});
+         
+            
+            //app.UseAuthorization();
+            app.UseIdentityServer();
             app.UseRouting(); 
-            app.UseAuthentication();
-            app.UseAuthorization();
-           
+         
             app.UseSwagger()
              .UseSwaggerUI(c =>
              {
-                 c.SwaggerEndpoint("v1/swagger.json", "Identity.API V1");
+                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.API V1");
              });
 
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+                //.RequireAuthorization();
             });
+            
+            //InitializeDatabase(app);
         }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+        using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+        {
+            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+            var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            context.Database.Migrate();
+            if (!context.Clients.Any())
+            {
+                foreach (var client in Config.Clients)
+                {
+                    context.Clients.Add(client.ToEntity());
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                foreach(var item in context.Clients)
+                {
+                    context.Clients.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            
+
+            if (!context.IdentityResources.Any())
+            {
+                foreach (var resource in Config.GetResources())
+                {
+                    context.IdentityResources.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                foreach(var item in context.IdentityResources)
+                {
+                    context.IdentityResources.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            
+
+            if (!context.ApiResources.Any())
+            {
+                foreach (var resource in Config.GetApis())
+                {
+                    context.ApiResources.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                foreach(var item in context.ApiResources)
+                {
+                    context.ApiResources.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            
+        }
+      }
+
     }
 
      public static class CustomExtensionMethods
@@ -130,14 +235,18 @@ namespace Identity.API
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
             });
       });
-      services.AddMvc(opt => 
+      
+      /*services.AddMvc(opt => 
         {
             var policy = new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .Build();
         });
+        */
+        //services.AddMvc();
 
-      IdentityBuilder builder = services.AddIdentityCore<AppUser>(options =>
+        /*
+        IdentityBuilder builder = services.AddIdentityCore<AppUser>(options =>
             {
               // Password settings.
               options.Password.RequiredLength = 6;
@@ -147,16 +256,26 @@ namespace Identity.API
               options.User.RequireUniqueEmail = true;
             });
 
+        
         builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
-        builder.AddEntityFrameworkStores<ApplicationDbContext>();
+        builder.AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
         builder.AddRoleValidator<RoleValidator<Role>>();    
         builder.AddRoleManager<RoleManager<Role>>();
         builder.AddSignInManager<SignInManager<AppUser>>();
+        */
+        
+        services.AddIdentity<AppUser, IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
-        services.AddAuthorization(options =>{
+
+        /*services.AddAuthorization(options =>{
             options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
             options.AddPolicy("RequireAdminManagerRole", policy => policy.RequireRole("Admin", "Manager"));
         });
+        */
 
         services.AddDbContext<IntegrationEventLogContext>(options =>
             {
@@ -168,6 +287,43 @@ namespace Identity.API
                     sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                 });
             });
+
+            services.AddTransient<ILoginService<AppUser>, EFLoginService>();
+        
+            var connectionString = configuration["ConnectionString"];
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            // Adds IdentityServer
+            services.AddIdentityServer(x =>
+            {
+                x.IssuerUri = "null";
+                //x.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                x.Authentication.CookieLifetime = TimeSpan.FromHours(2);
+
+            })
+            .AddDeveloperSigningCredential()
+            .AddAspNetIdentity<AppUser>()
+            .AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString,
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly(migrationsAssembly);
+                        //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
+                        sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                    });
+            })
+            .AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString,
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly(migrationsAssembly);
+                        //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
+                        sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                    });
+            })
+            .Services.AddTransient<IProfileService, ProfileService>();
     
       return services;
     }
@@ -186,7 +342,33 @@ namespace Identity.API
                 };
             });
         
+        /*
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
+        .AddCookie(IdentityConstants.ApplicationScheme, o =>
+        {
+            o.LoginPath = new PathString("/Account/Login");
+            o.Events = new CookieAuthenticationEvents
+            {
+                OnValidatePrincipal = SecurityStampValidator.ValidatePrincipalAsync
+            };
+            o.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+        });
+        
+
+        services.AddAuthenticationCore(o =>
+            {
+                o.DefaultAuthenticateScheme = IdentityServerConstants.DefaultCookieAuthenticationScheme;
+                o.DefaultSignOutScheme = IdentityServerConstants.SignoutScheme;
+            });
+        */
+
         return services;
+        
     }
 
     public static IServiceCollection AddAutoMapperMethod(this IServiceCollection services, IConfiguration configuration)
@@ -282,5 +464,5 @@ namespace Identity.API
 
             return services;
         }
-  }
+    }
 }

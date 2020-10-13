@@ -19,6 +19,11 @@ namespace Identity.API.Services
       _userManager = userManager;
       _signInManager = signInManager;
       _context = context;
+
+    public EFLoginService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+    {
+      _userManager = userManager;
+      _signInManager = signInManager;
     }
 
     public async Task<AppUser> FindByUsername(string user)
