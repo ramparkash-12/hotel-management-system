@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlertifyService } from './shared/services/alertify.service';
+import { ConfigurationService } from './shared/services/configuration.service';
 import { SecurityService } from './shared/services/security.service';
 
 @Component({
@@ -12,7 +13,8 @@ export class AppComponent implements OnInit {
   authenticated: boolean = false;
   private subscription: Subscription;
 
-  constructor(private alertify: AlertifyService, private securityService: SecurityService) { }
+  constructor(private alertify: AlertifyService, private securityService: SecurityService,
+    private configurationService: ConfigurationService) { }
 
   ngOnInit() {
     this.subscription = this.securityService.authenticationChallenge$.subscribe(res => {
@@ -23,9 +25,11 @@ export class AppComponent implements OnInit {
       this.securityService.AuthorizedCallback();
   }
 
-  console.log('identity component, checking authorized: ' + this.securityService.IsAuthorized);
-  this.authenticated = this.securityService.IsAuthorized;
+    console.log('identity component, checking authorized: ' + this.securityService.IsAuthorized);
+    this.authenticated = this.securityService.IsAuthorized;
 
+    console.log('configuration');
+    this.configurationService.load();
   }
 
 }

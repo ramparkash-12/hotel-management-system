@@ -26,6 +26,8 @@ namespace WebSPA
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.Configure<AppSettings>(Configuration);
+            
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
         }
 
@@ -43,7 +45,7 @@ namespace WebSPA
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {

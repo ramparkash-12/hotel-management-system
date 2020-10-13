@@ -97,7 +97,7 @@ namespace Identity.API.Controllers
     /// Handle postback from username/password login
     /// </summary>
     [HttpPost]
-    //[ValidateAntiForgeryToken]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
       if (ModelState.IsValid)

@@ -85,11 +85,22 @@ export class SecurityService {
           });
   }
 
+  public Register() {
+    if (this.authorityUrl === '') {
+        this.authorityUrl = this.storage.retrieve('IdentityUrl');
+    }
+      window.location.href = this.authorityUrl + '/Account/Register';
+  }
+
   public Authorize() {
       this.ResetAuthorizationData();
 
-      let authorizationUrl = 'http://localhost:2800/connect/authorize';
-      //this.authorityUrl + '/connect/authorize';
+      if (this.authorityUrl === '') {
+        this.authorityUrl = this.storage.retrieve('IdentityUrl');
+      }
+
+      let authorizationUrl = this.authorityUrl + '/connect/authorize';
+      //'http://localhost:2800/connect/authorize';
       let client_id = 'js';
       let redirect_uri = location.origin;
       let response_type = 'id_token token'; //'code';
@@ -159,8 +170,8 @@ export class SecurityService {
 }
 
 public Logoff() {
-    let authorizationUrl =  'http://localhost:2800/connect/endsession';
-    //this.authorityUrl + '/connect/endsession';
+    let authorizationUrl = this.authorityUrl + '/connect/endsession';
+    //'http://localhost:2800/connect/endsession';
     let id_token_hint = this.storage.retrieve('authorizationDataIdToken');
     let post_logout_redirect_uri = location.origin + '/';
 
@@ -179,7 +190,6 @@ public Logoff() {
   private getUserData = (): Observable<string[]> => {
     if (this.authorityUrl === '') {
         this.authorityUrl = this.storage.retrieve('IdentityUrl');
-        this.authorityUrl = 'http://localhost:2800';
     }
 
     const options = this.setHeaders();

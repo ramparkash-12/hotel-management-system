@@ -24,7 +24,7 @@ export class ConfigurationService {
             console.log('server settings loaded');
             this.serverSettings = response as IConfiguration;
             console.log(this.serverSettings);
-            this.storageService.store('identityUrl', this.serverSettings.identityUrl);
+            this.storageService.store('IdentityUrl', this.serverSettings.identityUrl);
             this.isReady = true;
             this.settingsLoadedSource.next();
         });

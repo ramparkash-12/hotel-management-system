@@ -37,7 +37,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   register() {
-    window.location.href = 'http://localhost:2800/Account/Register'
+    this.securityService.Register();
   }
 
 }
