@@ -44,7 +44,7 @@ namespace Identity.API.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "IdentityRole",
+                name: "Role",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -54,7 +54,7 @@ namespace Identity.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IdentityRole", x => x.Id);
+                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -68,18 +68,18 @@ namespace Identity.API.Migrations
                 column: "UserId1");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserRoles_AspNetRoles_RoleId1",
-                table: "AspNetUserRoles",
-                column: "RoleId1",
-                principalTable: "AspNetRoles",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserRoles_AspNetUsers_UserId1",
                 table: "AspNetUserRoles",
                 column: "UserId1",
                 principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserRoles_Role_RoleId1",
+                table: "AspNetUserRoles",
+                column: "RoleId1",
+                principalTable: "Role",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -87,15 +87,15 @@ namespace Identity.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserRoles_AspNetRoles_RoleId1",
-                table: "AspNetUserRoles");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserRoles_AspNetUsers_UserId1",
                 table: "AspNetUserRoles");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUserRoles_Role_RoleId1",
+                table: "AspNetUserRoles");
+
             migrationBuilder.DropTable(
-                name: "IdentityRole");
+                name: "Role");
 
             migrationBuilder.DropIndex(
                 name: "IX_AspNetUserRoles_RoleId1",

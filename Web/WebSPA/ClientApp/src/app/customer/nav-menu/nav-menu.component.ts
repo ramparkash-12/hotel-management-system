@@ -31,4 +31,13 @@ export class NavMenuComponent implements OnInit {
  sampleCall() {
    this.securityService.SampleCall();
  }
+
+  login() {
+    this.securityService.Authorize();
+  }
+
+  register() {
+    window.location.href = 'http://localhost:2800/Account/Register'
+  }
+
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Identity.API.Data
 {
-  public class ApplicationDbContext : IdentityDbContext<AppUser>
+  public class ApplicationDbContext : IdentityDbContext<AppUser, IdentityRole, string>
   {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -33,7 +33,7 @@ namespace Identity.API.Data
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder =  new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlServer("Server=tcp:localhost,5434;Initial Catalog=IdentityAPI;User Id=sa;Password=iamback.786A@;Integrated Security=true");
+                .UseSqlServer("Server=tcp:localhost,5434;Initial Catalog=IdentityAPI;User Id=sa;Password=iamback.786A@;Integrated Security=false");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

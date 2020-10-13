@@ -35,6 +35,7 @@ export class SecurityService {
   }
 
   public IsAuthorized: boolean;
+  public role: string;
 
   public SampleCall(): any {
     return this.authenticationSource.next(false);
@@ -49,6 +50,7 @@ export class SecurityService {
       this.storage.store('authorizationDataIdToken', '');
 
       this.IsAuthorized = false;
+      this.role = '';
       this.storage.store('IsAuthorized', false);
   }
 
@@ -71,14 +73,11 @@ export class SecurityService {
               this.storage.store('userData', data);
               // emit observable
               this.authenticationSource.next(true);
-              /*if (this.UserData.preferred_username === 'demo1@email.com') {
+              if (this.UserData.role === 'Admin') {
+                 //this._router.navigate(['/admin/dashboard']);
                 window.location.href = location.origin + '/admin/dashboard';
               }
               window.location.href = location.origin;
-              */
-             if (this.UserData.preferred_username === 'demo!@email.com') {
-                this._router.navigate(['/admin/dashboard']);
-            }
           },
           error => this.HandleError(error),
           () => {

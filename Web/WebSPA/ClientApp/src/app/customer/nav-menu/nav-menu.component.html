@@ -38,8 +38,8 @@
           </div>
         </li>
       </ul>
-      <button *ngIf="!authenticated" class="btn btn-light my-2 my-sm-0" type="submit">Register</button>
-      <button *ngIf="!authenticated" class="btn btn-outline-light my-2 my-sm-0" style="margin-left: 10px;" type="submit">Login</button>
+      <button *ngIf="!authenticated" (click)="register()" class="btn btn-light my-2 my-sm-0" type="submit">Register</button>
+      <button *ngIf="!authenticated" (click)="login()" class="btn btn-outline-light my-2 my-sm-0" style="margin-left: 10px;" type="submit">Login</button>
     </div>
   </div>
 </nav>

@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authentication
 
-﻿
 <div class="welcome-page container">
     <div class="row page-header">
         <div class="col-sm-10">
@@ -17,12 +16,6 @@
             @foreach (var item in ViewBag.Json)
             {
                 <p> @item </p>
-            }
-            <br>
-            @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
-            {
-                <dt>@prop.Key</dt>
-                <dd>@prop.Value</dd>
             }
             <p>
                 IdentityServer publishes a
