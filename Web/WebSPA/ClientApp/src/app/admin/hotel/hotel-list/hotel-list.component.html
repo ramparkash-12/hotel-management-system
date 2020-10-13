@@ -1,0 +1,49 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Hotel</h1>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-sm-12">
+    <button class="btn btn-success" routerLink="add"> <i class="fa fa-plus" aria-hidden="true"></i>  Add </button>
+    <button class="btn btn-warning text-light ml-3" routerLink="edit"> <i class="fa fa-search" aria-hidden="true"></i> Search </button>
+  </div>
+</div>
+<app-hotel-item></app-hotel-item>
+
+<table class="table table-striped my-5">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td class="td-actions">
+        <button routerLink="/hotel/edit/1"  type="button" class="btn btn-primary btn-link btn-sm td-actions-btn-clrs" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+          <i class="fa fa-pencil" aria-hidden="true"> </i>
+        </button>
+        <button style="margin-left: 2px;" type="button" class="btn btn-danger btn-link btn-sm td-actions-btn-clrs">
+          <i class="fa fa-times" aria-hidden="true"> </i>
+        </button>
+    </td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Larry</td>
+      <td>the Bird</td>
+      <td>@twitter</td>
+    </tr>
+  </tbody>
+</table>
