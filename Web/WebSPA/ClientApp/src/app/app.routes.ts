@@ -1,4 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
+import { ForbiddenComponent } from './shared/components/forbidden/forbidden.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
@@ -15,6 +16,7 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: './admin/admin.module#AdminModule'
   },
+  { path: 'forbidden', component: ForbiddenComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

@@ -169,7 +169,14 @@ export class SecurityService {
     }
 }
 
+public SetAuthorityUrl() {
+    if (this.authorityUrl === '') {
+        this.authorityUrl = this.storage.retrieve('IdentityUrl');
+    }
+}
+
 public Logoff() {
+    this.SetAuthorityUrl();
     let authorizationUrl = this.authorityUrl + '/connect/endsession';
     //'http://localhost:2800/connect/endsession';
     let id_token_hint = this.storage.retrieve('authorizationDataIdToken');

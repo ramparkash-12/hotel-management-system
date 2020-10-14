@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SecurityService } from 'src/app/shared/services/security.service';
@@ -38,6 +39,10 @@ export class NavMenuComponent implements OnInit {
 
   register() {
     this.securityService.Register();
+  }
+
+  logout() {
+    this.securityService.Logoff();
   }
 
 }

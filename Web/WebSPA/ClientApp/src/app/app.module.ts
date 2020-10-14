@@ -12,11 +12,14 @@ import { ConfigurationService } from './shared/services/configuration.service';
 import { StorageService } from './shared/services/storage.service';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { AlertifyService } from './shared/services/alertify.service';
+import { ErrorInterceptorProvide } from './shared/services/error.interceptor';
+import { ForbiddenComponent } from './shared/components/forbidden/forbidden.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ForbiddenComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -27,6 +30,7 @@ import { AlertifyService } from './shared/services/alertify.service';
   ],
   providers: [
     AuthGuard,
+    ErrorInterceptorProvide,
     AlertifyService,
     SecurityService,
     ConfigurationService,
