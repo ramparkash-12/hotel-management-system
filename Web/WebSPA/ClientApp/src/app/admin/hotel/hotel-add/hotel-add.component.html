@@ -10,70 +10,86 @@
     </div>
   </div>
 </div>
--->
+  -->
 
 <div class="row">
-  <div class="col-md-4 order-md-2 mb-4">
-    <h4 class="d-flex justify-content-between align-items-center mb-3">
-      <span class="text-muted">Your cart</span>
-      <span class="badge badge-secondary badge-pill">3</span>
-    </h4>
-    <ul class="list-group mb-3">
-      <li class="list-group-item d-flex justify-content-between lh-condensed">
-        <div>
-          <h6 class="my-0">Product name</h6>
-          <small class="text-muted">Brief description</small>
-        </div>
-        <span class="text-muted">$12</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between lh-condensed">
-        <div>
-          <h6 class="my-0">Second product</h6>
-          <small class="text-muted">Brief description</small>
-        </div>
-        <span class="text-muted">$8</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between lh-condensed">
-        <div>
-          <h6 class="my-0">Third item</h6>
-          <small class="text-muted">Brief description</small>
-        </div>
-        <span class="text-muted">$5</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between bg-light">
-        <div class="text-success">
-          <h6 class="my-0">Promo code</h6>
-          <small>EXAMPLECODE</small>
-        </div>
-        <span class="text-success">-$5</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between">
-        <span>Total (USD)</span>
-        <strong>$20</strong>
-      </li>
-    </ul>
 
-    <form class="card p-2">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Promo code">
-        <div class="input-group-append">
-          <button type="submit" class="btn btn-secondary">Redeem</button>
+  <div class="col-lg-4 col-md-4 col-sm-12 order-md-2 mb-4 my-3">
+    <div class="card">
+      <div class="card-header">
+        <h5 >Main Settings</h5>
+      </div>
+      <div class="card-body">
+        <div class="form-group row mb-4">
+          <div class="col-md-12 col-sm-12">
+            <label for="Status">Status</label>
+            <select class="custom-select d-block w-100" id="Status" required>
+              <option selected value=""> -- Select Status -- </option>
+              <option value="1">Enabled</option>
+              <option value="0">Disabled</option>
+            </select>
+            <div class="invalid-feedback">
+              Status is required
+            </div>
+          </div>
+        </div>
+        <div class="form-group row mb-4">
+          <div class="col-md-12 col-sm-12">
+            <label for="Stars">Stars</label>
+            <select class="custom-select d-block w-100" id="Stars" required>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row mb-4">
+          <div class="col-md-12">
+            <label for="Featured">Featured?</label>
+            <select class="custom-select d-block w-100" id="Featured" required>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div> 
+          </div>
+          <div class="form-group row mb-4">
+          <div class="col-md-6">
+            <label for="FeaturedFrom">Featured Date</label>
+              <input type="text" class="form-control" id="FeaturedFrom" name="FeaturedFrom" placeholder="From">
+          </div>
+          <div class="col-md-6">
+            <label for="FeaturedTo">Featured Date</label>
+            <input type="text" class="form-control" id="FeaturedTo"  name="FeaturedTo" placeholder="To">
+          </div> 
+          </div>
         </div>
       </div>
-    </form>
-  </div>
-  <div class="col-md-8 order-md-1">
-    <h4 class="mb-3">Hotel Information</h4>
+    </div>
+
+  <div class="col-md-8 col-sm-12 order-md-1">
+    <h4 class="mb-3">Basic Information</h4>
     <form class="needs-validation" novalidate>
       <div class="row">
         <div class="col-md-12 mb-3">
           <label for="Name">Name</label>
-          <input type="text" class="form-control" id="Name" placeholder="" value="" required>
+          <input type="text" class="form-control" id="Description" placeholder="" value="" required>
           <div class="invalid-feedback">
             Name is required.
           </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="Description">Description</label>
+          <div [(ngModel)]="content" name="content" id="content" [ngxSummernote]="config"></div>
+        </div>
+      </div>
+
+      <hr>
+      <h4 class="mb-3">Location</h4>
 
       <div class="mb-3">
         <label for="address">Address</label>
@@ -107,44 +123,28 @@
       </div>
       <hr class="mb-4">
 
-      <h4 class="mb-3">Payment</h4>
+      <h4 class="mb-3">Gallery</h4>
 
       
       <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="cc-name">Name on card</label>
-          <input type="text" class="form-control" id="cc-name" placeholder="" required>
-          <small class="text-muted">Full name as displayed on card</small>
-          <div class="invalid-feedback">
-            Name on card is required
-          </div>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="cc-number">Credit card number</label>
-          <input type="text" class="form-control" id="cc-number" placeholder="" required>
-          <div class="invalid-feedback">
-            Credit card number is required
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-3 mb-3">
-          <label for="cc-expiration">Expiration</label>
-          <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-          <div class="invalid-feedback">
-            Expiration date required
-          </div>
-        </div>
-        <div class="col-md-3 mb-3">
-          <label for="cc-cvv">CVV</label>
-          <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-          <div class="invalid-feedback">
-            Security code required
-          </div>
+        <div class="col-md-12 mb-3">
+          <ngx-dropzone (change)="onSelect($event)">
+            <ngx-dropzone-label> <i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i> <br>Click here or drop files to upload</ngx-dropzone-label>
+            <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+                <ngx-dropzone-label style='height:100%; width: 100%; vertical-align: middle; margin-top: 10px;'>{{ f.name }} 
+                {{ f.type }} 
+                {{ f.size }} 
+              </ngx-dropzone-label>
+            </ngx-dropzone-preview>
+          </ngx-dropzone>
         </div>
       </div>
       <hr class="mb-4">
-      <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary" type="submit">Save <i style="margin-left: 5px;" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
     </form>
   </div>
 </div>

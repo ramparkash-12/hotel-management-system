@@ -30,9 +30,12 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
     "ngx-bootstrap": "^6.1.0",
+    "ngx-dropzone": "^2.2.2",
+    "ngx-summernote": "^0.8.0",
     "oidc-client": "^1.9.1",
     "popper.js": "^1.16.1",
     "rxjs": "^6.5.3",
+    "summernote": "^0.8.18",
     "zone.js": "0.9.1"
   },
   "devDependencies": {

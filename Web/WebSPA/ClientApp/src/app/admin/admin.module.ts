@@ -11,6 +11,10 @@ import { HotelItemComponent } from './hotel/hotel-list/hotel-item/hotel-item.com
 import { HotelAddComponent } from './hotel/hotel-add/hotel-add.component';
 import { HotelEditComponent } from './hotel/hotel-edit/hotel-edit.component';
 import { CommonModule } from '@angular/common';
+import { NgxDropzoneModule } from 'ngx-dropzone';
+import { NgxSummernoteModule } from 'ngx-summernote';
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +23,13 @@ import { CommonModule } from '@angular/common';
     SidebarMenuComponent, FooterComponent,
     HotelListComponent, HotelItemComponent, HotelAddComponent, HotelEditComponent
   ],
-  imports: [AdminLayoutRouting, CommonModule],
+  imports: [
+    AdminLayoutRouting,
+    CommonModule,
+    NgxDropzoneModule,
+    NgxSummernoteModule,
+    FormsModule
+  ],
   providers: []
 })
 export class AdminModule { }
