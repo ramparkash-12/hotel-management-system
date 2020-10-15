@@ -2,16 +2,6 @@
   <h1 class="h2">Add Hotel</h1>
 </div>
 
-<!-- 
-<div class="container">
-  <div class="row">
-    <div class="col-md-4">
-      <input type="text" name="Name">
-    </div>
-  </div>
-</div>
-  -->
-
 <div class="row">
 
   <div class="col-lg-4 col-md-4 col-sm-12 order-md-2 mb-4 my-3">
@@ -20,23 +10,21 @@
         <h5 >Main Settings</h5>
       </div>
       <div class="card-body">
+        <form [formGroup]="hotelForm">
         <div class="form-group row mb-4">
           <div class="col-md-12 col-sm-12">
-            <label for="Status">Status</label>
-            <select class="custom-select d-block w-100" id="Status" required>
-              <option selected value=""> -- Select Status -- </option>
-              <option value="1">Enabled</option>
+            <label for="status">Status</label>
+            <select class="custom-select d-block w-100" name="status" id="status" formControlName="status">
+              <option value="1" selected>Enabled</option>
               <option value="0">Disabled</option>
             </select>
-            <div class="invalid-feedback">
-              Status is required
-            </div>
           </div>
         </div>
         <div class="form-group row mb-4">
           <div class="col-md-12 col-sm-12">
-            <label for="Stars">Stars</label>
-            <select class="custom-select d-block w-100" id="Stars" required>
+            <label for="stars">Stars</label>
+            <select class="custom-select d-block w-100"
+             name="stars" id="stars" formControlName="stars" id="stars">
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -47,8 +35,8 @@
         </div>
         <div class="form-group row mb-4">
           <div class="col-md-12">
-            <label for="Featured">Featured?</label>
-            <select class="custom-select d-block w-100" id="Featured" required>
+            <label for="featured">Featured?</label>
+            <select (change)="onFeaturedChange($event.target.value)" class="custom-select d-block w-100" name="featured" id="featured" formControlName="featured" id="featured">
               <option value="1">Yes</option>
               <option value="0">No</option>
             </select>
@@ -56,35 +44,52 @@
           </div>
           <div class="form-group row mb-4">
           <div class="col-md-6">
-            <label for="FeaturedFrom">Featured Date</label>
-              <input type="text" class="form-control" id="FeaturedFrom" name="FeaturedFrom" placeholder="From">
+            <label for="featuredFrom">Featured Date</label>
+              <input type="text" class="form-control" 
+              name="featuredFrom" id="featuredFrom" 
+              formControlName="featuredFrom" placeholder="From" autocomplete="off"
+              bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass: 'theme-default' }">
           </div>
           <div class="col-md-6">
-            <label for="FeaturedTo">Featured Date</label>
-            <input type="text" class="form-control" id="FeaturedTo"  name="FeaturedTo" placeholder="To">
+            <label for="featuredTo">Featured Date</label>
+            <input type="text" class="form-control"
+            name="featuredTo" id="featuredTo" formControlName="featuredTo" 
+            autocomplete="off" placeholder="To"
+            bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass: 'theme-default' }">
           </div> 
           </div>
+        </form>
         </div>
       </div>
     </div>
 
   <div class="col-md-8 col-sm-12 order-md-1">
     <h4 class="mb-3">Basic Information</h4>
-    <form class="needs-validation" novalidate>
+    <form [formGroup]="hotelForm" (ngSubmit)="save()" class="needs-validation" novalidate>
       <div class="row">
         <div class="col-md-12 mb-3">
-          <label for="Name">Name</label>
-          <input type="text" class="form-control" id="Description" placeholder="" value="" required>
-          <div class="invalid-feedback">
+          <label for="name">Name <span class="asterisk">*</span></label>
+          <input type="text" class="form-control" [ngClass]="{'is-invalid': hotelForm.get('name').errors
+          && hotelForm.get('name').touched}" autocomplete="off" formControlName="name" id="name"
+          placeholder="Name">
+          <div *ngIf="(hotelForm.get('name').errors && hotelForm.get('name').touched) || (hotelForm.get('name').errors && formSubmitted)" class="invalid">
             Name is required.
+          </div>
+          <div *ngIf="hotelForm.get('name').hasError('maxlength')
+          && hotelForm.get('name').touched" class="invalid-feedback">
+            Name cannot exceed 2 characters 
           </div>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-12 mb-3">
-          <label for="Description">Description</label>
-          <div [(ngModel)]="content" name="content" id="content" [ngxSummernote]="config"></div>
+          <label for="description">Description <span class="asterisk">*</span></label>
+          <input [ngxSummernote]="config" type="text" class="form-control" [ngClass]="{'is-invalid': hotelForm.get('description').errors
+          && hotelForm.get('description').touched}" autocomplete="off" formControlName="description" id="description" name="description" placeholder="Add Hotel Description....">
+          <div *ngIf="(hotelForm.get('description').errors && hotelForm.get('description').touched) || (hotelForm.get('description').errors && formSubmitted)" class="invalid">
+            Description is required.
+          </div>
         </div>
       </div>
 
@@ -92,32 +97,36 @@
       <h4 class="mb-3">Location</h4>
 
       <div class="mb-3">
-        <label for="address">Address</label>
-        <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
-        <div class="invalid-feedback">
-          Address is required.
+        <label for="address">Address <span class="asterisk">*</span></label>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': hotelForm.get('address').errors
+          && hotelForm.get('address').touched}" autocomplete="off" formControlName="address" id="address"
+          placeholder="123 Main st.">
+          <div *ngIf="(hotelForm.get('address').errors && hotelForm.get('address').touched) || (hotelForm.get('address').errors && formSubmitted)" class="invalid">
+            Address is required.
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="country">Country</label>
-          <select class="custom-select d-block w-100" id="country" required>
+          <label for="country">Country <span class="asterisk">*</span></label>
+          <select class="custom-select d-block w-100" [ngClass]="{'is-invalid': hotelForm.get('country').errors
+          && hotelForm.get('country').touched}" id="country" formControlName="country">
             <option value="">Choose...</option>
             <option>United States</option>
           </select>
-          <div class="invalid-feedback">
-            Country is required
+          <div *ngIf="(hotelForm.get('country').errors && hotelForm.get('country').touched) || (hotelForm.get('country').errors && formSubmitted)" class="invalid">
+            Country is required.
           </div>
         </div>
         <div class="col-md-6 mb-3">
-          <label for="state">City</label>
-          <select class="custom-select d-block w-100" id="state" required>
+          <label for="city">City</label>
+          <select class="custom-select d-block w-100" [ngClass]="{'is-invalid': hotelForm.get('city').errors
+          && hotelForm.get('city').touched}" id="city" formControlName="city">
             <option value="">Choose...</option>
-            <option>California</option>
+            <option value="California">California</option>
           </select>
-          <div class="invalid-feedback">
-            City is required
+          <div *ngIf="(hotelForm.get('city').errors && hotelForm.get('city').touched) || (hotelForm.get('city').errors && formSubmitted)" class="invalid">
+            City is required.
           </div>
         </div>
       </div>
@@ -128,12 +137,12 @@
       
       <div class="row">
         <div class="col-md-12 mb-3">
-          <ngx-dropzone (change)="onSelect($event)">
+          <ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
             <ngx-dropzone-label> <i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i> <br>Click here or drop files to upload</ngx-dropzone-label>
             <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
-                <ngx-dropzone-label style='height:100%; width: 100%; vertical-align: middle; margin-top: 10px;'>{{ f.name }} 
-                {{ f.type }} 
-                {{ f.size }} 
+                <ngx-dropzone-label style='height:100%; width: 100%; vertical-align: middle; margin-top: 10px;'>{{ f.name }} <br>
+                {{ f.type }} <br>
+                {{ calculateFileSize(f.size)}} 
               </ngx-dropzone-label>
             </ngx-dropzone-preview>
           </ngx-dropzone>

@@ -13,8 +13,10 @@ import { HotelEditComponent } from './hotel/hotel-edit/hotel-edit.component';
 import { CommonModule } from '@angular/common';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxSummernoteModule } from 'ngx-summernote';
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { HotelService } from './hotel/hotel.service';
+import { DataService } from '../shared/services/data.service';
 
 @NgModule({
   declarations: [
@@ -28,8 +30,15 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     NgxDropzoneModule,
     NgxSummernoteModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    BsDatepickerModule.forRoot()
   ],
-  providers: []
+  exports: [
+  ],
+  providers: [
+    HotelService,
+    DataService
+  ]
 })
 export class AdminModule { }

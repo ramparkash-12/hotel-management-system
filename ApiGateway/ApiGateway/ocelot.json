@@ -12,7 +12,7 @@
       "UpstreamPathTemplate": "/identity-api/{everything}"
     },
     {
-      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamPathTemplate": "/api/{version}/Hotel/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
               {
