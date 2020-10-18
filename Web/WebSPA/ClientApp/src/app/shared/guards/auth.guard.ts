@@ -13,6 +13,8 @@ export class AuthGuard implements CanActivate {
               private route: Router) { }
 
   canActivate(): Promise<boolean> | boolean {
+    return true;
+    /*
     if (this.securityService.IsAuthorized) {
       console.log('URL: ' + this.route.url);
       if (this.securityService.UserData.role === 'Customer') {
@@ -26,7 +28,7 @@ export class AuthGuard implements CanActivate {
     //this.alertify.error('You shall not pass - Please Login!!');
     this.securityService.Authorize();
     return false;
-
+    */
   }
 
 }

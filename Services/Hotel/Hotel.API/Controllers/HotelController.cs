@@ -8,6 +8,9 @@ using Hotel.API.Services;
 using Hotel.API.Helpers;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Hotel.API.Model;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Hotel.API.Controllers
 {
@@ -16,10 +19,12 @@ namespace Hotel.API.Controllers
     public class HotelController: ControllerBase
     {
         private readonly IHotelRepository _repo;
+        private readonly IImageService _imageService;
 
-        public HotelController(IHotelRepository repo)
+        public HotelController(IHotelRepository repo, IImageService imageService)
         {
             _repo = repo;
+            _imageService = imageService;
         }
 
    
@@ -48,14 +53,78 @@ namespace Hotel.API.Controllers
         }
 
         // Save: api/Hotel/model
+        //[Authorize]
         [HttpPost("Save")]
-        public async Task<ActionResult<Model.Hotel>> PostHotel([FromBody]Model.Hotel model)
+        public async Task<ActionResult<Model.Hotel>> PostHotel()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                //return BadRequest("Something went wrong!");
+                
+                //** store request in variable 
+                var _request = Request;
+                var _formValues = _request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
 
-            _repo.Insert(model);
-            await _repo.SaveAll();
+                Model.Hotel model = MapFormDataToModel(_formValues);
+            
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _repo.Insert(model);
+                await _repo.SaveAll();
+
+                //** Save Image entries in Database and upload....
+                var files = _request.Form.Files;
+                if(files != null && files.Count > 0)
+                {
+                    IEnumerable<Images> imagesList = MapImagesFormDataToModelAndSave(files, model.Id);
+                    await _repo.SaveAll();
+                    await _imageService.Upload(imagesList);
+                }
+
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private IEnumerable<Images> MapImagesFormDataToModelAndSave(IFormFileCollection files, int TransactionId)
+        {
+            List<Images> _imageList = new List<Images>();
+            foreach (var file in files)
+            {
+                Images image = new Images();
+                image.Name = file.FileName;
+                image.Size = (Math.Round(((decimal)file.Length / (1024 * 1024)), 8));
+                image.Extension = Path.GetExtension(file.FileName);
+                image.TransactionId = TransactionId;
+                image.ImageType = (int) ImageType.HotelImage;
+                image.URI = image.TransactionId + "-" + file.FileName;
+                image.Image = file;
+
+                _imageList.Add(image);
+                _repo.Insert(image);
+            }
+
+            return _imageList;
+        }
+
+        private Model.Hotel MapFormDataToModel(Dictionary<string,string> formValues)
+        {
+            Model.Hotel model = new Model.Hotel();
+
+            model.Name = formValues["name"];
+            model.Description = formValues["description"];
+            model.Address = formValues["address"];
+            model.Country = formValues["country"];
+            model.City = formValues["city"];
+            model.Status = Convert.ToBoolean(formValues["status"]);
+            model.Stars = Convert.ToInt16(formValues["stars"]);
+            model.IsFeatured = Convert.ToBoolean(formValues["isFeatured"]);
+            model.FeaturedFrom = formValues["featuredFrom"] == null ? DateTime.MinValue :  Convert.ToDateTime(formValues["featuredFrom"]);
+            model.FeaturedTo = formValues["featuredTo"] == null ? DateTime.MinValue :  Convert.ToDateTime(formValues["featuredTo"]);
 
             return model;
         }

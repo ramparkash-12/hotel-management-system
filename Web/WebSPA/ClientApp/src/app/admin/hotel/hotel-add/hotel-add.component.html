@@ -15,8 +15,8 @@
           <div class="col-md-12 col-sm-12">
             <label for="status">Status</label>
             <select class="custom-select d-block w-100" name="status" id="status" formControlName="status">
-              <option value="1" selected>Enabled</option>
-              <option value="0">Disabled</option>
+              <option value=true selected>Enabled</option>
+              <option value=false>Disabled</option>
             </select>
           </div>
         </div>
@@ -36,9 +36,9 @@
         <div class="form-group row mb-4">
           <div class="col-md-12">
             <label for="featured">Featured?</label>
-            <select (change)="onFeaturedChange($event.target.value)" class="custom-select d-block w-100" name="featured" id="featured" formControlName="featured" id="featured">
-              <option value="1">Yes</option>
-              <option value="0">No</option>
+            <select (change)="onFeaturedChange($event.target.value)" class="custom-select d-block w-100" name="featured" id="featured" formControlName="isFeatured" id="featured">
+              <option value=true>Yes</option>
+              <option value=false>No</option> 
             </select>
           </div> 
           </div>
@@ -151,7 +151,16 @@
       <hr class="mb-4">
       <div class="row">
         <div class="col-md-12">
-          <button class="btn btn-primary" type="submit">Save <i style="margin-left: 5px;" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
+          <div *ngIf="files.length > 0 && loading === true">
+            Upload progress: <b> {{ progress + '%' }}</b>
+            <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': progress + '%' }"></div>
+            </div>
+          </div>
+          <!-- [disabled]="loading" -->
+          <button href="javascript:void(0);" class="btn btn-primary" type="submit"><i class="fa fa-spinner fa-spin" *ngIf="loading"></i> Save <i style="margin-left: 5px;" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
+
+          <button type="button" (click)="onSetDummyValues();" href="javascript:void(0);" class="btn btn-warning ml-5"> Set Dummy Values <i style="margin-left: 5px;" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
         </div>
       </div>
     </form>

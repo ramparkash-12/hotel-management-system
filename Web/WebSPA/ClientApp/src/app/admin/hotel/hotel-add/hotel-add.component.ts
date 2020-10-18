@@ -1,5 +1,8 @@
+import { DatePipe } from '@angular/common';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { stat } from 'fs';
 import { Hotel } from 'src/app/shared/model/hotel.model';
 import { AlertifyService } from 'src/app/shared/services/alertify.service';
 import { HotelService } from '../hotel.service';
@@ -11,6 +14,7 @@ import { HotelService } from '../hotel.service';
 })
 export class HotelAddComponent implements OnInit {
   files: File[] = [];
+  progress = 0;
   size = 0;
   unit = '';
   content: any;
@@ -30,9 +34,10 @@ export class HotelAddComponent implements OnInit {
   hotelForm: FormGroup;
   formSubmitted: Boolean = false;
   hotel: Hotel;
+  loading = false;
 
   constructor(private fb: FormBuilder, private alertify: AlertifyService,
-    private hotelService: HotelService) { }
+    private hotelService: HotelService, public datepipe: DatePipe) { }
 
   ngOnInit() {
     this.createHotelForm();
@@ -45,12 +50,32 @@ export class HotelAddComponent implements OnInit {
       address: ['', Validators.required],
       country: ['', Validators.required],
       city: ['', Validators.required],
-      status: ['1'],
+      status: ['true'],
       stars: ['1'],
-      featured: ['1', Validators.required],
+      isFeatured: ['true', Validators.required],
       featuredFrom: [''],
       featuredTo: [''],
       images: ['']
+    });
+  }
+
+  onSetDummyValues() {
+    this.setHotelFormDummyValues();
+  }
+
+  setHotelFormDummyValues() {
+    this.hotelForm.setValue({
+      name: ['Travel Lodge'],
+      description: ['Demo Description goes <b> here </b>.......'],
+      address: ['14 grayss inn road'],
+      country: ['United States'],
+      city: ['California'],
+      status: 'false',
+      stars: ['4'],
+      isFeatured: 'true',
+      featuredFrom: ['07/10/2020'],
+      featuredTo: ['30/10/2020'],
+      images: [null]
     });
   }
 
@@ -62,8 +87,8 @@ export class HotelAddComponent implements OnInit {
     this.files.splice(this.files.indexOf(event), 1);
   }
 
-  onFeaturedChange(value) {
-    if (value !== '1') {
+  onFeaturedChange(value: any) {
+    if (value === 'false') {
       this.hotelForm.controls['featuredFrom'].disable();
       this.hotelForm.controls['featuredTo'].disable();
    } else {
@@ -92,23 +117,47 @@ export class HotelAddComponent implements OnInit {
 
   save() {
     this.formSubmitted = true;
-
     if (this.hotelForm.valid) {
-      if (this.files != null && this.files.length > 0) {
-        this.hotelForm.controls['images'].setValue(this.files);
-      }
-      this.hotel = Object.assign({}, this.hotelForm.value);
-      this.hotelService.saveHotel(this.hotel).subscribe(() => {
-        this.alertify.success('Hotel Added Successfuly');
-        //this.router.navigate(['/client']);
-      }, error => {
+      this.mapFormToModel();
+      this.loading = true;
+      this.hotelService.saveHotel(this.hotel).subscribe((event: HttpEvent<any>)  => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            this.progress = Math.round((event.loaded / event.total * 100) / this.files.length);
+            console.log(`Uploaded! ${this.progress}%`);
+            break;
+          case HttpEventType.Response:
+            this.alertify.success('Hotel Added Successfuly');
+            setTimeout(() => {
+              this.progress = 0;
+            }, 1500);
+      }}, error => {
         this.alertify.error(error);
+        this.loading = false;
+      }, () => {
+        this.loading = false;
+        //this.router.navigate(['/confirm', {email: this.user.email}]);
       });
-      //console.log(this.hotel);
     } else {
       this.alertify.error('Please fix the errors!');
     }
 
+  }
+
+  mapFormToModel() {
+    if (this.files != null && this.files.length > 0) {
+      this.hotelForm.controls['images'].setValue(this.files);
+    }
+    this.hotel = Object.assign({}, this.hotelForm.value);
+    if (this.hotel.isFeatured === 'true') {
+      this.convertFeaturedDates();
+    }
+    console.log(this.hotel);
+  }
+
+  convertFeaturedDates() {
+    this.hotel.featuredFrom = this.datepipe.transform(this.hotel.featuredFrom, 'yyyy-MM-dd');
+    this.hotel.featuredTo = this.datepipe.transform(this.hotel.featuredTo, 'yyyy-MM-dd');
   }
 
 }

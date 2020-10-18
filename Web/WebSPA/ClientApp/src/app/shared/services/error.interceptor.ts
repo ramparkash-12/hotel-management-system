@@ -11,14 +11,16 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError(error => {
         if (error instanceof HttpErrorResponse) {
           if (error.status === 401) {
+            console.log('401');
             return throwError(error.statusText);
           }
           if(error.status === 403) {
+            console.log('403');
             return throwError(error.statusText);
           }
           const applicationError = error.headers.get('Application-Error');
           if (applicationError) {
-            console.error(applicationError);
+            console.error('Application-Error' + applicationError);
             return throwError(applicationError);
           }
           const serverError = error.error;
@@ -29,6 +31,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 modalStateErrors += serverError[key] + '\n';
               }
             }
+            console.log('modelStateError: ' + modalStateErrors);
           }
           return throwError(modalStateErrors || serverError || 'Server Error');
         }

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
+
 namespace Hotel.API.Model
 {
     public class Images
@@ -12,6 +14,8 @@ namespace Hotel.API.Model
         public int ImageType { get; set; }
         //** transaction id can be from room, hotel....
         public int TransactionId { get; set; }
+        [NotMapped]
+        public IFormFile Image { get; set; }
 
     }
 

@@ -47,6 +47,7 @@ namespace hotel.api
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRespository, RoomRepository>();
+            services.AddScoped<IImageService, ImageService>();
         }
 
         private void ConfigureAuthService(IServiceCollection services)

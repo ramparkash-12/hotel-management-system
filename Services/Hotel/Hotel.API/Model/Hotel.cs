@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 
@@ -18,7 +19,8 @@ namespace Hotel.API.Model
         public bool IsFeatured { get; set; }
         public DateTime FeaturedFrom { get; set; }
         public DateTime FeaturedTo { get; set; }
-        public List<IFormFile> Images { get; set; }
+        [NotMapped]
+        public IFormFile Image { get; set; }
         public ICollection<Room> Rooms { get; set; }
     }
 }

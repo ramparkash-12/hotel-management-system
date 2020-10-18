@@ -34,7 +34,7 @@ import { RouterModule } from '@angular/router';
     ],
   providers: [
     AuthGuard,
-    ErrorInterceptorProvide,
+    //ErrorInterceptorProvide,
     AlertifyService,
     SecurityService,
     ConfigurationService,

@@ -29,10 +29,31 @@ export class HotelService {
     }
   }
 
-  saveHotel(hotel: Hotel): Observable<boolean> {
+  saveHotel(hotel: Hotel): Observable<any> {
     let url = 'http://localhost:2500' + this.urlSuffix;
-    return this.service.post(url, hotel)
-      .pipe<boolean>
-        (tap((response: any) => true));
+
+    const formData = new FormData();
+    formData.append('name', hotel.name);
+    formData.append('description', hotel.description);
+    formData.append('address', hotel.address);
+    formData.append('country', hotel.country);
+    formData.append('city', hotel.city);
+    formData.append('status', hotel.status);
+    formData.append('stars', hotel.stars.toString());
+    formData.append('isFeatured', hotel.isFeatured);
+    formData.append('featuredFrom', hotel.featuredFrom);
+    formData.append('featuredTo', hotel.featuredTo);
+
+    if (hotel.images.length > 0) {
+      let i = 1;
+      hotel.images.forEach(image => {
+      formData.append('image-' + i  , image);
+      i++;
+      });
+    }
+
+    return this.service.postDataWithBlob(url, formData)
+      .pipe
+        (tap((response: any) => response));
   }
 }

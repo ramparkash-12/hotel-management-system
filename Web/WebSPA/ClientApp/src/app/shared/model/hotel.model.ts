@@ -4,10 +4,10 @@ export interface Hotel {
   address: string;
   city: string;
   country: string;
-  status: boolean;
+  status: string;
   stars: number;
-  isFeatured: boolean;
-  featuredFrom: Date;
-  featureTo: Date;
+  isFeatured: string;
+  featuredFrom: string;
+  featuredTo: string;
   images: File [];
 }
