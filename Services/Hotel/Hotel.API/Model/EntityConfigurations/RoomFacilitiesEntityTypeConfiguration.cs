@@ -12,12 +12,12 @@ namespace Hotel.API.Model.EntityConfigurations
       roomFacilities.HasOne(rm => rm.Facility)
       .WithMany(f => f.RoomFacilities)
       .HasForeignKey(rm => rm.FacilityId)
-      .IsRequired();
+      .IsRequired(false);
 
       roomFacilities.HasOne(rm => rm.Room)
       .WithMany(r => r.RoomFacilities)
       .HasForeignKey(rm => rm.RoomId)
-      .IsRequired();
+      .IsRequired(false);;
     }
   }
 }

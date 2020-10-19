@@ -12,8 +12,10 @@ namespace Hotel.API.Model
         public string Extension { get; set; }
         public string URI { get; set; }
         public int ImageType { get; set; }
-        //** transaction id can be from room, hotel....
-        public int TransactionId { get; set; }
+        public int? HotelImageId { get; set; }
+        public Hotel Hotel { get; set; }
+        public int? RoomImageId { get; set; }
+        public Room Room { get; set; }
         [NotMapped]
         public IFormFile Image { get; set; }
 

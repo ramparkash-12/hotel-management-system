@@ -17,5 +17,6 @@ namespace Hotel.API.Model
         public int RoomTypeId { get; set; }
         public RoomType RoomType { get; set; }
         public ICollection<RoomFacilities> RoomFacilities { get; set; }
+        public ICollection<Images> Images { get; set; }
     }
 }

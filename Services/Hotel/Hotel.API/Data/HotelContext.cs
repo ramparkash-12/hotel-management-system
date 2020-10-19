@@ -21,7 +21,11 @@ namespace Hotel.API.Data
     protected override void OnModelCreating(ModelBuilder builder)
     {
       builder.ApplyConfiguration(new RoomFacilitiesEntityTypeConfiguration());
+      builder.ApplyConfiguration(new ImagesEntityTypeConfiguration());
       builder.Seed();
+      
+      //base.OnModelCreating(builder);
+
     }
   }
 }

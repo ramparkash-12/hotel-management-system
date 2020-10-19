@@ -4,14 +4,16 @@ using Hotel.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hotel.API.Migrations
 {
     [DbContext(typeof(HotelContext))]
-    partial class HotelContextModelSnapshot : ModelSnapshot
+    [Migration("20201019012816_ImagesExtended")]
+    partial class ImagesExtended
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +100,7 @@ namespace Hotel.API.Migrations
                     b.Property<string>("Extension")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HotelImageId")
+                    b.Property<int>("HotelImageId")
                         .HasColumnType("int");
 
                     b.Property<int>("ImageType")
@@ -107,7 +109,7 @@ namespace Hotel.API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RoomImageId")
+                    b.Property<int>("RoomImageId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Size")
@@ -211,11 +213,15 @@ namespace Hotel.API.Migrations
                 {
                     b.HasOne("Hotel.API.Model.Hotel", "Hotel")
                         .WithMany("Images")
-                        .HasForeignKey("HotelImageId");
+                        .HasForeignKey("HotelImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Hotel.API.Model.Room", "Room")
                         .WithMany("Images")
-                        .HasForeignKey("RoomImageId");
+                        .HasForeignKey("RoomImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hotel.API.Model.Room", b =>
@@ -235,11 +241,15 @@ namespace Hotel.API.Migrations
                 {
                     b.HasOne("Hotel.API.Model.Facility", "Facility")
                         .WithMany("RoomFacilities")
-                        .HasForeignKey("FacilityId");
+                        .HasForeignKey("FacilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Hotel.API.Model.Room", "Room")
                         .WithMany("RoomFacilities")
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

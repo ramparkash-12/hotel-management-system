@@ -71,15 +71,26 @@ namespace Hotel.API.Controllers
                     return BadRequest(ModelState);
 
                 _repo.Insert(model);
-                await _repo.SaveAll();
+                //await _repo.SaveAll();
 
                 //** Save Image entries in Database and upload....
                 var files = _request.Form.Files;
                 if(files != null && files.Count > 0)
                 {
-                    IEnumerable<Images> imagesList = MapImagesFormDataToModelAndSave(files, model.Id);
+                    IEnumerable<Images> imagesList = MapImagesFormDataToModelAndSave(files, model);
                     await _repo.SaveAll();
-                    await _imageService.Upload(imagesList);
+                    try
+                    {
+                        await _imageService.Upload(imagesList);
+                    }
+                    catch(Exception ex)
+                    {
+                        _repo.Delete(model);
+                        _repo.Delete(imagesList);
+                        await _repo.SaveAll();
+
+                        return BadRequest(ex.Message);
+                    }
                 }
 
                 return Ok();
@@ -90,7 +101,7 @@ namespace Hotel.API.Controllers
             }
         }
 
-        private IEnumerable<Images> MapImagesFormDataToModelAndSave(IFormFileCollection files, int TransactionId)
+        private IEnumerable<Images> MapImagesFormDataToModelAndSave(IFormFileCollection files, Model.Hotel model)
         {
             List<Images> _imageList = new List<Images>();
             foreach (var file in files)
@@ -99,9 +110,10 @@ namespace Hotel.API.Controllers
                 image.Name = file.FileName;
                 image.Size = (Math.Round(((decimal)file.Length / (1024 * 1024)), 8));
                 image.Extension = Path.GetExtension(file.FileName);
-                image.TransactionId = TransactionId;
+                image.Hotel = model;
+                
                 image.ImageType = (int) ImageType.HotelImage;
-                image.URI = image.TransactionId + "-" + file.FileName;
+                //image.URI = image.TransactionId + "-" + file.FileName;
                 image.Image = file;
 
                 _imageList.Add(image);

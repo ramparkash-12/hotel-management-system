@@ -53,14 +53,14 @@ namespace Hotel.API.Services
                 url = "";
                 if (item.ImageType == (int) ImageType.HotelImage)
                 {
-                    url = "Hotel/";
+                    url = "Hotel/" + item.HotelImageId;
                 } 
                 else 
                 {
-                    url = "Room/";
+                    url = "Room/" + item.HotelImageId;
                 }
 
-                url += item.TransactionId + "/" + item.Name;
+                //url += item.TransactionId + "/" + item.Name;
 
                 CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(url);
 
@@ -77,7 +77,7 @@ namespace Hotel.API.Services
                 //** If file name already exists then appent (1) with the name and upload it again...
                 if (ex.Message.Contains("Conflict"))
                 {
-                    url += item.TransactionId + "/" + item.Name + "(1)";
+                    url += "/" + item.Name + "(1)";
 
                     CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(url);
 

@@ -22,5 +22,6 @@ namespace Hotel.API.Model
         [NotMapped]
         public IFormFile Image { get; set; }
         public ICollection<Room> Rooms { get; set; }
+        public ICollection<Images> Images { get; set; }
     }
 }
