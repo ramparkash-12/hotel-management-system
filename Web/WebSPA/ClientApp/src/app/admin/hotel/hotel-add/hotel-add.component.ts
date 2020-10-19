@@ -156,8 +156,8 @@ export class HotelAddComponent implements OnInit {
   }
 
   convertFeaturedDates() {
-    this.hotel.featuredFrom = this.datepipe.transform(this.hotel.featuredFrom, 'yyyy-MM-dd');
-    this.hotel.featuredTo = this.datepipe.transform(this.hotel.featuredTo, 'yyyy-MM-dd');
+    this.hotel.featuredFrom = this.datepipe.transform(this.hotel.featuredFrom, this.hotelService.dateFormat);
+    this.hotel.featuredTo = this.datepipe.transform(this.hotel.featuredTo, this.hotelService.dateFormat);
   }
 
 }

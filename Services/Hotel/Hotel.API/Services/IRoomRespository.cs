@@ -5,7 +5,7 @@ using Hotel.API.Model;
 
 namespace Hotel.API.Services
 {
-    public interface IRoomRespository : IGenericRepository
+    public interface IRoomRespository : IGenericRepository<Model.Room>
     {
          Task<Room> Get(int id);
          Task<IEnumerable<Room>> GetAll(); 

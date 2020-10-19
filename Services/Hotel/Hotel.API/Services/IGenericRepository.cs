@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 
 namespace Hotel.API.Services
 {
-    public interface IGenericRepository
+    public interface IGenericRepository<T> where T: class
     {
-        void Insert<T>(T obj) where T : class;
-        void Update<T>(T obj) where T : class;
-        void Delete<T>(T obj) where T : class;
+        void Insert (T entity);
+        void Update (T entity);
+        void Delete (T entity);
+        void DeleteRange(IEnumerable<T> entities);
         Task<bool> SaveAll();
     }
 }

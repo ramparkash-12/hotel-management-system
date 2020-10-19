@@ -4,7 +4,7 @@ using Hotel.API.Helpers;
 
 namespace Hotel.API.Services
 {
-    public interface IHotelRepository : IGenericRepository
+    public interface IHotelRepository : IGenericRepository<Model.Hotel>
     {
          Task<Model.Hotel> Get(int id);
          Task<IEnumerable<Model.Hotel>> GetAll();

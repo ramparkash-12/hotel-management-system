@@ -8,12 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.API.Services
 {
-  public class RoomRepository : GenericRepository, IRoomRespository
+  public class RoomRepository : GenericRepository<Model.Room>, IRoomRespository
   {
-    private readonly HotelContext _context;
     public RoomRepository(HotelContext context) : base(context)
     {
-      _context = context;
     }
     
 

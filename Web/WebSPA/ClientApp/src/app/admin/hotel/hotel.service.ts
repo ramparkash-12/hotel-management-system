@@ -11,6 +11,7 @@ import { SecurityService } from 'src/app/shared/services/security.service';
   providedIn: 'root'
 })
 export class HotelService {
+  public dateFormat = 'yyyy-MM-dd';
   private hotelUrl: string = '';
   urlSuffix = '/api/v1/Hotel/Save'; //'/api/v1/hotel-api/Save';
 

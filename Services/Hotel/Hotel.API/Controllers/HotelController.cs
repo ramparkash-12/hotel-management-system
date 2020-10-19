@@ -19,12 +19,14 @@ namespace Hotel.API.Controllers
     public class HotelController: ControllerBase
     {
         private readonly IHotelRepository _repo;
+        private readonly IGenericRepository<Images> _imagesRepo;
         private readonly IImageService _imageService;
 
-        public HotelController(IHotelRepository repo, IImageService imageService)
+        public HotelController(IHotelRepository repo, IImageService imageService, IGenericRepository<Images> imagesRepo)
         {
             _repo = repo;
             _imageService = imageService;
+            _imagesRepo = imagesRepo;
         }
 
    
@@ -57,48 +59,44 @@ namespace Hotel.API.Controllers
         [HttpPost("Save")]
         public async Task<ActionResult<Model.Hotel>> PostHotel()
         {
-            try
-            {
-                //return BadRequest("Something went wrong!");
-                
-                //** store request in variable 
-                var _request = Request;
-                var _formValues = _request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
-
-                Model.Hotel model = MapFormDataToModel(_formValues);
             
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+            //** store request in variable 
+            var _request = Request;
+            var _formValues = _request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
 
-                _repo.Insert(model);
-                //await _repo.SaveAll();
+            Model.Hotel model = MapFormDataToModel(_formValues);
+        
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                //** Save Image entries in Database and upload....
-                var files = _request.Form.Files;
-                if(files != null && files.Count > 0)
-                {
-                    IEnumerable<Images> imagesList = MapImagesFormDataToModelAndSave(files, model);
-                    await _repo.SaveAll();
-                    try
-                    {
-                        await _imageService.Upload(imagesList);
-                    }
-                    catch(Exception ex)
-                    {
-                        _repo.Delete(model);
-                        _repo.Delete(imagesList);
-                        await _repo.SaveAll();
+            _repo.Insert(model);
 
-                        return BadRequest(ex.Message);
-                    }
-                }
-
-                return Ok();
-            }
-            catch(Exception ex)
+            //** Save Image entries in Database and upload....
+            var files = _request.Form.Files;
+            if(files != null && files.Count > 0)
             {
-                return BadRequest(ex.Message);
+                IEnumerable<Images> imagesList = MapImagesFormDataToModelAndSave(files, model);
+                await _repo.SaveAll();
+                try
+                {
+                    await _imageService.Upload(imagesList);
+                }
+                catch(Exception ex)
+                {
+                    _repo.Delete(model);
+                    _imagesRepo.DeleteRange(imagesList);
+                    await _repo.SaveAll();
+
+                    return BadRequest(ex.Message);
+                }
+            } 
+            else
+            {
+                await _repo.SaveAll();
             }
+
+            return Ok();
+            
         }
 
         private IEnumerable<Images> MapImagesFormDataToModelAndSave(IFormFileCollection files, Model.Hotel model)
@@ -117,7 +115,7 @@ namespace Hotel.API.Controllers
                 image.Image = file;
 
                 _imageList.Add(image);
-                _repo.Insert(image);
+                _imagesRepo.Insert(image);
             }
 
             return _imageList;
@@ -135,8 +133,8 @@ namespace Hotel.API.Controllers
             model.Status = Convert.ToBoolean(formValues["status"]);
             model.Stars = Convert.ToInt16(formValues["stars"]);
             model.IsFeatured = Convert.ToBoolean(formValues["isFeatured"]);
-            model.FeaturedFrom = formValues["featuredFrom"] == null ? DateTime.MinValue :  Convert.ToDateTime(formValues["featuredFrom"]);
-            model.FeaturedTo = formValues["featuredTo"] == null ? DateTime.MinValue :  Convert.ToDateTime(formValues["featuredTo"]);
+            model.FeaturedFrom = string.IsNullOrWhiteSpace(formValues["featuredFrom"]) ? DateTime.MinValue : Extensions.Extensions.ConvertStringToDateTime(formValues["featuredFrom"]);
+            model.FeaturedTo = string.IsNullOrWhiteSpace(formValues["featuredTo"]) ? DateTime.MinValue :  Extensions.Extensions.ConvertStringToDateTime(formValues["featuredTo"]);
 
             return model;
         }

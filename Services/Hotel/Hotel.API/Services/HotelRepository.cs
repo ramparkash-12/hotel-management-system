@@ -7,12 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.API.Services
 {
-  public class HotelRepository : GenericRepository, IHotelRepository
+  public class HotelRepository : GenericRepository<Model.Hotel>, IHotelRepository
   {
-    private readonly HotelContext _context;
     public HotelRepository(HotelContext context) : base(context)
     {
-      _context = context;
     }
 
     public async Task<Model.Hotel> Get(int id)

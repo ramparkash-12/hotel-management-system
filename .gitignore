@@ -54,6 +54,7 @@ project.fragment.lock.json
 artifacts/
 **/Properties/launchSettings.json
 project.assets.json
+./appsettings.Development.json
 
 # StyleCop
 StyleCopReport.xml
@@ -317,3 +318,5 @@ OpenCover/
 
 # Azure Stream Analytics local run output 
 ASALocalRun/
+Services/Hotel/Hotel.API/appsettings.Development.json
+Services/Hotel/Hotel.API/appsettings.Development.json
