@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Hotel.API.Model;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Hotel.API.Extensions;
 
 namespace Hotel.API.Controllers
 {
@@ -31,11 +32,15 @@ namespace Hotel.API.Controllers
 
    
         // Get All: api/Hotel/HotelsList
-        [Authorize]
+        //[Authorize]
         [HttpGet("HotelsList")]
-        public async Task<ActionResult<List<Model.Hotel>>> HotelsList()
+        public async Task<ActionResult<List<Model.Hotel>>> HotelsList([FromQuery] HotelSearchParams searchParams)
         {
-            var hotels = await _repo.GetAll();
+            var hotels = await _repo.GetAll(searchParams);
+            
+            Response.AddPagination(hotels.CurrentPage, hotels.PageSize, hotels.TotalCount,
+            hotels.TotalPages);
+            
             return hotels.ToList();
         }
 
@@ -111,7 +116,6 @@ namespace Hotel.API.Controllers
                 image.Hotel = model;
                 
                 image.ImageType = (int) ImageType.HotelImage;
-                //image.URI = image.TransactionId + "-" + file.FileName;
                 image.Image = file;
 
                 _imageList.Add(image);
@@ -133,8 +137,8 @@ namespace Hotel.API.Controllers
             model.Status = Convert.ToBoolean(formValues["status"]);
             model.Stars = Convert.ToInt16(formValues["stars"]);
             model.IsFeatured = Convert.ToBoolean(formValues["isFeatured"]);
-            model.FeaturedFrom = string.IsNullOrWhiteSpace(formValues["featuredFrom"]) ? DateTime.MinValue : Extensions.Extensions.ConvertStringToDateTime(formValues["featuredFrom"]);
-            model.FeaturedTo = string.IsNullOrWhiteSpace(formValues["featuredTo"]) ? DateTime.MinValue :  Extensions.Extensions.ConvertStringToDateTime(formValues["featuredTo"]);
+            model.FeaturedFrom = string.IsNullOrWhiteSpace(formValues["featuredFrom"]) && model.IsFeatured == false ? DateTime.MinValue : Extensions.Extensions.ConvertStringToDateTime(formValues["featuredFrom"]);
+            model.FeaturedTo = string.IsNullOrWhiteSpace(formValues["featuredTo"]) && model.IsFeatured == false ? DateTime.MinValue :  Extensions.Extensions.ConvertStringToDateTime(formValues["featuredTo"]);
 
             return model;
         }
@@ -178,8 +182,13 @@ namespace Hotel.API.Controllers
             _repo.Delete(hotel);
 
             try
-            {
+            {   
+                if (hotel.Images != null && hotel.Images.Count > 0)
+                {
+                    await _imageService.Delete(hotel.Images);
+                }
                 await _repo.SaveAll();
+
             }catch(Exception ex)
             {
                 throw ex;

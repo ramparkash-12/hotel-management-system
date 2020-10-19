@@ -17,6 +17,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { HotelService } from './hotel/hotel.service';
 import { DataService } from '../shared/services/data.service';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,10 @@ import { DataService } from '../shared/services/data.service';
     NgxSummernoteModule,
     FormsModule,
     ReactiveFormsModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    PaginationModule.forRoot(),
+    SweetAlert2Module.forRoot(),
+    TooltipModule.forRoot()
   ],
   exports: [
   ],

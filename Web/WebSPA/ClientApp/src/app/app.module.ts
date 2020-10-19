@@ -16,6 +16,9 @@ import { ErrorInterceptorProvide } from './shared/services/error.interceptor';
 import { ForbiddenComponent } from './shared/components/forbidden/forbidden.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { RouterModule } from '@angular/router';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { RouterModule } from '@angular/router';
     HttpClientModule,
     FormsModule,
     routing,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    PaginationModule.forRoot(),
+    SweetAlert2Module.forRoot(),
+    TooltipModule.forRoot(),
     ],
   providers: [
     AuthGuard,

@@ -1,31 +1,47 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse, HttpHeaderResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpHeaderResponse, HttpParams } from "@angular/common/http";
 
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { SecurityService } from './security.service';
 import { Guid } from '../../../guid';
 import { error } from 'protractor';
+import { PaginatedResult } from '../model/pagination.model';
 
 @Injectable()
 export class DataService {
     options: any;
     constructor(private http: HttpClient, private securityService: SecurityService) { }
 
-    get(url: string, params?: any): Observable<Response> {
+    getAll(url: string, page?, itemsPerPage?, searchParams?): Observable<PaginatedResult<any []>> {
+        const paginatedResult: PaginatedResult<any[]> = new PaginatedResult<any[]>();
         // tslint:disable-next-line:prefer-const
-        let options = { };
-        this.setHeaders(options);
+        this.options = { };
+        this.setHeaders(this.options);
 
-        return this.http.get(url, options)
-            .pipe(
-                // retry(3), // retry a failed request up to 3 times
-                tap((res: Response) => {
-                    return res;
-                }),
-                catchError(this.handleError)
-            );
+        let params = new HttpParams();
+
+        if (page != null && itemsPerPage != null) {
+            params = params.append('pageNumber', page);
+            params = params.append('pageSize', itemsPerPage);
+        }
+
+        if (searchParams != null) {
+            params = params.append('searchByName', searchParams.searchByName);
+        }
+        return this.http.get<any[]>(url, {headers: this.options, observe: 'response', params})
+          .pipe(
+            map(response => {
+                console.log(response);
+              paginatedResult.result = response.body;
+              if (response.headers.get('Pagination') != null) {
+                paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
+              }
+              return paginatedResult;
+            }),
+            catchError(this.handleError)
+          );
     }
 
     postWithId(url: string, data: any, params?: any): Observable<Response> {
@@ -46,8 +62,8 @@ export class DataService {
 
     private doPostWithBlob(url: string, data: any, needId: boolean, params?: any): Observable<any> {
         // tslint:disable-next-line: prefer-const
-        let options = { };
-        this.setHeaders(options, needId);
+        this.options = { };
+        this.setHeaders(this.options, needId);
 
         return this.http.post(url, data,
             { reportProgress: true,
@@ -76,15 +92,17 @@ export class DataService {
             );
     }
 
-    delete(url: string, params?: any) {
+    Delete(url: string, id?: number): Observable<any> {
         let options = { };
         this.setHeaders(options);
 
-        console.log('data.service deleting');
-
-        this.http.delete(url, options)
-            .subscribe((res) => {console.log('deleted');
-        });
+        return this.http.delete(url, { headers: options})
+        .pipe(
+            tap((res: any) => {
+                return res;
+            }),
+            catchError(this.handleError)
+        );
     }
 
     private handleError(error: any) {

@@ -7,7 +7,7 @@ namespace Hotel.API.Services
     public interface IHotelRepository : IGenericRepository<Model.Hotel>
     {
          Task<Model.Hotel> Get(int id);
-         Task<IEnumerable<Model.Hotel>> GetAll();
+         Task<PagedList<Model.Hotel>> GetAll(HotelSearchParams hotelParams);
          Task<PagedList<Model.Hotel>> Search(HotelSearchParams hotelSearchParams);
     }
 }

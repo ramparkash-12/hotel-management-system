@@ -6,5 +6,6 @@ namespace Hotel.API.Services
     public interface IImageService
     {
         Task Upload(IEnumerable<Model.Images> imageList);
+        Task Delete(IEnumerable<Model.Images> imageList);
     }
 }

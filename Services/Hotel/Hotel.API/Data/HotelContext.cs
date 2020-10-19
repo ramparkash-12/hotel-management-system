@@ -23,6 +23,13 @@ namespace Hotel.API.Data
       builder.ApplyConfiguration(new RoomFacilitiesEntityTypeConfiguration());
       builder.ApplyConfiguration(new ImagesEntityTypeConfiguration());
       builder.Seed();
+
+       builder.Entity<Model.Hotel>()
+       .HasMany(h => h.Images)
+      .WithOne(i => i.Hotel)
+      .IsRequired(false)
+      .OnDelete(DeleteBehavior.Cascade);
+
       
       //base.OnModelCreating(builder);
 

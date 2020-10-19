@@ -15,12 +15,16 @@ namespace Hotel.API.Services
 
     public async Task<Model.Hotel> Get(int id)
     {
-      return await _context.Hotels.AsNoTracking().FirstOrDefaultAsync(h => h.Id == id);
+      return await _context.Hotels.AsNoTracking().Include(hotelImages => hotelImages.Images)
+      .FirstOrDefaultAsync(h => h.Id == id);
     }
 
-    public async Task<IEnumerable<Model.Hotel>> GetAll()
+    public async Task<PagedList<Model.Hotel>> GetAll(HotelSearchParams hotelParams)
     {
-      return await _context.Hotels.AsNoTracking().ToListAsync();
+      var hotels = _context.Hotels.AsNoTracking().OrderByDescending(h=> h.Id).AsQueryable();
+      
+      return await PagedList<Model.Hotel>.CreateAsync(hotels, hotelParams.PageNumber, hotelParams.PageSize);
+
     }
 
     public async Task<PagedList<Model.Hotel>> Search(HotelSearchParams hotelSearchParams)

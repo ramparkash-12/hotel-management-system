@@ -8,42 +8,77 @@
     <button class="btn btn-warning text-light ml-3" routerLink="edit"> <i class="fa fa-search" aria-hidden="true"></i> Search </button>
   </div>
 </div>
-<app-hotel-item></app-hotel-item>
+<div class="alert alert-info mt-4" role="alert" [hidden]="!loading">
+  Loading.........
+</div>
 
 <table class="table table-striped my-5">
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
+      <th scope="col">Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Stars</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td class="td-actions">
-        <button routerLink="/hotel/edit/1"  type="button" class="btn btn-primary btn-link btn-sm td-actions-btn-clrs" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+  <tbody *ngIf="hotels?.length > 0">
+    <tr *ngFor="let hotel of hotels">
+      <td>
+        {{ hotel.id }}
+    </td>
+    <td>
+      {{ hotel.name }}
+    </td>
+    <td>
+      {{ hotel.status }}
+    </td>
+    <td>
+      {{ hotel.stars }}
+    </td>
+     <td class="td-actions">
+        <button routerLink="/hotel/edit/{{hotel.id}}"  type="button" class="btn btn-primary td-actions-btn-clrs" tooltip="Edit" [adaptivePosition]="false" placement="top">
           <i class="fa fa-pencil" aria-hidden="true"> </i>
         </button>
-        <button style="margin-left: 2px;" type="button" class="btn btn-danger btn-link btn-sm td-actions-btn-clrs">
+        <button style="margin-left: 5px;" type="button" 
+        class="btn btn-danger td-actions-btn-clrs" [swal]="deleteSwal"
+        tooltip="Delete"
+        [adaptivePosition]="false"
+        placement="top">
           <i class="fa fa-times" aria-hidden="true"> </i>
         </button>
-    </td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
+      </td>
+    <swal
+      #deleteSwal
+      title="Delete"
+      text="Delete Hotel '{{ hotel.name }}'?"
+      type="warning"
+      icon="warning"
+      [showCancelButton]="true"
+      [focusCancel]="true"
+      (confirm)="delete(hotel.id)"
+      [swalOptions]="{ confirmButtonText: 'Yes!' }">
+  </swal>
+  <swal
+      #confirmDeleted
+      title="Deleted"
+      text="'{{ hotel.name }}' was deleted"
+      icon="success"
+      type="information">
+  </swal>
     </tr>
   </tbody>
 </table>
+
+
+<div class="d-flex justify-content-center">
+  <pagination [boundaryLinks]="true" 
+  [totalItems]="pagination?.totalItems"
+  [itemsPerPage]="pagination?.itemsPerPage"
+  (pageChanged)="onPageChanged($event)"
+  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"> </pagination>
+</div>
+
+<div class="d-flex justify-content-center">
+  {{ paginationText }}
+</div>

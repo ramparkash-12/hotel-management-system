@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hotel.API.Extensions;
 using Hotel.API.Model;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
@@ -11,77 +12,86 @@ namespace Hotel.API.Services
   public class ImageService : IImageService
   {
     private readonly IConfiguration _configuration;
+    private readonly string _storageConnectionString;
 
     public ImageService(IConfiguration configuration)
     {
         _configuration = configuration;
+        _storageConnectionString = _configuration.GetValue("storageConnectionString", "");
+    }
+
+    public async Task Delete(IEnumerable<Images> imageList)
+    {
+        CloudBlobContainer container = ImageExtension.GetStorageContainer(_storageConnectionString);
+        var url = "";
+
+        if (container != null)
+        {
+            await container.CreateIfNotExistsAsync();
+            
+            foreach (var item in imageList)
+            {
+                try
+                {
+                    url = "";
+                    if (item.ImageType == (int) ImageType.HotelImage)
+                    {
+                        url = ImageExtension.GenerateURI(1, item.HotelImageId, item.Name);
+                    } 
+                    else 
+                    {
+                        url = ImageExtension.GenerateURI(2, item.HotelImageId, item.Name);
+                    }
+
+                    CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(url);
+                    cloudBlockBlob.Delete();
+                
+                }
+                catch(Exception)
+                {
+                    CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(url);
+                    cloudBlockBlob.Delete();
+                }
+            }
+        }
+        else
+        {
+            throw new Exception("Unable to get container reference");
+        }
     }
 
     public async Task Upload(IEnumerable<Images> imageList)
     {
-      string storageConnectionString = _configuration.GetValue("storageConnectionString", "");
-
-      // Check whether the connection string can be parsed.
-      CloudStorageAccount storageAccount;
-
-      CloudStorageAccount.TryParse(storageConnectionString, out storageAccount);
-
-      // Create the CloudBlobClient that represents the 
-      // Blob storage endpoint for the storage account.
-      CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
-
-      // Create a container called 'quickstartblobs' and 
-      CloudBlobContainer cloudBlobContainer =
-          cloudBlobClient.GetContainerReference("images");
-
-      await cloudBlobContainer.CreateIfNotExistsAsync();
-
-      // Set the permissions so the blobs are public.
-      BlobContainerPermissions permissions = new BlobContainerPermissions
-      {
-        PublicAccess = BlobContainerPublicAccessType.Blob
-      };
-
-      await cloudBlobContainer.SetPermissionsAsync(permissions);
-
-
+        CloudBlobContainer container = ImageExtension.GetStorageContainer(_storageConnectionString);
         var url = "";
-        foreach (var item in imageList)
+
+        if (container != null)
         {
-            try
+            await container.CreateIfNotExistsAsync();
+
+            // Set the permissions so the blobs are public.
+            BlobContainerPermissions permissions = new BlobContainerPermissions
             {
-                url = "";
-                if (item.ImageType == (int) ImageType.HotelImage)
-                {
-                    url = "Hotel/";
-                    url += item.HotelImageId;
-                } 
-                else 
-                {
-                    url = "Room/" + item.RoomImageId;
-                    url += item.RoomImageId;
-                }
+                PublicAccess = BlobContainerPublicAccessType.Blob
+            };
 
-                url +=  "/" + item.Name;
-
-                CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(url);
-
-                if (item.Image.Length > 0)
+            await container.SetPermissionsAsync(permissions);
+            
+            foreach (var item in imageList)
+            {
+                try
                 {
-                    using (var stream = item.Image.OpenReadStream())
+                    url = "";
+                    if (item.ImageType == (int) ImageType.HotelImage)
                     {
-                        await cloudBlockBlob.UploadFromStreamAsync(stream);
+                        url = ImageExtension.GenerateURI(1, item.HotelImageId, item.Name);
+                    } 
+                    else 
+                    {
+                        url = ImageExtension.GenerateURI(2, item.HotelImageId, item.Name);
                     }
-                }
-            }
-            catch(Exception ex)
-            {
-                //** If file name already exists then appent (1) with the name and upload it again...
-                if (ex.Message.Contains("exists"))
-                {
-                    url += "(1)";
 
-                    CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(url);
+                    CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(url);
 
                     if (item.Image.Length > 0)
                     {
@@ -91,7 +101,29 @@ namespace Hotel.API.Services
                         }
                     }
                 }
+                catch(Exception ex)
+                {
+                    //** If file name already exists then appent (1) with the name and upload it again...
+                    if (ex.Message.Contains("exists"))
+                    {
+                        url += "(1)";
+
+                        CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(url);
+
+                        if (item.Image.Length > 0)
+                        {
+                            using (var stream = item.Image.OpenReadStream())
+                            {
+                                await cloudBlockBlob.UploadFromStreamAsync(stream);
+                            }
+                        }
+                    }
+                }
             }
+        }
+        else
+        {
+            throw new Exception("Unable to get container reference");
         }
     }
   }
