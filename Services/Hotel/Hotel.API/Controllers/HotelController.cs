@@ -154,6 +154,17 @@ namespace Hotel.API.Controllers
             if (hotel == null)
                 return NotFound($"Hotel with id {model.Id} not found.");
 
+            if (model.IsFeatured)
+            {
+               model.FeaturedFrom = Extensions.Extensions.ConvertStringToDateTime(model.FeaturedFrom.ToString());
+               model.FeaturedTo = Extensions.Extensions.ConvertStringToDateTime(model.FeaturedTo.ToString());
+            }
+            else
+            {
+                model.FeaturedFrom = DateTime.MinValue;
+                model.FeaturedTo = DateTime.MinValue;
+            }
+
             _repo.Update(model);
 
             try

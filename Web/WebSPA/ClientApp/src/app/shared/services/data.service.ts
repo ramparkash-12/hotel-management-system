@@ -14,23 +14,27 @@ export class DataService {
     options: any;
     constructor(private http: HttpClient, private securityService: SecurityService) { }
 
-    getAll(url: string, page?, itemsPerPage?, searchParams?): Observable<PaginatedResult<any []>> {
+    getById(url: string): Observable<any> {
+        this.options = { };
+        this.setHeaders(this.options);
+
+        return this.http.get<any>(url , { headers: this.options  })
+        .pipe(
+            tap((res: any) => {
+                return res;
+            }),
+            catchError(this.handleError)
+          );
+    }
+
+
+    getAll(url: string, page?, itemsPerPage?, searchParams?: any): Observable<PaginatedResult<any []>> {
         const paginatedResult: PaginatedResult<any[]> = new PaginatedResult<any[]>();
         // tslint:disable-next-line:prefer-const
         this.options = { };
         this.setHeaders(this.options);
 
-        let params = new HttpParams();
-
-        if (page != null && itemsPerPage != null) {
-            params = params.append('pageNumber', page);
-            params = params.append('pageSize', itemsPerPage);
-        }
-
-        if (searchParams != null) {
-            params = params.append('searchByName', searchParams.searchByName);
-        }
-        return this.http.get<any[]>(url, {headers: this.options, observe: 'response', params})
+        return this.http.get<any[]>(url, {headers: this.options, observe: 'response', params: searchParams })
           .pipe(
             map(response => {
                 console.log(response);
@@ -80,10 +84,10 @@ export class DataService {
 
     private doPost(url: string, data: any, needId: boolean, params?: any): Observable<Response> {
         // tslint:disable-next-line: prefer-const
-        let options = { };
-        this.setHeaders(options, needId);
+        this.options = { };
+        this.setHeaders(this.options, needId);
 
-        return this.http.post(url, data, options)
+        return this.http.post(url, data, { headers: this.options } )
             .pipe(
                 tap((res: Response) => {
                     return res;
@@ -93,10 +97,10 @@ export class DataService {
     }
 
     Delete(url: string, id?: number): Observable<any> {
-        let options = { };
-        this.setHeaders(options);
+        this.options = { };
+        this.setHeaders(this.options);
 
-        return this.http.delete(url, { headers: options})
+        return this.http.delete(url, { headers: this.options})
         .pipe(
             tap((res: any) => {
                 return res;
@@ -150,10 +154,10 @@ export class DataService {
     }
 
     private doPut(url: string, data: any, needId: boolean, params?: any): Observable<Response> {
-        let options = { };
-        this.setHeaders(options, needId);
+        this.options = { };
+        this.setHeaders(this.options, needId);
 
-        return this.http.put(url, data, options)
+        return this.http.put(url, data, { headers: this.options })
             .pipe(
                 tap((res: Response) => {
                     return res;

@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { stat } from 'fs';
 import { Hotel } from 'src/app/shared/model/hotel.model';
 import { AlertifyService } from 'src/app/shared/services/alertify.service';
+import { CommonService } from 'src/app/shared/services/common.service';
 import { HotelService } from '../hotel.service';
 
 @Component({
@@ -37,7 +38,7 @@ export class HotelAddComponent implements OnInit {
   loading = false;
 
   constructor(private fb: FormBuilder, private alertify: AlertifyService,
-    private hotelService: HotelService, public datepipe: DatePipe) { }
+    private hotelService: HotelService, private commonService: CommonService) { }
 
   ngOnInit() {
     this.createHotelForm();
@@ -156,8 +157,8 @@ export class HotelAddComponent implements OnInit {
   }
 
   convertFeaturedDates() {
-    this.hotel.featuredFrom = this.datepipe.transform(this.hotel.featuredFrom, this.hotelService.dateFormat);
-    this.hotel.featuredTo = this.datepipe.transform(this.hotel.featuredTo, this.hotelService.dateFormat);
+    this.hotel.featuredFrom = this.commonService.formatDate(this.hotel.featuredFrom, false);
+    this.hotel.featuredTo = this.commonService.formatDate(this.hotel.featuredTo, false);
   }
 
 }

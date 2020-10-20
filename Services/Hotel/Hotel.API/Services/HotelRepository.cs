@@ -23,6 +23,16 @@ namespace Hotel.API.Services
     {
       var hotels = _context.Hotels.AsNoTracking().OrderByDescending(h=> h.Id).AsQueryable();
       
+      if (hotelParams.Name != null && !string.IsNullOrWhiteSpace(hotelParams.Name))
+      {
+          hotels = hotels.Where(h => h.Name.ToLower().Contains(hotelParams.Name.ToLower()));
+      }
+
+      if (hotelParams.City != null && !string.IsNullOrWhiteSpace(hotelParams.City))
+      {
+          hotels = hotels.Where(h => h.City.ToLower() == hotelParams.City.ToLower());
+      }
+
       return await PagedList<Model.Hotel>.CreateAsync(hotels, hotelParams.PageNumber, hotelParams.PageSize);
 
     }
@@ -31,12 +41,12 @@ namespace Hotel.API.Services
     {
         var hotels = _context.Hotels.AsNoTracking().OrderByDescending(h => h.Id).AsQueryable();
 
-        if (hotelSearchParams.Name != null)
+        if (hotelSearchParams.Name != null && !string.IsNullOrWhiteSpace(hotelSearchParams.Name))
         {
             hotels = hotels.Where(h => h.Name.ToLower().Contains(hotelSearchParams.Name.ToLower()));
         }
 
-        if (hotelSearchParams.City != null)
+        if (hotelSearchParams.City != null && !string.IsNullOrWhiteSpace(hotelSearchParams.City))
         {
             hotels = hotels.Where(h => h.City.ToLower() == hotelSearchParams.City.ToLower());
         }

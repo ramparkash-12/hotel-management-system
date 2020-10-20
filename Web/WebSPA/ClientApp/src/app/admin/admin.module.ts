@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-
+import { MomentModule } from 'ngx-moment';
 import { AdminLayoutComponent } from './admin-layout.component';
 import { AdminLayoutRouting } from './admin-layout.routing';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -20,6 +20,9 @@ import { DataService } from '../shared/services/data.service';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { HotelEditResolver } from './hotel/hotel-edit.resolver';
+import { CommonService } from '../shared/services/common.service';
 
 @NgModule({
   declarations: [
@@ -35,17 +38,21 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     NgxSummernoteModule,
     FormsModule,
     ReactiveFormsModule,
+    MomentModule,
     BsDatepickerModule.forRoot(),
     PaginationModule.forRoot(),
     SweetAlert2Module.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    ModalModule.forRoot()
   ],
   exports: [
   ],
   providers: [
     HotelService,
     DataService,
-    DatePipe
+    CommonService,
+    DatePipe,
+    HotelEditResolver
   ]
 })
 export class AdminModule { }

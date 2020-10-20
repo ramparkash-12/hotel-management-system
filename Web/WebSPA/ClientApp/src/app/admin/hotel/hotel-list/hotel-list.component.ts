@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
+
 import { Hotel } from 'src/app/shared/model/hotel.model';
 import { PaginatedResult, Pagination } from 'src/app/shared/model/pagination.model';
 import { AlertifyService } from 'src/app/shared/services/alertify.service';
@@ -18,7 +20,13 @@ export class HotelListComponent implements OnInit {
   hotels: Hotel [];
   pagination: Pagination;
   paginationText: string;
+  searchParams: any = {
+    City: '',
+    Name: ''
+  };
+  showSearchCriteria = false;
   @ViewChild('confirmDeleted', null) private mySwal: SwalComponent;
+  @ViewChild('searchModal', null) searchModal: ModalDirective;
 
   // tslint:disable-next-line:max-line-length
   constructor(private service: HotelService, private configurationService: ConfigurationService, private securityService: SecurityService, private alertify: AlertifyService,) { }
@@ -35,18 +43,18 @@ export class HotelListComponent implements OnInit {
 
   onPageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage);
+    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage, this.searchParams);
   }
 
   loadData() {
     this.loading = true;
-    this.getHotels(10, 1);
+    this.getHotels(10, 1, this.searchParams);
   }
 
-  getHotels(pageSize?: number, pageIndex?: number) {
+  getHotels(pageSize?: number, pageIndex?: number, searchParams?: any) {
     this.loading = true;
     this.errorReceived = false;
-    this.service.getHotels(pageIndex, pageSize)
+    this.service.getHotels(pageIndex, pageSize, searchParams)
     .subscribe(
       (res: PaginatedResult<Hotel[]>) => {
       this.hotels = res.result;
@@ -74,6 +82,41 @@ export class HotelListComponent implements OnInit {
     // tslint:disable-next-line:max-line-length
     this.paginationText = 'Showing ' + this.pagination.currentPage + ' of ' + Math.ceil(this.pagination.totalItems /  this.pagination.itemsPerPage) + ' pages';
     return this.paginationText;
+  }
+
+  hideSearchModal() {
+    this.searchModal.hide();
+  }
+
+  showSearchModal() {
+    this.searchModal.show();
+  }
+
+  search() {
+    console.log(this.searchParams);
+    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage, this.searchParams);
+    this.searchModal.hide();
+    this.showSearchCriteria = true;
+  }
+
+  onClearFilters() {
+    this.searchParams = {
+      City: '',
+      Name: ''
+    };
+    this.loadData();
+    this.showSearchCriteria = false;
+  }
+
+  showHotelStars(stars: number) {
+    let starsHtml = '';
+    for (let i = 1; i = 5; i++) {
+      if (i <= stars) {
+        starsHtml += '<span class="fa fa-star checked"></span> ';
+      } else {
+        starsHtml += '<span class="fa fa-star"></span>';
+      }
+    }
   }
 
 }

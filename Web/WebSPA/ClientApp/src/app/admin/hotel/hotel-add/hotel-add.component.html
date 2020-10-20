@@ -48,14 +48,14 @@
               <input type="text" class="form-control" 
               name="featuredFrom" id="featuredFrom" 
               formControlName="featuredFrom" placeholder="From" autocomplete="off"
-              bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass: 'theme-default' }">
+              bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY', containerClass: 'theme-default' }">
           </div>
           <div class="col-md-6">
             <label for="featuredTo">Featured Date</label>
             <input type="text" class="form-control"
             name="featuredTo" id="featuredTo" formControlName="featuredTo" 
             autocomplete="off" placeholder="To"
-            bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass: 'theme-default' }">
+            bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY', containerClass: 'theme-default' }">
           </div> 
           </div>
         </form>
@@ -113,6 +113,9 @@
           && hotelForm.get('country').touched}" id="country" formControlName="country">
             <option value="">Choose...</option>
             <option>United States</option>
+            <option>United Kingdom</option>
+            <option>UAE</option>
+            <option>France</option>
           </select>
           <div *ngIf="(hotelForm.get('country').errors && hotelForm.get('country').touched) || (hotelForm.get('country').errors && formSubmitted)" class="invalid">
             Country is required.
@@ -124,6 +127,9 @@
           && hotelForm.get('city').touched}" id="city" formControlName="city">
             <option value="">Choose...</option>
             <option value="California">California</option>
+            <option value="LA">LA</option>
+            <option value="Dubai">Dubai</option>
+            <option value="London">London</option>
           </select>
           <div *ngIf="(hotelForm.get('city').errors && hotelForm.get('city').touched) || (hotelForm.get('city').errors && formSubmitted)" class="invalid">
             City is required.

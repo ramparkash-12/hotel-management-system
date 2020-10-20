@@ -13,9 +13,8 @@ import { SecurityService } from 'src/app/shared/services/security.service';
   providedIn: 'root'
 })
 export class HotelService {
-  public dateFormat = 'yyyy-MM-dd';
   private hotelUrl: string = '';
-  urlSuffix = '/api/v1/Hotel/'; //'/api/v1/hotel-api/Save';
+  urlSuffix = '/api/v1/Hotel/'; //'/api/v1/hotel-api/'; //; //';
 
   constructor(private service: DataService, private authService: SecurityService,
     private configurationService: ConfigurationService) {
@@ -32,17 +31,41 @@ export class HotelService {
     }
   }
 
-  getHotels(page?, itemsPerPage?, searchParams?): Observable<PaginatedResult<Hotel[]>> {
-    let url = 'http://localhost:2500' + this.urlSuffix + 'HotelsList';
+  getHotelById(hotelId: number): Observable<Hotel> {
+    let url = this.hotelUrl + this.urlSuffix + hotelId;
 
     // tslint:disable-next-line:max-line-length
-    return this.service.getAll(url, page, itemsPerPage, searchParams).pipe<PaginatedResult<Hotel[]>>(tap((response: PaginatedResult<any[]>) => {
+    return this.service.getById(url)
+    .pipe<Hotel>
+      (tap((response: Hotel) => {
+        return response;
+      })
+      );
+  }
+
+  getHotels(page?, itemsPerPage?, searchParams?): Observable<PaginatedResult<Hotel[]>> {
+    let url = this.hotelUrl + this.urlSuffix + 'HotelsList';
+
+    let params = new HttpParams();
+
+        if (page != null && itemsPerPage != null) {
+            params = params.append('pageNumber', page);
+            params = params.append('pageSize', itemsPerPage);
+        }
+
+        if (searchParams != null) {
+            params = params.append('city', searchParams.City);
+            params = params.append('name', searchParams.Name);
+        }
+
+    // tslint:disable-next-line:max-line-length
+    return this.service.getAll(url, page, itemsPerPage, params).pipe<PaginatedResult<Hotel[]>>(tap((response: PaginatedResult<any[]>) => {
       return response;
-  }));
+    }));
   }
 
   delete(id: number): Observable<any> {
-    let url = 'http://localhost:2500' + this.urlSuffix + id;
+    let url = this.hotelUrl + this.urlSuffix + id;
 
     // tslint:disable-next-line:max-line-length
     return this.service.Delete(url)
@@ -51,8 +74,18 @@ export class HotelService {
 
   }
 
+  update(hotel: Hotel): Observable<boolean> {
+    let url = this.hotelUrl + this.urlSuffix + 'Update';
+
+    // tslint:disable-next-line:max-line-length
+    return this.service.putWithId(url, hotel)
+    .pipe
+        (tap((response: any) => response));
+
+  }
+
   saveHotel(hotel: Hotel): Observable<any> {
-    let url = 'http://localhost:2500' + this.urlSuffix + 'Save';
+    let url = this.hotelUrl  + this.urlSuffix + 'Save';
 
     const formData = new FormData();
     formData.append('name', hotel.name);

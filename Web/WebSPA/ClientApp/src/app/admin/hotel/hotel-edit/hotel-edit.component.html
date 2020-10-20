@@ -1,3 +1,176 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h1 class="h2">Edit Hotel</h1>
 </div>
+
+<div class="row">
+
+  <div class="col-lg-4 col-md-4 col-sm-12 order-md-2 mb-4 my-3">
+    <div class="card">
+      <div class="card-header">
+        <h5 >Main Settings</h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="hotelForm">
+        <div class="form-group row mb-4">
+          <div class="col-md-12 col-sm-12">
+            <label for="status">Status</label>
+            <select class="custom-select d-block w-100" name="status" id="status" formControlName="status">
+              <option value=true selected>Enabled</option>
+              <option value=false>Disabled</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row mb-4">
+          <div class="col-md-12 col-sm-12">
+            <label for="stars">Stars</label>
+            <select class="custom-select d-block w-100"
+             name="stars" id="stars" formControlName="stars" id="stars">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row mb-4">
+          <div class="col-md-12">
+            <label for="featured">Featured?</label>
+            <select (change)="onFeaturedChange($event.target.value)" class="custom-select d-block w-100" name="featured" id="featured" formControlName="isFeatured" id="featured">
+              <option value=true>Yes</option>
+              <option value=false>No</option> 
+            </select>
+          </div> 
+          </div>
+          <div class="form-group row mb-4">
+          <div class="col-md-6">
+            <label for="featuredFrom">Featured Date</label>
+              <input type="text" class="form-control" 
+              name="featuredFrom" id="featuredFrom" 
+              formControlName="featuredFrom" placeholder="From" autocomplete="off"
+              bsDatepicker
+               [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY', 
+              containerClass: 'theme-default' }">
+          </div>
+          <div class="col-md-6">
+            <label for="featuredTo">Featured Date</label>
+            <input #featuredToDate type="text" class="form-control"
+            name="featuredTo"
+            id="featuredTo" formControlName="featuredTo" 
+            autocomplete="off" placeholder="To"
+            bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY', containerClass: 'theme-default' }">
+          </div> 
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+  <div class="col-md-8 col-sm-12 order-md-1">
+    <h4 class="mb-3">Basic Information</h4>
+    <form [formGroup]="hotelForm" (ngSubmit)="update()" class="needs-validation" novalidate>
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="name">Name <span class="asterisk">*</span></label>
+          <input type="text" class="form-control" [ngClass]="{'is-invalid': hotelForm.get('name').errors
+          && hotelForm.get('name').touched}" autocomplete="off" formControlName="name" id="name"
+          placeholder="Name">
+          <div *ngIf="(hotelForm.get('name').errors && hotelForm.get('name').touched) || (hotelForm.get('name').errors && formSubmitted)" class="invalid">
+            Name is required.
+          </div>
+          <div *ngIf="hotelForm.get('name').hasError('maxlength')
+          && hotelForm.get('name').touched" class="invalid-feedback">
+            Name cannot exceed 2 characters 
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="description">Description <span class="asterisk">*</span></label>
+          <input [ngxSummernote]="config" type="text" class="form-control" [ngClass]="{'is-invalid': hotelForm.get('description').errors
+          && hotelForm.get('description').touched}" autocomplete="off" formControlName="description" id="description" name="description" placeholder="Add Hotel Description....">
+          <div *ngIf="(hotelForm.get('description').errors && hotelForm.get('description').touched) || (hotelForm.get('description').errors && formSubmitted)" class="invalid">
+            Description is required.
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <h4 class="mb-3">Location</h4>
+
+      <div class="mb-3">
+        <label for="address">Address <span class="asterisk">*</span></label>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': hotelForm.get('address').errors
+          && hotelForm.get('address').touched}" autocomplete="off" formControlName="address" id="address"
+          placeholder="123 Main st.">
+          <div *ngIf="(hotelForm.get('address').errors && hotelForm.get('address').touched) || (hotelForm.get('address').errors && formSubmitted)" class="invalid">
+            Address is required.
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="country">Country <span class="asterisk">*</span></label>
+          <select class="custom-select d-block w-100" [ngClass]="{'is-invalid': hotelForm.get('country').errors
+          && hotelForm.get('country').touched}" id="country" formControlName="country">
+            <option value="">Choose...</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>UAE</option>
+            <option>France</option>
+          </select>
+          <div *ngIf="(hotelForm.get('country').errors && hotelForm.get('country').touched) || (hotelForm.get('country').errors && formSubmitted)" class="invalid">
+            Country is required.
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="city">City</label>
+          <select class="custom-select d-block w-100" [ngClass]="{'is-invalid': hotelForm.get('city').errors
+          && hotelForm.get('city').touched}" id="city" formControlName="city">
+            <option value="">Choose...</option>
+            <option value="California">California</option>
+            <option value="LA">LA</option>
+            <option value="Dubai">Dubai</option>
+            <option value="London">London</option>
+          </select>
+          <div *ngIf="(hotelForm.get('city').errors && hotelForm.get('city').touched) || (hotelForm.get('city').errors && formSubmitted)" class="invalid">
+            City is required.
+          </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+
+      <h4 class="mb-3">Gallery</h4>
+
+      
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <ngx-dropzone [accept]="'image/*'" [expandable]="true" (change)="onSelect($event)">
+            <ngx-dropzone-label> <i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i> <br>Click here or drop files to upload</ngx-dropzone-label>
+            <ngx-dropzone-preview *ngFor="let f of files" 
+            [removable]="true" (removed)="onRemove(f)">
+                <ngx-dropzone-label style='height:100%; width: 100%; vertical-align: middle; margin-top: 10px;'>
+                {{ f.name }} <br>
+                {{ f.size }} 
+              </ngx-dropzone-label>
+            </ngx-dropzone-preview>
+          </ngx-dropzone>
+        </div>
+      </div>
+      <hr class="mb-4">
+      <div class="row">
+        <div class="col-md-12">
+          <div *ngIf="files.length > 0 && loading === true">
+            Upload progress: <b> {{ progress + '%' }}</b>
+            <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': progress + '%' }"></div>
+            </div>
+          </div>
+          <!-- [disabled]="loading" -->
+          <button href="javascript:void(0);" class="btn btn-info" type="submit"><i class="fa fa-spinner fa-spin" *ngIf="loading"></i> Update <i style="margin-left: 5px;" class="fa fa-arrow-circle-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

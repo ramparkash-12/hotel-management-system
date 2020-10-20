@@ -3,9 +3,17 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6 col-sm-12">
+  <div class="col-md-6 col-sm-12 mb-2">
     <button class="btn btn-success" routerLink="add"> <i class="fa fa-plus" aria-hidden="true"></i>  Add </button>
-    <button class="btn btn-warning text-light ml-3" routerLink="edit"> <i class="fa fa-search" aria-hidden="true"></i> Search </button>
+    <button (click)="showSearchModal()" 
+    class="btn btn-warning text-light ml-3"> 
+    <i class="fa fa-search" aria-hidden="true"></i> Search </button>
+  </div>
+  <div [hidden]="!showSearchCriteria"  class="col-md-6 col-sm-12 mb-2 pull-right">
+     <b>Filters: </b>  
+     <b *ngIf="searchParams.Name != ''">Hotel Name: </b> {{ searchParams.Name }} 
+      <b class="ml-2" *ngIf="searchParams.City != ''">Hotel City : </b> {{ searchParams.City }}
+    <button class="btn btn-danger btn-sm ml-5" (click)="onClearFilters()">  Clear Filters </button>
   </div>
 </div>
 <div class="alert alert-info mt-4" role="alert" [hidden]="!loading">
@@ -30,14 +38,18 @@
     <td>
       {{ hotel.name }}
     </td>
-    <td>
-      {{ hotel.status }}
+    <td *ngIf="hotel.status.toString() === 'true'">
+      <span class="badge badge-pill badge-success">Enabled</span>
+    </td>
+    <td *ngIf="hotel.status.toString() === 'false'">
+      <span class="badge badge-pill badge-danger">Disabled</span>
     </td>
     <td>
       {{ hotel.stars }}
+
     </td>
      <td class="td-actions">
-        <button routerLink="/hotel/edit/{{hotel.id}}"  type="button" class="btn btn-primary td-actions-btn-clrs" tooltip="Edit" [adaptivePosition]="false" placement="top">
+        <button routerLink="edit/{{hotel.id}}"  type="button" class="btn btn-primary td-actions-btn-clrs" tooltip="Edit" [adaptivePosition]="false" placement="top">
           <i class="fa fa-pencil" aria-hidden="true"> </i>
         </button>
         <button style="margin-left: 5px;" type="button" 
@@ -81,4 +93,52 @@
 
 <div class="d-flex justify-content-center">
   {{ paginationText }}
+</div>
+
+
+<div bsModal #searchModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Search Hotel</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hideSearchModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group row mb-4">
+                    <div class="col-md-12">
+                      <label for="hotelName">Hotel Name</label>
+                      <input type="text" autocomplete="off" [(ngModel)]="searchParams.Name"
+                          class="form-control" placeholder="Hotel Name" name="hotelName" id="hotelName">
+                    </div>
+                </div>
+                <div class="form-group row mb-4">
+                  <div class="col-md-12">
+                    <label for="citySearch">City</label>
+                    <select class="custom-select d-block w-100" 
+                    name="citySearch" id="citySearch" [(ngModel)]="searchParams.City" >
+                      <option selected value="">Choose...</option>
+                      <option value="California">California</option>
+                      <option value="LA">LA</option>
+                      <option value="Dubai">Dubai</option>
+                      <option value="London">London</option>
+                    </select>
+                  </div>
+              </div>
+              </form>
+            </div>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                      <button  class="btn btn-success text-center" (click)="search()"> <i
+                        class="fa fa-find"></i> Search </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

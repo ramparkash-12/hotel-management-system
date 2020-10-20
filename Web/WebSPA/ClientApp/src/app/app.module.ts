@@ -19,6 +19,8 @@ import { RouterModule } from '@angular/router';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { CommonService } from './shared/services/common.service';
 
 @NgModule({
   declarations: [
@@ -37,12 +39,14 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     PaginationModule.forRoot(),
     SweetAlert2Module.forRoot(),
     TooltipModule.forRoot(),
+    ModalModule.forRoot(),
     ],
   providers: [
     AuthGuard,
     //ErrorInterceptorProvide,
     AlertifyService,
     SecurityService,
+    CommonService,
     ConfigurationService,
     StorageService,
   ],
