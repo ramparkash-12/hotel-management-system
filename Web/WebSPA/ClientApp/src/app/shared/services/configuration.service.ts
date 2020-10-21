@@ -28,5 +28,13 @@ export class ConfigurationService {
             this.isReady = true;
             this.settingsLoadedSource.next();
         });
+
+        this.serverSettings = {
+            identityUrl: 'http://localhost:2800',
+            hotelUrl: 'http://localhost:2500'
+        };
+        this.storageService.store('IdentityUrl', this.serverSettings.identityUrl);
+        this.isReady = true;
+        this.settingsLoadedSource.next();
     }
 }

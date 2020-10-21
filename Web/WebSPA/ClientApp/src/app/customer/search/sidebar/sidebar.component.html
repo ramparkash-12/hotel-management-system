@@ -1,0 +1,46 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="text-center">Search Filters</h5>
+  </div>
+  <div class="card-body">
+    <form class="mt-2">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label>Destination: </label>
+          <input [(ngModel)]="searchCriteria.city" [typeahead]="cities"  
+          [isAnimated]="true" class="form-control" autocomplete="off"
+          name="city" placeholder="City">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label>Check-in / Check-out date: </label>
+          <input type="text" class="form-control" 
+          name="searchDateRange" placeholder="Select Dates" autocomplete="off"
+          bsDaterangepicker 
+          [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',
+          containerClass: 'theme-default' }"
+          [(ngModel)]="searchCriteria.searchDateRange">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label>Adults: </label>
+          <select class="custom-select d-block w-100"
+          name="adults" [(ngModel)]="searchCriteria.adults">
+           <option value="1">1</option>
+           <option value="2">2</option>
+           <option value="3">3</option>
+           <option value="4">4</option>
+           <option value="5">5 +</option>
+         </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button (click)="onSave()" type="button" class="btn btn-warning btn-block text-light">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

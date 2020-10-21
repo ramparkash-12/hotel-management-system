@@ -1,22 +1,18 @@
-<div class="jumbotron">
-  <div class="container">
-    <h2 class="display-5">Find deals on hotels, homes and much more...</h2>
-    <p class="lead">From cosy country homes to funky city flats</p>
-    <form>
-      <div class="form-row">
-        <div class="col-md-5">
-          <input type="text" class="form-control" placeholder="City">
-        </div>
-        <div class="col-md-3">
-          <input type="text" class="form-control" placeholder="Check in - Check out Date">
-        </div>
-        <div class="col-md-2">
-          <input type="text" class="form-control" placeholder="Adults">
-        </div>
-        <div class="col-md-2 col-sm-12">
-          <button type="button" class="btn btn-primary text-light">Search</button>
-        </div>
+<div class="container">
+  <div class="jumbotron">
+    <div class="container text-center">
+      <h2 class="display-5">Search Results</h2>
+      <p class="lead">London: 6,161 properties found</p>
+    </div>
+  </div>
+  <div class="">
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-12 mt-2">
+        <app-sidebar></app-sidebar>
       </div>
-    </form>
+      <div class="col-lg-8 col-md-8 col-sm-12 mt-2">
+        <app-search-hotel-item></app-search-hotel-item>
+      </div>
+    </div>
   </div>
 </div>

@@ -21,6 +21,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CommonService } from './shared/services/common.service';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { CommonService } from './shared/services/common.service';
     SweetAlert2Module.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
+    TypeaheadModule.forRoot()
     ],
   providers: [
     AuthGuard,
