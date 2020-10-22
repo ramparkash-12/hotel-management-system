@@ -29,6 +29,9 @@ export class HotelService {
             }
         }
     }
+    if (this.hotelUrl === '' || this.hotelUrl === null) {
+      this.hotelUrl = 'http://localhost:2500';
+    }
   }
 
   getHotelById(hotelId: number): Observable<Hotel> {
@@ -54,8 +57,35 @@ export class HotelService {
         }
 
         if (searchParams != null) {
+            if (searchParams.City !== 'undefined')
+            {
+              params = params.append('city', searchParams.City || searchParams.city);
+            }
+            if (searchParams.Adults)
+            {
+              params = params.append('adults', searchParams.Adults || searchParams.adults);
+            }
+        }
+
+    // tslint:disable-next-line:max-line-length
+    return this.service.getAll(url, page, itemsPerPage, params).pipe<PaginatedResult<Hotel[]>>(tap((response: PaginatedResult<any[]>) => {
+      return response;
+    }));
+  }
+
+  searchHotels(page?, itemsPerPage?, searchParams?): Observable<PaginatedResult<Hotel[]>> {
+    let url = this.hotelUrl + this.urlSuffix + 'SearchHotel';
+
+    let params = new HttpParams();
+
+        if (page != null && itemsPerPage != null) {
+            params = params.append('pageNumber', page);
+            params = params.append('pageSize', itemsPerPage);
+        }
+
+        if (searchParams != null) {
             params = params.append('city', searchParams.City);
-            params = params.append('name', searchParams.Name);
+            params = params.append('adults', searchParams.Adults);
         }
 
     // tslint:disable-next-line:max-line-length

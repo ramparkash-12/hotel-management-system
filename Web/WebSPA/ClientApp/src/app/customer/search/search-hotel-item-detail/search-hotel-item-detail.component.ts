@@ -9,6 +9,10 @@ import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gal
 export class SearchHotelItemDetailComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  searchCriteria: any = {
+    city: '',
+    adults: 1
+   } ;
 
   constructor() { }
 

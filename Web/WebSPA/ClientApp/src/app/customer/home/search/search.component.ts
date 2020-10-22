@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { HotelService } from 'src/app/admin/hotel/hotel.service';
 
 @Component({
   selector: 'app-home--search',
@@ -17,13 +19,18 @@ export class HomeSearchComponent implements OnInit {
     adults: 1
   } ;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
   onSave() {
-    console.log(this.searchCriteria);
+    this.router.navigate(['/search'],
+    { queryParams: {
+      City: this.searchCriteria.city,
+      Adults: this.searchCriteria.adults
+    }
+  });
   }
 
 }

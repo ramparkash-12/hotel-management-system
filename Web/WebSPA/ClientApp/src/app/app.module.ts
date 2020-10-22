@@ -22,6 +22,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CommonService } from './shared/services/common.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { DataService } from './shared/services/data.service';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     CommonService,
     ConfigurationService,
     StorageService,
+    DataService
   ],
   bootstrap: [AppComponent]
 })

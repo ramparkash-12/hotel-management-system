@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col-md-12 mb-3">
           <label>Destination: </label>
-          <input [(ngModel)]="searchCriteria.city" [typeahead]="cities"  
+          <input [(ngModel)]="searchCriteria.City" [typeahead]="cities"  
           [isAnimated]="true" class="form-control" autocomplete="off"
           name="city" placeholder="City">
         </div>
@@ -27,7 +27,7 @@
         <div class="col-md-12 mb-3">
           <label>Adults: </label>
           <select class="custom-select d-block w-100"
-          name="adults" [(ngModel)]="searchCriteria.adults">
+          name="adults" [(ngModel)]="searchCriteria.Adults">
            <option value="1">1</option>
            <option value="2">2</option>
            <option value="3">3</option>

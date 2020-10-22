@@ -214,6 +214,10 @@ namespace Hotel.API.Controllers
         public async Task<ActionResult<PagedList<Model.Hotel>>> SearchHotel([FromQuery] HotelSearchParams hotelSearchParams)
         {
             var hotels = await _repo.Search(hotelSearchParams);
+
+            Response.AddPagination(hotels.CurrentPage, hotels.PageSize, hotels.TotalCount,
+            hotels.TotalPages);
+        
             return hotels;
         }
         

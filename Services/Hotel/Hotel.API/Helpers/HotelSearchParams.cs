@@ -13,6 +13,7 @@ namespace Hotel.API.Helpers
 
         public string Name { get; set; }
         public string City { get; set; }
-
+        public string dateRange { get; set; }
+        public int Adults { get; set; }
     }
 }

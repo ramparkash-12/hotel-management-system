@@ -39,17 +39,21 @@ namespace Hotel.API.Services
 
     public async Task<PagedList<Model.Hotel>> Search(HotelSearchParams hotelSearchParams)
     {
-        var hotels = _context.Hotels.AsNoTracking().OrderByDescending(h => h.Id).AsQueryable();
-
-        if (hotelSearchParams.Name != null && !string.IsNullOrWhiteSpace(hotelSearchParams.Name))
-        {
-            hotels = hotels.Where(h => h.Name.ToLower().Contains(hotelSearchParams.Name.ToLower()));
-        }
+        var hotels = _context.Hotels.AsNoTracking().
+                    OrderByDescending(h => h.Id).Include(hr => hr.Rooms).AsQueryable();
 
         if (hotelSearchParams.City != null && !string.IsNullOrWhiteSpace(hotelSearchParams.City))
         {
             hotels = hotels.Where(h => h.City.ToLower() == hotelSearchParams.City.ToLower());
         }
+
+        /* if (hotelSearchParams.Adults != 0)
+        {
+            if (hotelSearchParams.Adults == 1 )
+              hotelSearchParams.Adults = 2;
+
+            hotels = hotels.Where(h => h.Rooms.Any(r => r.MaximumGuests == hotelSearchParams.Adults));
+        } */
 
         return await PagedList<Model.Hotel>.CreateAsync(hotels, hotelSearchParams.PageNumber, hotelSearchParams.PageSize);
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -6,6 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+  @Input() queryParams: any = { };
+  searchCriteria: any = {
+    City: '',
+    Adults: ''
+  };
+
   selected: string;
   cities: string[] = [
     'California',
@@ -13,17 +19,15 @@ export class SidebarComponent implements OnInit {
     'Dubai',
     'London'
   ];
-  searchCriteria: any = {
-    adults: 1
-  } ;
 
   constructor() { }
 
   ngOnInit() {
+    this.searchCriteria = this.queryParams[0];
   }
 
   onSave() {
-    console.log(this.searchCriteria);
+    console.log(this.queryParams);
   }
 
 }

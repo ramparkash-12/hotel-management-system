@@ -7,10 +7,10 @@
       </div>
       <div class="col-lg-6 col-md-6 col-sm-12 padding-0">
       <h4 class="mt-2">
-        <a href="#">Blakemore Hyde Park </a> 
+        <a routerLink="/detail/{{hotel.id}}">{{ hotel.name }}</a> 
       </h4>
-      <span style="font-size: 0.75em; padding-top: 0px;" class="text-muted"> Westminster Borough, London </span>
-      <p class="mt-2">With free WiFi and 4-star bedrooms, the stylish Blakemore Hotel also features a leisure centre, a creative cocktail bar and restaurant open every day.</p>
+      <span style="font-size: 0.75em; padding-top: 0px;" class="text-muted"> {{ hotel.address}} </span>
+      <p class="mt-2" [innerHTML]="hotel.description"></p>
       </div>
       <div class="col-lg-2 col-md-3 col-sm-12">
         <div class="row">
@@ -24,7 +24,7 @@
        <div class="row">
         <button type="button"
          class="btn btn-dark btn-sm pull-right mt-3">
-          <a routerLink="/detail" class="text-light"> See Details</a>
+          <a routerLink="/detail/{{hotel.id}}" class="text-light"> See Details</a>
         </button>
        </div>
       </div>

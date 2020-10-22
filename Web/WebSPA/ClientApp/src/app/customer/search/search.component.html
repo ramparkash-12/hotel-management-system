@@ -2,16 +2,32 @@
   <div class="jumbotron">
     <div class="container text-center">
       <h2 class="display-5">Search Results</h2>
-      <p class="lead">London: 6,161 properties found</p>
+      <p class="lead">{{ hotels?.length }} properties found</p>
     </div>
   </div>
   <div class="">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-12 mt-2">
-        <app-sidebar></app-sidebar>
+        <app-sidebar [queryParams]="[searchCriteria]"></app-sidebar>
       </div>
-      <div class="col-lg-8 col-md-8 col-sm-12 mt-2">
-        <app-search-hotel-item></app-search-hotel-item>
+      <div class="col-lg-8 col-md-8 col-sm-12 float-right">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12" *ngFor="let item of hotels">
+            <app-search-hotel-item [hotel]="item"></app-search-hotel-item>
+          </div>
+        </div>
+        
+        <div *ngIf="hotels?.length > 0" class="d-flex justify-content-center">
+          <pagination [boundaryLinks]="true" 
+          [totalItems]="pagination?.totalItems"
+          [itemsPerPage]="pagination?.itemsPerPage"
+          (pageChanged)="onPageChanged($event)"
+          previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"> </pagination>
+        </div>
+        
+        <div *ngIf="hotels?.length > 0" class="d-flex justify-content-center">
+          {{ paginationText }}
+        </div>
       </div>
     </div>
   </div>
