@@ -56,7 +56,18 @@ namespace Hotel.API.Controllers
             if (hotel == null)
                 return NotFound();
 
+            hotel = FillImageUri(hotel);
+
             return Ok(hotel);
+        }
+
+        private Model.Hotel FillImageUri(Model.Hotel model)
+        {
+            foreach(var item in model.Images)
+            {
+                item.URI = "https://hotelmanagementsystem.blob.core.windows.net/images/" + ImageExtension.GenerateURI(1, item.HotelImageId, item.Name);
+            }
+            return model;
         }
 
         // Save: api/Hotel/model

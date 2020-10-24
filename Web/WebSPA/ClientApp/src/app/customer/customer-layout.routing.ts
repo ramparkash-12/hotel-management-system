@@ -23,7 +23,7 @@ const customerRoutes: Routes = [
         resolve: { hotels: SearchResolver }
       },
       {
-        path: 'detail/:id',
+        path: 'detail/:hotelId',
         component: SearchHotelItemDetailComponent
       }
     ]

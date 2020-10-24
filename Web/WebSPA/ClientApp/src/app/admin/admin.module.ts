@@ -23,6 +23,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { HotelEditResolver } from './hotel/hotel-edit.resolver';
 import { CommonService } from '../shared/services/common.service';
+import { RatingModule } from 'ngx-bootstrap/rating';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { CommonService } from '../shared/services/common.service';
     PaginationModule.forRoot(),
     SweetAlert2Module.forRoot(),
     TooltipModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    RatingModule.forRoot()
   ],
   exports: [
   ],

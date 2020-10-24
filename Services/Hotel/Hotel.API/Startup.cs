@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 using Hotel.API.Extensions;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace hotel.api
 {
@@ -147,6 +148,9 @@ namespace hotel.api
 
     public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
     {
+    var loggerFactory = new LoggerFactory();
+    loggerFactory.AddProvider(new DebugLoggerProvider());
+        
       services.AddDbContext<HotelContext>(options =>
       {
         options.UseSqlServer(configuration["ConnectionString"],
@@ -155,6 +159,8 @@ namespace hotel.api
             sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
         });
+
+        options.UseLoggerFactory(loggerFactory);
       });
     
       return services;

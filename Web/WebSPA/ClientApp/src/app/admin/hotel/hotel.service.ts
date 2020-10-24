@@ -57,11 +57,10 @@ export class HotelService {
         }
 
         if (searchParams != null) {
-            if (searchParams.City !== 'undefined')
-            {
-              params = params.append('city', searchParams.City || searchParams.city);
-            }
-            if (searchParams.Adults)
+          // tslint:disable-next-line:max-line-length
+          params = params.append('city', searchParams.City === 'undefined' ? null : searchParams.City);
+
+          if (searchParams.Adults)
             {
               params = params.append('adults', searchParams.Adults || searchParams.adults);
             }

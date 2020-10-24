@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HotelService } from 'src/app/admin/hotel/hotel.service';
@@ -13,10 +13,19 @@ import { CommonService } from 'src/app/shared/services/common.service';
 })
 export class SearchHotelItemComponent implements OnInit {
   @Input() hotel: Hotel;
+  renderedHtmlDescription: any;
+  @ViewChild('dataContainer', null) dataContainer: ElementRef;
+
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onRenderedHtmlChange(data) {
+    this.dataContainer.nativeElement.innerHTML = data;
+    this.renderedHtmlDescription = this.dataContainer.nativeElement.innerText.substr(0, 200) + '.....';
+    return this.renderedHtmlDescription;
   }
 
 }

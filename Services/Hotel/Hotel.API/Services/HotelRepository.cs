@@ -15,8 +15,16 @@ namespace Hotel.API.Services
 
     public async Task<Model.Hotel> Get(int id)
     {
-      return await _context.Hotels.AsNoTracking().Include(hotelImages => hotelImages.Images)
-      .FirstOrDefaultAsync(h => h.Id == id);
+      var hotel = await _context.Hotels.AsNoTracking().Where(h => h.Id == id)
+            .Include(hotelImages => hotelImages.Images)
+            .Include(hotelRooms => hotelRooms.Rooms)
+            .ThenInclude(room => room.Images)
+            //.AsSplitQuery()
+            .FirstOrDefaultAsync(h => h.Id == id);
+
+      System.Diagnostics.Trace.WriteLine(hotel.ToString());
+
+      return hotel;
     }
 
     public async Task<PagedList<Model.Hotel>> GetAll(HotelSearchParams hotelParams)
@@ -28,7 +36,7 @@ namespace Hotel.API.Services
           hotels = hotels.Where(h => h.Name.ToLower().Contains(hotelParams.Name.ToLower()));
       }
 
-      if (hotelParams.City != null && !string.IsNullOrWhiteSpace(hotelParams.City))
+      if (hotelParams.City != null && hotelParams.City != "undefined" && !string.IsNullOrWhiteSpace(hotelParams.City))
       {
           hotels = hotels.Where(h => h.City.ToLower() == hotelParams.City.ToLower());
       }

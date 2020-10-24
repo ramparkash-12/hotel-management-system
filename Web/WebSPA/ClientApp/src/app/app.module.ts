@@ -23,6 +23,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { CommonService } from './shared/services/common.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { DataService } from './shared/services/data.service';
+import { RatingModule } from 'ngx-bootstrap/rating';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { DataService } from './shared/services/data.service';
     SweetAlert2Module.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    TypeaheadModule.forRoot()
+    TypeaheadModule.forRoot(),
+    RatingModule.forRoot()
     ],
   providers: [
     AuthGuard,

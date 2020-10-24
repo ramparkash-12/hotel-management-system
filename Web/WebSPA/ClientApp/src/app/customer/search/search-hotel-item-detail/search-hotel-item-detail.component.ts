@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gallery';
+import { HotelService } from 'src/app/admin/hotel/hotel.service';
+import { Hotel } from 'src/app/shared/model/hotel.model';
+import { AlertifyService } from 'src/app/shared/services/alertify.service';
 
 @Component({
   selector: 'app-search-hotel-item-detail',
@@ -7,16 +11,23 @@ import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gal
   styleUrls: ['./search-hotel-item-detail.component.css']
 })
 export class SearchHotelItemDetailComponent implements OnInit {
+  paramId: any;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  hotel: Hotel;
   searchCriteria: any = {
     city: '',
     adults: 1
    } ;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private service: HotelService,
+              private alertify: AlertifyService) { }
 
   ngOnInit() {
+    this.paramId = this.route.snapshot.params['hotelId'];
+
+    this.load();
+
     this.galleryOptions = [
       {
           width: '800px',
@@ -41,28 +52,54 @@ export class SearchHotelItemDetailComponent implements OnInit {
       }
     ];
 
-    this.galleryImages = [
-      {
-        small: '../../../../assets/images/hotel_image.png',
-        medium: '../../../../assets/images/hotel_image.png',
-        big: '../../../../assets/images/hotel_image.png'
-      },
-      {
-        small: '../../../../assets/images/hotel_image.png',
-        medium: '../../../../assets/images/hotel_image.png',
-        big: '../../../../assets/images/hotel_image.png'
-      },
-      {
-        small: '../../../../assets/images/hotel_image.png',
-        medium: '../../../../assets/images/hotel_image.png',
-        big: '../../../../assets/images/hotel_image.png'
-      },
-      {
-        small: '../../../../assets/images/hotel_image.png',
-        medium: '../../../../assets/images/hotel_image.png',
-        big: '../../../../assets/images/hotel_image.png'
-      }
-    ];
+    this.galleryImages = [];
+
+  }
+
+  load() {
+    this.service.getHotelById(this.paramId).subscribe(res => {
+      console.log(res);
+      this.hotel = res;
+      this.setImages(res);
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+
+  private setImages(model: any) {
+    if (model !== null && model.images.length > 0) {
+      model.images.forEach(item => {
+        this.galleryImages.push({
+          small: item.uri,
+          medium: item.uri,
+          big: item.uri
+        });
+      });
+    } else {
+      this.galleryImages = [
+        {
+          small: '../../../../assets/images/hotel_image.png',
+          medium: '../../../../assets/images/hotel_image.png',
+          big: '../../../../assets/images/hotel_image.png'
+        },
+        {
+          small: '../../../../assets/images/hotel_image.png',
+          medium: '../../../../assets/images/hotel_image.png',
+          big: '../../../../assets/images/hotel_image.png'
+        },
+        {
+          small: '../../../../assets/images/hotel_image.png',
+          medium: '../../../../assets/images/hotel_image.png',
+          big: '../../../../assets/images/hotel_image.png'
+        },
+        {
+          small: '../../../../assets/images/hotel_image.png',
+          medium: '../../../../assets/images/hotel_image.png',
+          big: '../../../../assets/images/hotel_image.png'
+        }
+      ];
+    }
   }
 
 }

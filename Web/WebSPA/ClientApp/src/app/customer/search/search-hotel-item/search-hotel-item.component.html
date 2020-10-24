@@ -10,7 +10,8 @@
         <a routerLink="/detail/{{hotel.id}}">{{ hotel.name }}</a> 
       </h4>
       <span style="font-size: 0.75em; padding-top: 0px;" class="text-muted"> {{ hotel.address}} </span>
-      <p class="mt-2" [innerHTML]="hotel.description"></p>
+      <div #dataContainer hidden [innerText]="onRenderedHtmlChange(hotel.description)"></div> 
+      <p class="mt-2" [innerText]="onRenderedHtmlChange(hotel.description)"></p>
       </div>
       <div class="col-lg-2 col-md-3 col-sm-12">
         <div class="row">

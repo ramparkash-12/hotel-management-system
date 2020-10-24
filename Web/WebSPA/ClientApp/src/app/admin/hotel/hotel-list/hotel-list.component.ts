@@ -43,12 +43,12 @@ export class HotelListComponent implements OnInit {
 
   onPageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage, this.searchParams);
+    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage, this.FillSearchParams());
   }
 
   loadData() {
     this.loading = true;
-    this.getHotels(10, 1, this.searchParams);
+    this.getHotels(10, 1, this.FillSearchParams());
   }
 
   getHotels(pageSize?: number, pageIndex?: number, searchParams?: any) {
@@ -94,10 +94,22 @@ export class HotelListComponent implements OnInit {
 
   search() {
     console.log(this.searchParams);
-    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage, this.searchParams);
+    this.getHotels(this.pagination.itemsPerPage, this.pagination.currentPage, this.FillSearchParams());
     this.searchModal.hide();
     this.showSearchCriteria = true;
   }
+
+
+  private FillSearchParams() {
+    // tslint:disable-next-line:no-unused-expression
+    this.searchParams.City === 'undefined' ? '' : this.searchParams.City;
+
+    // tslint:disable-next-line: no-unused-expression
+    this.searchParams.Name === 'undefined' ? '' : this.searchParams.Name;
+
+    return this.searchParams;
+  }
+
 
   onClearFilters() {
     this.searchParams = {
