@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gallery';
 import { HotelService } from 'src/app/admin/hotel/hotel.service';
 import { Hotel } from 'src/app/shared/model/hotel.model';
@@ -19,9 +19,10 @@ export class SearchHotelItemDetailComponent implements OnInit {
     city: '',
     adults: 1
    } ;
+   bookParams: any = { };
 
   constructor(private route: ActivatedRoute, private service: HotelService,
-              private alertify: AlertifyService) { }
+              private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {
     this.paramId = this.route.snapshot.params['hotelId'];
@@ -64,6 +65,10 @@ export class SearchHotelItemDetailComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  onBooking() {
+    this.router.navigate(['book']);
   }
 
 

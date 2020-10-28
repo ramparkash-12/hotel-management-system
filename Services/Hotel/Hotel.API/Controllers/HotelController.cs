@@ -48,9 +48,6 @@ namespace Hotel.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Hotel(int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var hotel = await _repo.Get(id);
             
             if (hotel == null)
@@ -194,10 +191,9 @@ namespace Hotel.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+         
             var hotel = await _repo.Get(id); //GetById(id);
+         
             if (hotel == null)
                 return NotFound($"Hotel with id {id} not found.");
 

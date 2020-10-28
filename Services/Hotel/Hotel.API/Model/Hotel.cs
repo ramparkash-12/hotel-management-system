@@ -8,6 +8,12 @@ namespace Hotel.API.Model
 {
     public class Hotel
     {
+        public Hotel()
+        {
+            Rooms =  new List<Room>();
+            Images = new List<Images>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,7 +27,7 @@ namespace Hotel.API.Model
         public DateTime FeaturedTo { get; set; }
         [NotMapped]
         public IFormFile Image { get; set; }
-        public ICollection<Room> Rooms { get; set; }
-        public ICollection<Images> Images { get; set; }
+        public ICollection<Room> Rooms { get; private set; }
+        public ICollection<Images> Images { get; private set; }
     }
 }

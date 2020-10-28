@@ -22,13 +22,14 @@ import { DataService } from '../shared/services/data.service';
 import { CommonService } from '../shared/services/common.service';
 import { SearchHotelItemDetailComponent } from './search/search-hotel-item-detail/search-hotel-item-detail.component';
 import { NgxGalleryModule } from 'ngx-gallery';
+import { BookComponent } from './book/book.component';
 
 
 @NgModule({
   declarations: [ CustomerLayoutComponent, HomeComponent, NavMenuComponent, FooterComponent,
      HomeSearchComponent,
      SearchComponent,
-     SidebarComponent, SearchHotelItemComponent, SearchHotelItemDetailComponent],
+     SidebarComponent, SearchHotelItemComponent, SearchHotelItemDetailComponent, BookComponent],
   imports: [
     CustomerLayoutRouting,
     CommonModule,

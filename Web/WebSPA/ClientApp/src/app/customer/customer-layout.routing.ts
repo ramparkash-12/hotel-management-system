@@ -7,6 +7,7 @@ import { SearchComponent } from './search/search.component';
 import { SearchHotelItemComponent } from './search/search-hotel-item/search-hotel-item.component';
 import { SearchHotelItemDetailComponent } from './search/search-hotel-item-detail/search-hotel-item-detail.component';
 import { SearchResolver } from './search/search.resolver';
+import { BookComponent } from './book/book.component';
 
 const customerRoutes: Routes = [
   {
@@ -25,6 +26,10 @@ const customerRoutes: Routes = [
       {
         path: 'detail/:hotelId',
         component: SearchHotelItemDetailComponent
+      },
+      {
+        path: 'book',
+        component: BookComponent
       }
     ]
   }

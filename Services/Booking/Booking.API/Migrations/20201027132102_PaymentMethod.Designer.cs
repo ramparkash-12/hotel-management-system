@@ -4,14 +4,16 @@ using Booking.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Booking.API.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20201027132102_PaymentMethod")]
+    partial class PaymentMethod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,16 +100,11 @@ namespace Booking.API.Migrations
                     b.Property<string>("PaymentMode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PaymentTypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
                     b.HasIndex("PaymentMethodId");
-
-                    b.HasIndex("PaymentTypeId");
 
                     b.ToTable("BookingPayments");
                 });
@@ -136,24 +133,6 @@ namespace Booking.API.Migrations
                     b.ToTable("PaymentMethod");
                 });
 
-            modelBuilder.Entity("Booking.API.Model.PaymentType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentType");
-                });
-
             modelBuilder.Entity("Booking.API.Model.BookingPayment", b =>
                 {
                     b.HasOne("Booking.API.Model.Booking", "Booking")
@@ -165,10 +144,6 @@ namespace Booking.API.Migrations
                     b.HasOne("Booking.API.Model.PaymentMethod", "PaymentMethod")
                         .WithMany("BookingPayments")
                         .HasForeignKey("PaymentMethodId");
-
-                    b.HasOne("Booking.API.Model.PaymentType", "PaymentType")
-                        .WithMany("BookingPayments")
-                        .HasForeignKey("PaymentTypeId");
                 });
 #pragma warning restore 612, 618
         }

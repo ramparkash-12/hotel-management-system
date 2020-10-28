@@ -4,14 +4,16 @@ using Booking.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Booking.API.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20201027172847_PaymentType")]
+    partial class PaymentType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,10 +130,15 @@ namespace Booking.API.Migrations
                     b.Property<string>("Expiry")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PaymentTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SecurityNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PaymentTypeId");
 
                     b.ToTable("PaymentMethod");
                 });
@@ -166,8 +173,15 @@ namespace Booking.API.Migrations
                         .WithMany("BookingPayments")
                         .HasForeignKey("PaymentMethodId");
 
-                    b.HasOne("Booking.API.Model.PaymentType", "PaymentType")
+                    b.HasOne("Booking.API.Model.PaymentType", null)
                         .WithMany("BookingPayments")
+                        .HasForeignKey("PaymentTypeId");
+                });
+
+            modelBuilder.Entity("Booking.API.Model.PaymentMethod", b =>
+                {
+                    b.HasOne("Booking.API.Model.PaymentType", "PaymentType")
+                        .WithMany()
                         .HasForeignKey("PaymentTypeId");
                 });
 #pragma warning restore 612, 618
