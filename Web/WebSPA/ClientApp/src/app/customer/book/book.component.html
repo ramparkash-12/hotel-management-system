@@ -6,10 +6,10 @@
       <div class="col-md-7">
         <h3 class="mb-4">Your trip</h3>
         <h5>Dates</h5>
-        <p class="mt-2"> 26-Nov-2020 to 27-Nov-2020</p>
+        <p class="mt-2"> {{ this.dateFrom | date: 'dd MMM yyyy' }} to {{ this.dateTo  | date: 'dd MMM yyyy'}}</p>
 
         <b>Guests</b>
-        <p class="mt-2"> 2</p>
+        <p class="mt-2"> {{ this.adults  }}</p>
         <hr>
         <div class="row">
           <div class="col-md-4">

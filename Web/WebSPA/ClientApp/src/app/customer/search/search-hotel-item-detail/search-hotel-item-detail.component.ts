@@ -16,9 +16,10 @@ export class SearchHotelItemDetailComponent implements OnInit {
   galleryImages: NgxGalleryImage[];
   hotel: Hotel;
   searchCriteria: any = {
-    city: '',
-    adults: 1
-   } ;
+    City: '',
+    Adults: '',
+    Dates: []
+  };
    bookParams: any = { };
 
   constructor(private route: ActivatedRoute, private service: HotelService,
@@ -26,7 +27,13 @@ export class SearchHotelItemDetailComponent implements OnInit {
 
   ngOnInit() {
     this.paramId = this.route.snapshot.params['hotelId'];
+    this.searchCriteria = {
+      City : this.route.snapshot.queryParams['City'],
+      Adults : this.route.snapshot.queryParams['Adults'],
+      DateFrom: this.route.snapshot.queryParams['DateFrom'],
+      DateTo: this.route.snapshot.queryParams['DateTo']
 
+    };
     this.load();
 
     this.galleryOptions = [
@@ -68,7 +75,14 @@ export class SearchHotelItemDetailComponent implements OnInit {
   }
 
   onBooking() {
-    this.router.navigate(['book']);
+    this.router.navigate(['book'],
+    { queryParams: {
+      City: this.searchCriteria.City,
+      Adults: this.searchCriteria.Adults,
+      DateFrom: this.searchCriteria.DateFrom,
+      DateTo: this.searchCriteria.DateTo
+    }}
+    );
   }
 
 

@@ -13,13 +13,22 @@ import { CommonService } from 'src/app/shared/services/common.service';
 })
 export class SearchHotelItemComponent implements OnInit {
   @Input() hotel: Hotel;
+  @Input() queryParams: any = { };
+  searchCriteria: any = {
+    City: '',
+    Adults: '',
+    Dates: []
+  };
+  convertDatesString = '';
   renderedHtmlDescription: any;
   @ViewChild('dataContainer', null) dataContainer: ElementRef;
 
 
-  constructor() { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit() {
+    this.searchCriteria = this.queryParams;
+    console.log('criteria:' + this.searchCriteria);
   }
 
   onRenderedHtmlChange(data) {

@@ -7,7 +7,9 @@
       </div>
       <div class="col-lg-6 col-md-6 col-sm-12 padding-0">
       <h4 class="mt-2">
-        <a routerLink="/detail/{{hotel.id}}">{{ hotel.name }}</a> 
+        <a routerLink="/detail/{{hotel.id}}" [queryParams]="{City: searchCriteria.City, Adults: searchCriteria.Adults, 
+          DateFrom: searchCriteria.Dates[0], 
+          DateTo: searchCriteria.Dates[1]}">{{ hotel.name }}</a> 
       </h4>
       <span style="font-size: 0.75em; padding-top: 0px;" class="text-muted"> {{ hotel.address}} </span>
       <div #dataContainer hidden [innerText]="onRenderedHtmlChange(hotel.description)"></div> 

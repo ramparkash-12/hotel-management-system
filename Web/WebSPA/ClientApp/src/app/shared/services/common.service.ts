@@ -14,7 +14,7 @@ export class CommonService {
   formatDate(date: string, convertDateForClient: boolean) {
 
     if (convertDateForClient === false) {
-      date = moment(date, 'DD/MM/YYYY').toString();
+      date = moment(date, 'DD-MM-YYYY').toString();
     }
 
     return this.datepipe.transform(date, convertDateForClient === true ? this.ClientdateFormat : this.ServerdateFormat, null, 'en-GB');

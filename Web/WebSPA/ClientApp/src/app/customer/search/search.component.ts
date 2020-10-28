@@ -24,12 +24,13 @@ export class SearchComponent implements OnInit {
 
     this.searchCriteria = {
       City : this.route.snapshot.queryParams['City'],
-      Adults : this.route.snapshot.queryParams['Adults']
+      Adults : this.route.snapshot.queryParams['Adults'],
+      Dates: this.route.snapshot.queryParams['Dates']
     };
 
 
     console.log(this.hotels);
-    console.log('search module: ' + this.searchCriteria);
+    console.log('search module: ' + this.searchCriteria.Dates);
   }
 
   searchHotels(pageSize?: number, pageIndex?: number, searchParams?: any) {

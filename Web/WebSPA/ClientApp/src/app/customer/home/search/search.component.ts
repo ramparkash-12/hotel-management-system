@@ -28,9 +28,12 @@ export class HomeSearchComponent implements OnInit {
     this.router.navigate(['/search'],
     { queryParams: {
       City: this.searchCriteria.city,
-      Adults: this.searchCriteria.adults
+      Adults: this.searchCriteria.adults,
+      Dates: this.searchCriteria.searchDateRange
     }
   });
   }
+
+
 
 }
