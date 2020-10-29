@@ -24,6 +24,9 @@ import { CommonService } from './shared/services/common.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { DataService } from './shared/services/data.service';
 import { RatingModule } from 'ngx-bootstrap/rating';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -44,7 +47,8 @@ import { RatingModule } from 'ngx-bootstrap/rating';
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
     TypeaheadModule.forRoot(),
-    RatingModule.forRoot()
+    RatingModule.forRoot(),
+    NgxMaskModule.forRoot()
     ],
   providers: [
     AuthGuard,

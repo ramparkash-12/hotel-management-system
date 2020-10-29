@@ -7,6 +7,7 @@ export interface Hotel {
   country: string;
   status: string;
   stars: number;
+  price: number;
   isFeatured: string;
   featuredFrom: string;
   featuredTo: string;

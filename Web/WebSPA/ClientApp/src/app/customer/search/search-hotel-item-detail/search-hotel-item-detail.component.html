@@ -18,19 +18,19 @@
     <div class="col-md-9">
       <div class="row">
         <h4 class="mt-2">
-          {{ hotel.name }}
+          {{ hotel?.name }}
         </h4>
       </div>
       <div class="row mt-2">
         <span> <i class="fa fa-map-marker" aria-hidden="true"></i>
-          {{ hotel.address }} </span>
+          {{ hotel?.address }} </span>
       </div>
       <div class="row mt-2">
         <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
       </div>
       <div class="row mt-3">
         <h5>Description: </h5>
-        <p [innerHTML]="hotel.description"></p>
+        <p [innerHTML]="hotel?.description"></p>
       </div>
       <hr>
       <div class="clear-fix"></div>

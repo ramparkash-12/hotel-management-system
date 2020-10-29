@@ -23,6 +23,8 @@ import { CommonService } from '../shared/services/common.service';
 import { SearchHotelItemDetailComponent } from './search/search-hotel-item-detail/search-hotel-item-detail.component';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { BookComponent } from './book/book.component';
+import { RatingModule } from 'ngx-bootstrap/rating';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({
@@ -41,7 +43,9 @@ import { BookComponent } from './book/book.component';
     SweetAlert2Module.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    TypeaheadModule.forRoot()
+    TypeaheadModule.forRoot(),
+    RatingModule.forRoot(),
+    NgxMaskModule.forRoot()
   ],
   providers: [
     HotelService,

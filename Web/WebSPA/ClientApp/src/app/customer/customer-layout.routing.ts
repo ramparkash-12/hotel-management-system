@@ -28,7 +28,7 @@ const customerRoutes: Routes = [
         component: SearchHotelItemDetailComponent
       },
       {
-        path: 'book',
+        path: 'book/:hotelId',
         component: BookComponent
       }
     ]

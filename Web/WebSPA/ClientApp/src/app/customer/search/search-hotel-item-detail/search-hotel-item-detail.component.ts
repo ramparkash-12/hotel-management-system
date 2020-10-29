@@ -75,7 +75,7 @@ export class SearchHotelItemDetailComponent implements OnInit {
   }
 
   onBooking() {
-    this.router.navigate(['book'],
+    this.router.navigate(['book/' + this.paramId],
     { queryParams: {
       City: this.searchCriteria.City,
       Adults: this.searchCriteria.Adults,

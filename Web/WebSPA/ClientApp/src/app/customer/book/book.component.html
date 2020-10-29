@@ -11,6 +11,7 @@
         <b>Guests</b>
         <p class="mt-2"> {{ this.adults  }}</p>
         <hr>
+        <form [formGroup]="bookingForm" (ngSubmit)="onSave()" class="needs-validation">
         <div class="row">
           <div class="col-md-4">
             <h3>Pay With</h3>
@@ -22,40 +23,108 @@
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="cc-name">Name on card</label>
-            <input type="text" class="form-control" id="cc-name" placeholder="" required>
-            <small class="text-muted">Full name as displayed on card</small>
-            <div class="invalid-feedback">
+            <label for="cardHolderName">Name on card</label>
+            <input type="text" class="form-control"
+            [ngClass]="{'is-invalid': bookingForm.get('cardHolderName').errors
+            && bookingForm.get('cardHolderName').touched}" autocomplete="off" formControlName="cardHolderName"
+             id="cardHolderName" placeholder="" autocomplete="off">
+             <div *ngIf="(bookingForm.get('cardHolderName').errors 
+             && bookingForm.get('cardHolderName').touched)
+              || (bookingForm.get('cardHolderName').errors && formSubmitted);else nameOnCardText" 
+             class="invalid" >
               Name on card is required
             </div>
+            <ng-template #nameOnCardText
+             class="text-muted"> 
+             <small>Full name as displayed on card</small></ng-template>
           </div>
           <div class="col-md-6 mb-3">
-            <label for="cc-number">Credit card number</label>
-            <input type="text" class="form-control" id="cc-number" placeholder="" required>
-            <div class="invalid-feedback">
+            <label for="creditCardNumber">Credit card number</label>
+            <input mask="0000 0000 0000 0000" type="text" class="form-control" 
+            id="creditCardNumber" placeholder="" autocomplete="off"
+            [ngClass]="{'is-invalid': bookingForm.get('creditCardNumber').errors
+            && bookingForm.get('creditCardNumber').touched}" autocomplete="off" formControlName="creditCardNumber">
+            <div *ngIf="(bookingForm.get('creditCardNumber').errors 
+            && bookingForm.get('creditCardNumber').touched 
+            && !bookingForm.get('creditCardNumber').hasError('minlength'))
+             || (bookingForm.get('creditCardNumber').errors 
+             && !bookingForm.get('creditCardNumber').hasError('minlength') 
+             && formSubmitted)" class="invalid">
               Credit card number is required
             </div>
+            <div *ngIf="bookingForm.get('creditCardNumber').hasError('minlength')
+              && bookingForm.get('creditCardNumber').touched" class="invalid">
+            Enter complete card number
+          </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-3 mb-3">
-            <label for="cc-expiration">Expiration</label>
-            <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-            <div class="invalid-feedback">
+          <div class="col-md-4 mb-3">
+            <label for="expiryMM">Expiry</label>
+            <select name='expiryMM' id='expiryMM'
+            class="custom-select d-block w-100"
+            [ngClass]="{'is-invalid': bookingForm.get('expiryMM').errors
+            && bookingForm.get('expiryMM').touched}" autocomplete="off" 
+            formControlName="expiryMM">
+              <option value=''>Month</option>
+              <option value='01'>January</option>
+              <option value='02'>February</option>
+              <option value='03'>March</option>
+              <option value='04'>April</option>
+              <option value='05'>May</option>
+              <option value='06'>June</option>
+              <option value='07'>July</option>
+              <option value='08'>August</option>
+              <option value='09'>September</option>
+              <option value='10'>October</option>
+              <option value='11'>November</option>
+              <option value='12'>December</option>
+          </select> 
+            <div *ngIf="(bookingForm.get('expiryMM').errors 
+            && bookingForm.get('expiryMM').touched)
+             || (bookingForm.get('expiryMM').errors && formSubmitted)" class="invalid">
               Expiration date required
             </div>
           </div>
-          <div class="col-md-3 mb-3">
-            <label for="cc-expiration">CVV</label>
-            <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-            <div class="invalid-feedback">
+          <div class="col-md-4 mb-3">
+            <label for="expiryYY"></label>
+            <select name='expiryYY' id='expiryYY'
+            class="custom-select d-block w-100 mt-2"
+            [ngClass]="{'is-invalid': bookingForm.get('expiryYY').errors
+            && bookingForm.get('expiryYY').touched}" autocomplete="off" 
+            formControlName="expiryYY">
+              <option value=''>Year</option>
+              <option value='20'>2020</option>
+              <option value='21'>2021</option>
+              <option value='22'>2022</option>
+              <option value='23'>2023</option>
+              <option value='24'>2024</option>
+          </select> 
+            <div *ngIf="(bookingForm.get('expiryYY').errors 
+            && bookingForm.get('expiryYY').touched)
+             || (bookingForm.get('expiryYY').errors && formSubmitted)" class="invalid">
+              Security code required
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cvv">CVV</label>
+            <input mask="000" type="text" class="form-control" 
+            id="cvv" placeholder=""
+            [ngClass]="{'is-invalid': bookingForm.get('cvv').errors
+            && bookingForm.get('cvv').touched }" autocomplete="off" 
+            formControlName="cvv">
+            <div *ngIf="(bookingForm.get('cvv').errors 
+            && bookingForm.get('cvv').touched)
+             || (bookingForm.get('cvv').errors && formSubmitted)" class="invalid">
               Security code required
             </div>
           </div>
         </div>
+
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Confirm and pay</button>
-        
+        <button class="btn btn-primary btn-lg btn-block" 
+        type="submit">Confirm and pay</button>
+      </form>
 
       </div>
       <div class="col-md-5">
@@ -63,16 +132,17 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-5">
-                <img src="../../../../assets/images/hotel_image.png" width="140px;" height="140px;"
+                <img src="../../../../assets/images/hotel_image.png" width="170px;" height="170px;"
                   class="img-thumbnail">
               </div>
               <div class="col-md-7 padding-0" style="font-size: 0.82em;">
-                <p  class="text-muted">Private room in flat in Bournemouth
-                </p>
-                <span class="text-muted"> Twin bed loft bedroom Ideally
-                  situated for Beaches</span> <br>
-                  <div class="mt-1">
-                    <div class="fa fa-star mb-4" aria-hidden="true"> 4.7 </div>
+                <p class="text-muted"><b> {{ hotel?.name }} </b></p>
+                <div #dataContainer hidden></div> 
+                <span class="text-muted" [innerText]="onRenderedHtmlChange(hotel.description)"></span> <br>
+                  <div class="mt-1" style="font-size: 0.95em;">
+                    <rating [(ngModel)]="hotel.stars" 
+                    [max]="5" [readonly]="true"
+                    style="color: orange;font-size: 12px;">  </rating> {{ hotel?.stars }}
                     <span style="margin-left: 5px;"> Reviews: 17,923 </span>
                   </div>
               </div>
@@ -84,16 +154,22 @@
                 <h5>Price Details</h5>
                 <div class="row mt-2">
                   <div class="col-md-6">
-                    <p>£20.00 x 1 night</p>
+                    <p>{{ hotel.price }} x 1 night</p>
                   </div>
                   <div class="col-md-4 offset-md-2">
-                    <p class="pull-right">£20.00</p>
+                    <p class="pull-right">£{{ hotel.price }}</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p> Service Fee</p>
+                  </div>
+                  <div class="col-md-4 offset-md-2">
+                    <p class="pull-right">£3.50</p>
                   </div>
                   <div class="col-md-6">
                     <b>Total Fee</b>
                   </div>
                   <div class="col-md-4 offset-md-2">
-                    <p class="pull-right">£20.00</p>
+                    <p class="pull-right">£{{ hotel?.price + 3.50}}</p>
                   </div>
                 </div>  
               </div>
