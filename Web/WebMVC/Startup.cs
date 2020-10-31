@@ -39,9 +39,12 @@ namespace WebMVC
                 .AddOpenIdConnect("oidc", options =>
                 {
                     //options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.Authority = "http://localhost:2800";
+                    //** APi Gateway
+                    //options.Authority = "http://localhost:2800";
+                    //** Direct M.S for debugging
+                    options.Authority = "http://localhost:3000";
                      // This will allow the container to reach the discovery endpoint
-                    options.MetadataAddress = "http://identityapi/.well-known/openid-configuration";
+                    //options.MetadataAddress = "http://identityapi/.well-known/openid-configuration";
                     //options.Authority = "http://localhost:2800";
                     //options.SignedOutRedirectUri = callBackUrl.ToString();
                     options.ClientId = "hotelswaggerui";

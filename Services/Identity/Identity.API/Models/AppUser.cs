@@ -17,5 +17,11 @@ namespace Identity.API.Models
         public string PictureUrl { get; set; }
         
         public virtual ICollection<UserRole> userRoles { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
+
+        public AppUser()
+        {
+            Customers = new List<Customer>();
+        }
     }
 }
