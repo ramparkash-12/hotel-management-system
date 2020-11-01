@@ -91,8 +91,8 @@ export class DataService {
             .pipe(
                 tap((res: Response) => {
                     return res;
-                })
-                //catchError(this.handleError)
+                }),
+                catchError(this.handleError)
             );
     }
 
@@ -168,9 +168,13 @@ export class DataService {
 
     private setHeaders(options: any, needId?: boolean) {
         if (needId && this.securityService) {
+            /*
             options['headers'] = new HttpHeaders()
                 .append('authorization', 'Bearer ' + this.securityService.GetToken())
                 .append('x-requestid', Guid.newGuid());
+            */
+                // tslint:disable-next-line:max-line-length
+                this.options = new HttpHeaders({'authorization' : 'Bearer ' + this.securityService.GetToken(), 'x-requestid' : Guid.newGuid()});
         } else if (this.securityService) {
             this.options = new HttpHeaders({'authorization' : 'Bearer ' + this.securityService.GetToken() });
             //options['headers'] = new HttpHeaders()

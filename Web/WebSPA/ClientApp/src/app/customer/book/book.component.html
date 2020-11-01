@@ -39,21 +39,21 @@
              <small>Full name as displayed on card</small></ng-template>
           </div>
           <div class="col-md-6 mb-3">
-            <label for="creditCardNumber">Credit card number</label>
+            <label for="cardNumber">Credit card number</label>
             <input mask="0000 0000 0000 0000" type="text" class="form-control" 
-            id="creditCardNumber" placeholder="" autocomplete="off"
-            [ngClass]="{'is-invalid': bookingForm.get('creditCardNumber').errors
-            && bookingForm.get('creditCardNumber').touched}" autocomplete="off" formControlName="creditCardNumber">
-            <div *ngIf="(bookingForm.get('creditCardNumber').errors 
-            && bookingForm.get('creditCardNumber').touched 
-            && !bookingForm.get('creditCardNumber').hasError('minlength'))
-             || (bookingForm.get('creditCardNumber').errors 
-             && !bookingForm.get('creditCardNumber').hasError('minlength') 
+            id="cardNumber" placeholder="" autocomplete="off"
+            [ngClass]="{'is-invalid': bookingForm.get('cardNumber').errors
+            && bookingForm.get('cardNumber').touched}" autocomplete="off" formControlName="cardNumber">
+            <div *ngIf="(bookingForm.get('cardNumber').errors 
+            && bookingForm.get('cardNumber').touched 
+            && !bookingForm.get('cardNumber').hasError('minlength'))
+             || (bookingForm.get('cardNumber').errors 
+             && !bookingForm.get('cardNumber').hasError('minlength') 
              && formSubmitted)" class="invalid">
               Credit card number is required
             </div>
-            <div *ngIf="bookingForm.get('creditCardNumber').hasError('minlength')
-              && bookingForm.get('creditCardNumber').touched" class="invalid">
+            <div *ngIf="bookingForm.get('cardNumber').hasError('minlength')
+              && bookingForm.get('cardNumber').touched" class="invalid">
             Enter complete card number
           </div>
           </div>
@@ -123,7 +123,8 @@
 
         <hr class="mb-4">
         <button class="btn btn-primary btn-lg btn-block" 
-        type="submit">Confirm and pay</button>
+        type="submit"><i class="fa fa-spinner fa-spin" *ngIf="isLoading"></i> 
+        Confirm and pay</button>
       </form>
 
       </div>

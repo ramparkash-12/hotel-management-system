@@ -17,5 +17,11 @@ namespace Booking.API.Model
 
         public int? PaymentTypeId { get; set; }
         public PaymentType PaymentType { get; set; }
+
+        public BookingPayment()
+        {
+            EnteredDateTime = DateTime.Now;
+            PaymentMode = "Card";
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace Booking.API.Model
         public Booking()
         {
             EnteredDateTime = DateTime.Now;
+            BookingPayments = new List<BookingPayment>();
         }
         
     }

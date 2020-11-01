@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Booking.API.Helpers;
+using Booking.API.Idempotency;
+using Booking.API.Model.Dtos;
 using Booking.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +16,13 @@ namespace Booking.API.Controllers
   {
     private readonly IBookingRepository _repo;
     private readonly IMapper _mapper;
+    private readonly IEventRequestManager _eventRequestManager;
 
-    public BookingController(IBookingRepository repo, IMapper mapper)
+    public BookingController(IBookingRepository repo, IMapper mapper, IEventRequestManager eventRequestManager)
     {
       _repo = repo;
       _mapper = mapper;
+      _eventRequestManager = eventRequestManager;
     }
 
     // Get All: api/Booking/BookingsList
@@ -54,13 +58,44 @@ namespace Booking.API.Controllers
 
         // Save: api/Booking/model
         [HttpPost("Save")]
-        public async Task<IActionResult> PostBooking([FromBody]Model.Booking model)
+        public async Task<IActionResult> PostBooking([FromBody]BookingDto model, 
+        [FromHeader(Name = "x-requestid")] Guid requestId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (requestId != Guid.Empty)    
+                return BadRequest("RequestId is missing!");
 
-            _repo.Insert(model);
-            await _repo.SaveAll();
+            //** Check idempotency
+            var requestExists = _eventRequestManager.ExistAsync(requestId).Result;
+
+            if (!requestExists)
+            {
+                await _eventRequestManager.SaveEventRequest<Model.Booking>(requestId);
+
+                //** Charge Payment
+                try
+                {
+
+                }
+                catch (Exception ex) 
+                {
+                    return BadRequest(ex.Message);
+                }
+                
+                //** Map DTO's to models and add to repo...
+                var paymentMethod = _mapper.Map<Model.PaymentMethod>(model);
+                _repo.Insert(paymentMethod);
+
+                var booking = _mapper.Map<Model.Booking>(model);
+                var bookingPayment = _mapper.Map<Model.BookingPayment>(model);
+                booking.BookingPayments.Add(bookingPayment);
+
+                _repo.Insert(booking);
+                await _repo.SaveAll();
+            }
+            else
+            {
+                return BadRequest("Request is already processed...");
+            }
 
             return NoContent();
         }

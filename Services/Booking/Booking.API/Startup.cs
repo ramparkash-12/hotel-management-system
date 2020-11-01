@@ -7,6 +7,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Booking.API.Data;
+using Booking.API.Idempotency;
 using Booking.API.IntegrationEvents.EventHandling;
 using Booking.API.IntegrationEvents.Events;
 using Booking.API.Services;
@@ -22,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 
@@ -52,6 +54,8 @@ namespace Booking.API
 
       services.AddScoped<IGenericRepository, GenericRepository>();
       services.AddScoped<IBookingRepository, BookingRepository>();
+      services.AddScoped<IEventRequestManager, EventRequestManager>();
+      
 
       services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
       {
@@ -96,6 +100,8 @@ namespace Booking.API
       // app.UseHttpsRedirection();
 
       app.UseRouting();
+
+      app.UseCors("CorsPolicy");
 
       app.UseAuthorization();
 
@@ -169,6 +175,9 @@ namespace Booking.API
 
     public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
     {
+       var loggerFactory = new LoggerFactory();
+      loggerFactory.AddProvider(new DebugLoggerProvider());
+
       services.AddDbContext<BookingContext>(options =>
       {
         options.UseSqlServer(configuration["ConnectionString"],
@@ -177,8 +186,9 @@ namespace Booking.API
               sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
               sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
             });
-      });
 
+        options.UseLoggerFactory(loggerFactory);
+      });
       return services;
     }
 
