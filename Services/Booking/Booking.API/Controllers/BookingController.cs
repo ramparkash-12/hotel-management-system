@@ -7,6 +7,7 @@ using Booking.API.Idempotency;
 using Booking.API.Model.Dtos;
 using Booking.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace Booking.API.Controllers
 {
@@ -18,11 +19,16 @@ namespace Booking.API.Controllers
     private readonly IMapper _mapper;
     private readonly IEventRequestManager _eventRequestManager;
 
-    public BookingController(IBookingRepository repo, IMapper mapper, IEventRequestManager eventRequestManager)
+    private readonly IEmailNotifier _emailNotifier;
+    private readonly IRazorViewToStringRenderer _razorViewToStringRenderer;
+
+    public BookingController(IBookingRepository repo, IMapper mapper, IEventRequestManager eventRequestManager, IEmailNotifier emailNotifier, IRazorViewToStringRenderer razorViewToStringRenderer)
     {
       _repo = repo;
       _mapper = mapper;
       _eventRequestManager = eventRequestManager;
+      _emailNotifier = emailNotifier;
+      _razorViewToStringRenderer = razorViewToStringRenderer;
     }
 
     // Get All: api/Booking/BookingsList
@@ -61,41 +67,31 @@ namespace Booking.API.Controllers
         public async Task<IActionResult> PostBooking([FromBody]BookingDto model, 
         [FromHeader(Name = "x-requestid")] Guid requestId)
         {
-            if (requestId != Guid.Empty)    
-                return BadRequest("RequestId is missing!");
+            var booking = new Model.Booking();
 
-            //** Check idempotency
-            var requestExists = _eventRequestManager.ExistAsync(requestId).Result;
+            //** Charge Payment
+            
+            //** Map DTO's to models and add to repo...
+            var paymentMethod = _mapper.Map<Model.PaymentMethod>(model);
+            _repo.Insert(paymentMethod);
 
-            if (!requestExists)
-            {
-                await _eventRequestManager.SaveEventRequest<Model.Booking>(requestId);
+            booking = _mapper.Map<Model.Booking>(model);
+            var bookingPayment = _mapper.Map<Model.BookingPayment>(model);
+            booking.BookingPayments.Add(bookingPayment);
 
-                //** Charge Payment
-                try
-                {
+            _repo.Insert(booking);
+            await _repo.SaveAll();
+            
+            //** Send email of booking
+            var _emailText = await _razorViewToStringRenderer.RenderViewToStringAsync("~/Views/Email/BookingConfirmation.cshtml", booking);
+   
+            Booking.API.Model.EmailModel ObjEmail = new Booking.API.Model.EmailModel();
+            ObjEmail.Email = _emailText;
+            ObjEmail.To.Name = booking.CustomerName;
+            ObjEmail.To.Email = "haristauqir@gmail.com";
+            ObjEmail.Subject = "Booking Confirmation #: " + booking.Id;
 
-                }
-                catch (Exception ex) 
-                {
-                    return BadRequest(ex.Message);
-                }
-                
-                //** Map DTO's to models and add to repo...
-                var paymentMethod = _mapper.Map<Model.PaymentMethod>(model);
-                _repo.Insert(paymentMethod);
-
-                var booking = _mapper.Map<Model.Booking>(model);
-                var bookingPayment = _mapper.Map<Model.BookingPayment>(model);
-                booking.BookingPayments.Add(bookingPayment);
-
-                _repo.Insert(booking);
-                await _repo.SaveAll();
-            }
-            else
-            {
-                return BadRequest("Request is already processed...");
-            }
+            await _emailNotifier.SendEmailAsync(ObjEmail);
 
             return NoContent();
         }
@@ -108,18 +104,13 @@ namespace Booking.API.Controllers
                 return BadRequest(ModelState);
 
             var booking = await _repo.Get(model.Id);
+
             if (booking == null)
                 return NotFound($"Booking with id {model.Id} not found.");
 
             _repo.Update(model);
 
-            try
-            {
-                await _repo.SaveAll();
-            }catch(Exception ex)
-            {
-                throw ex;
-            }
+            await _repo.SaveAll();
             
             return Ok();
         }

@@ -7,6 +7,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Booking.API.Data;
+using Booking.API.Helpers;
 using Booking.API.Idempotency;
 using Booking.API.IntegrationEvents.EventHandling;
 using Booking.API.IntegrationEvents.Events;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,11 +39,14 @@ namespace Booking.API
     }
 
     public IConfiguration Configuration { get; }
-    public ILifetimeScope AutofacContainer { get; private set; }
+    //public ILifetimeScope AutofacContainer { get; private set; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddControllersWithViews();
+      services.AddRazorPages();
+
       services.AddControllers().AddNewtonsoftJson(opt =>
       {
         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -55,7 +60,18 @@ namespace Booking.API
       services.AddScoped<IGenericRepository, GenericRepository>();
       services.AddScoped<IBookingRepository, BookingRepository>();
       services.AddScoped<IEventRequestManager, EventRequestManager>();
-      
+    
+      services.AddTransient<IEmailNotifier>((svc) =>
+      {
+          var mailConfigSection = Configuration.GetSection("Email");
+          string mailHost = mailConfigSection["Host"];
+          int mailPort = Convert.ToInt32(mailConfigSection["Port"]);
+          string mailUserName = mailConfigSection["User"];
+          string mailPassword = mailConfigSection["Pwd"];
+          return new SMTPEmailNotifier(mailHost, mailPort, mailUserName, mailPassword);
+      });
+
+      services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
       services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
       {
@@ -85,7 +101,7 @@ namespace Booking.API
 
         return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
       });
-
+      
       RegisterEventBus(services);
     }
 

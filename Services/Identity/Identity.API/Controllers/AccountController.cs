@@ -106,6 +106,12 @@ namespace Identity.API.Controllers
 
         if (await _loginService.ValidateCredentials(user, model.Password))
         {
+
+          if (user.EmailConfirmed != true)
+          {
+            return RedirectToAction("Verify", "Account" , new  { email = model.Email } );  
+          }
+
           var tokenLifetime = _configuration.GetValue("TokenLifetimeMinutes", 120);
 
           var props = new AuthenticationProperties
@@ -144,6 +150,40 @@ namespace Identity.API.Controllers
 
       return View(vm);
     }
+
+    // GET: /Account/Verify Email...
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Verify(string email = null)
+    {
+      ViewData["email"] = email;
+      return View();
+    }
+
+
+  // GET: /Account/Resend Verification Email...
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public IActionResult ReSendVerifyEmail(VerifyEmailViewModel model)
+    {
+      //** Generate Code from database ..... 
+
+      //** Send Verification email ....
+
+      //** Return to email sent page
+
+      return RedirectToAction("VerificationEmailSent", "Account");
+    }
+
+    // GET: /Account/VerificationEmailSent Email...
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult VerificationEmailSent()
+    {
+      return View();
+    }
+
 
     private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl, AuthorizationRequest context)
     {

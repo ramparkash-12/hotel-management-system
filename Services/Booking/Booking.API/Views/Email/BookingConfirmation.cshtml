@@ -1,0 +1,94 @@
+@model Booking.API.Model.Booking
+
+@{
+    Layout = "EmailLayout";
+}
+
+<h3>Hi @Model.CustomerName,</h3>
+
+
+<p>
+    We're excited to tell you that your booking has been confirmed. Please click on the button below for more details.....
+</p>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 30px 30px;">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center" style="border-radius: 3px;">
+                        <h3>Booking Details: </h3>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#ffffff" align="center" >
+            <table border="0" cellspacing="0" cellpadding="0" style="padding: 20px 30px 60px 30px;">
+                <tr>
+                    <td align="left" style="border-radius: 3px;" style="padding-top: 5px;">
+                        <b> Check In: </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" style="border-radius: 3px;" style="padding-top: 5px;">
+                      @Model.CheckIn.ToString("dddd, MMMM dd, yyyy - hh:mm tt")
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#ffffff" align="center" >
+            <table border="0" cellspacing="0" cellpadding="0" style="padding: 20px 30px 60px 30px;">
+                <tr>
+                    <td align="left" style="border-radius: 3px;" style="padding-top: 20px;">
+                        <b> Check Out: </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" style="border-radius: 3px;" style="padding-top: 5px;">
+                        @Model.CheckOut.ToString("dddd, MMMM dd yyyy - hh:mm tt")
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#ffffff" align="center" >
+            <table border="0" cellspacing="0" cellpadding="0" style="padding: 20px 30px 60px 30px;">
+                <tr>
+                    <td align="left" style="border-radius: 3px;" style="padding-top: 20px;">
+                        <b> Where: </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" style="border-radius: 3px;" style="padding-top: 5px;">
+                        Monday, August 17, 02:00 PM BST - 03:00 PM BST
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center" style="border-radius: 3px;" bgcolor="#539be2">
+                        <a href="#" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #539be2; display: inline-block;">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<p>
+    If you have any questions, just reply to this email. we're always happy to help out.
+</p>
+<p>
+    Hotel Management System
+</p>

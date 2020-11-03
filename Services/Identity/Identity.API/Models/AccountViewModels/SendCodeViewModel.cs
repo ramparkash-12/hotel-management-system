@@ -13,4 +13,9 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewMo
 
         public bool RememberMe { get; set; }
     }
+
+     public class VerifyEmailViewModel
+    {
+        public string Email { get; set; }
+    }
 }

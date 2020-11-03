@@ -1,0 +1,37 @@
+@model Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels.VerifyEmailViewModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+
+<p> @ViewData["email"] </p>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <h2>Verify</h2>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Account" asp-action="ReSendVerifyEmail" asp-antiforgery="true" method="post" class="form-horizontal">
+                  <div class="">
+                    <p> We sent you an email on <b>@ViewData["email"]</b> to verify your account. Please check your inbox or generate email again to get started with the app.</p>
+                  </div>
+                  <div class="form-group">
+                        <input hidden asp-for="Email" value="@ViewData["email"]" class="form-control form-input form-input-center" />
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary" name="button" value="login">Resend Email</button>
+                    </div>
+                </form>
+            </div>     
+        </div>
+        <div class="row">
+            <div class="col-md-12 mt-2 text-center">
+                <a href="javascript:void(0);">Contact Support</a> | <a style="margin-left: 8px;" href="/Account/Login">Go Back To Login </a>
+            </div>
+        </div>
+    </div>
+</div>
+
