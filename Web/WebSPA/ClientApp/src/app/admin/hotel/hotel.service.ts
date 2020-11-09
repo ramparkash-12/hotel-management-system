@@ -14,7 +14,7 @@ import { SecurityService } from 'src/app/shared/services/security.service';
 })
 export class HotelService {
   private hotelUrl: string = '';
-  urlSuffix = '/api/v1/Hotel/'; //'/api/v1/hotel-api/'; //; //';
+  urlSuffix = '/api/v1/hotel-api/'; // '/api/v1/Hotel/';
 
   constructor(private service: DataService, private authService: SecurityService,
     private configurationService: ConfigurationService) {
@@ -30,7 +30,7 @@ export class HotelService {
         }
     }
     if (this.hotelUrl === '' || this.hotelUrl === null) {
-      this.hotelUrl = 'http://localhost:2500';
+      this.hotelUrl = 'http://localhost:8000';
     }
   }
 

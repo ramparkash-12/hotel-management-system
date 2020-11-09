@@ -12,7 +12,7 @@ import { SecurityService } from 'src/app/shared/services/security.service';
 })
 export class BookService {
   private bookUrl: string = '';
-  urlSuffix = '/api/v1/Booking/';
+  urlSuffix = '/api/v1/booking-api/'; // '/api/v1/Booking/';
 
   constructor(private service: DataService, private authService: SecurityService,
     private configurationService: ConfigurationService) {
@@ -28,7 +28,8 @@ export class BookService {
         }
     }
     if (this.bookUrl === '' || this.bookUrl === null) {
-      this.bookUrl = 'http://localhost:2000';
+      //this.bookUrl = 'http://localhost:2000';
+      this.bookUrl = 'http://localhost:8000';
     }
   }
 

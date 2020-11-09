@@ -47,8 +47,6 @@ import { RatingModule } from 'ngx-bootstrap/rating';
     ModalModule.forRoot(),
     RatingModule.forRoot()
   ],
-  exports: [
-  ],
   providers: [
     HotelService,
     DataService,

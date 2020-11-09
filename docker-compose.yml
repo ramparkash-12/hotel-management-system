@@ -1,40 +1,20 @@
 version: "3.6"
 services:
   rabbitmq:
-    container_name: rabbitmq
-    ports:
-        - 5672:5672
-        - 15672:15672
-    environment:
-        - RABBITMQ_DEFAULT_USER=user
-        - RABBITMQ_DEFAULT_PASS=password        
+    #container_name: rabbitmq
     image: rabbitmq:3-management-alpine
-    healthcheck:
-      test: "/opt/rabbitmq/sbin/rabbitmqctl status"
-      interval: 2s
-      timeout: 30s
-      retries: 15
     
   apigateway:
     container_name: apigateway-container
     image: apigateway.api  
-    ports:
-        - 8000:80
-        - 8001:443    
     restart: on-failure        
 
   identityapi:
-    container_name: identityapi-container
-    #image: identity.api
+    #container_name: identityapi-container
+    image: identity.api
     build:
       context: .
       dockerfile: Services/Identity/Identity.API/Dockerfile
-    environment:
-      - ConnectionString=Server=sqldata;Initial Catalog=IdentityAPI;User Id=sa;Password=iamback.786A@
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-        - 2800:80
-        - 2801:443    
     restart: on-failure        
     depends_on:
         - sqldata
@@ -43,29 +23,21 @@ services:
       - rabbitmq
 
   hotelapi:
-    container_name: hotelapi-container
-    image: hotel.api  
-    environment:
-      - ConnectionString=Server=sqldata;Initial Catalog=HotelAPI;User Id=sa;Password=iamback.786A@
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-        - 7000:80
-        - 7001:443    
-    
+    #container_name: hotelapi-container
+    image: hotel.api
+    build:
+      context: .
+      dockerfile: Services/Hotel/Hotel.API/Dockerfile
     restart: on-failure        
     depends_on:
         - sqldata
 
   bookingapi:
-    container_name: bookingapi-container
+    #container_name: bookingapi-container
+    image: booking.api
     build:
       context: .
       dockerfile: Services/Booking/Booking.API/Dockerfile
-    environment:
-      - ConnectionString=Server=sqldata;Initial Catalog=BookingAPI;User Id=sa;Password=iamback.786A@
-    ports:
-        - 9000:80
-        - 9001:443    
     restart: on-failure    
     depends_on:
       - sqldata
@@ -74,27 +46,19 @@ services:
       - rabbitmq
       
   webmvc:
-    container_name: webmvc-container
+    #container_name: webmvc-container
     image: webmvc 
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-        - 9500:80
-        - 9501:443    
-    restart: on-failure            
+    restart: on-failure
+    
+  webspa:
+    image: webspa
+    build:
+      context: .
+      dockerfile: Web/WebSPA/Dockerfile
+    restart: on-failure
   
   sqldata:
     container_name: sqldata-container
     image:
       "mcr.microsoft.com/mssql/server"
-    environment:
-      - SA_PASSWORD=iamback.786A@
-      - ACCEPT_EULA=Y
-    ports:
-      - "5434:1433"
-    volumes:
-      - sqlvolumehotelmanagementsystem:/var/opt/mssql
     restart: on-failure     
-
-volumes:
-  sqlvolumehotelmanagementsystem:

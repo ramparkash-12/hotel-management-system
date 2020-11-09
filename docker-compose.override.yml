@@ -1,0 +1,71 @@
+version: "3.6"
+services:
+  rabbitmq:
+    #container_name: rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
+    environment:
+        - RABBITMQ_DEFAULT_USER=user
+        - RABBITMQ_DEFAULT_PASS=password        
+    healthcheck:
+      test: "/opt/rabbitmq/sbin/rabbitmqctl status"
+      interval: 2s
+      timeout: 30s
+      retries: 15
+    
+  apigateway:
+    ports:
+        - 8000:80
+        - 8001:443    
+
+  identityapi:
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=IdentityAPI;User Id=sa;Password=iamback.786A@
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+        - 2800:80
+        - 2801:443    
+
+  hotelapi:
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=HotelAPI;User Id=sa;Password=iamback.786A@
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+        - 7000:80
+        - 7001:443        
+
+  bookingapi:
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=BookingAPI;User Id=sa;Password=iamback.786A@
+    ports:
+        - 9000:80
+        - 9001:443    
+    restart: on-failure    
+      
+  webmvc:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+        - 9500:80
+        - 9501:443
+
+  webspa:
+    #environment:
+    #  - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+        - 4200:80
+        - 4201:443   
+  
+  sqldata:
+    environment:
+      - SA_PASSWORD=iamback.786A@
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
+    volumes:
+      - sqlvolumehotelmanagementsystem:/var/opt/mssql
+    restart: on-failure     
+
+volumes:
+  sqlvolumehotelmanagementsystem:

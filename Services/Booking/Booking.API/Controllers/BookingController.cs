@@ -82,6 +82,7 @@ namespace Booking.API.Controllers
             _repo.Insert(booking);
             await _repo.SaveAll();
             
+            /*
             //** Send email of booking
             var _emailText = await _razorViewToStringRenderer.RenderViewToStringAsync("~/Views/Email/BookingConfirmation.cshtml", booking);
    
@@ -92,6 +93,7 @@ namespace Booking.API.Controllers
             ObjEmail.Subject = "Booking Confirmation #: " + booking.Id;
 
             await _emailNotifier.SendEmailAsync(ObjEmail);
+            */
 
             return NoContent();
         }
