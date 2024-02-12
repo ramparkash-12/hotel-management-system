@@ -18,7 +18,7 @@ jobs:
           password: ${{ secrets.RAM@12345 }}
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/hotel-management-system
+        run: docker build . --file Dockerfile --tag ${{ secrets.ram1105 }}/hotel-management-system
 
       - name: Docker Push
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/hotel-management-system
+        run: docker push ${{ secrets.ram1105 }}/hotel-management-system
