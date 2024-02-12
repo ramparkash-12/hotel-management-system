@@ -15,7 +15,7 @@ jobs:
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           username: ${{ secrets.ram1105 }}
-          password: ${{ secrets.RAM@123 }}
+          password: ${{ secrets.RAM@12345 }}
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/hotel-management-system
